@@ -122,7 +122,7 @@ const closeMenu = () => {
         <div class="text-center text-sm mt-8">Família Mogi - CNPJ: ©Todos os direitos reservados. {{currentYear}}</div>
     </footer>
 
-     <a href="https://wa.me/5511999999999" target="_blank" class="fixed bottom-15 right-15 z-50">
+    <a href="https://wa.me/5511999999999" target="_blank" class="fixed lg:bottom-15 bottom-10 lg:right-15 right-10 z-50 ">
         <img src="/images/whatsapp.png" alt="WhatsApp" class="w-16 h-16 rounded-full shadow-lg hover:shadow-xl transition-shadow duration-300">
     </a>
 </template>

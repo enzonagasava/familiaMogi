@@ -27,9 +27,9 @@ const slides = ref([
 </script>
 
 <template>
-    <div class="flex flex-col items-center w-full bg-[#f5f5f5] py-6 rounded-lg">
+    <div class="flex flex-col items-center w-full bg-[#f5f5f5] py-6 px-2 rounded-lg">
         <div class="relative w-full max-w-[1366px]">
-            <h2 class="text-[24px] lg:text-[36px] font-bold mb-4 w-full">{{ title }}</h2>
+            <h2 class="text-[24px] lg:text-[36px] font-bold mb-4 w-full">{{ props.title }}</h2>
             <Swiper
                 :modules="activeModules"
                 :slides-per-view="4"

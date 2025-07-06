@@ -4,7 +4,6 @@ import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers'; // A
 import type { DefineComponent } from 'vue'; // Tipagem do Vue
 import { createApp, h } from 'vue'; // Funções do Vue
 import { ZiggyVue } from 'ziggy-js'; // Integração com rotas Laravel
-import { initializeTheme } from './composables/useAppearance'; // Lógica personalizada de tema (light/dark)
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 

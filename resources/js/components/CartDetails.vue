@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { router } from '@inertiajs/vue3'; // Se precisar de navegação Inertia aqui
 
 interface CartItem {
   id: number;
