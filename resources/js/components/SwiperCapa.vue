@@ -1,17 +1,14 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-// Importe os estilos do Swiper (CSS)
+import { ref } from 'vue';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
-// Importe os componentes e módulos
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import { Navigation, Pagination, Autoplay } from 'swiper/modules';
 
 const activeModules = [Navigation, Pagination, Autoplay];
 
-// Dados do carrossel (exemplo)
 const slides = ref([
   { id: 1, title: 'Imagem 1', image:'/images/capa1.jpg', color: 'bg-blue-100' },
   { id: 2, title: 'Imagem 2', image:'/images/capa1.jpg' , color: 'bg-green-100' },
@@ -39,9 +36,8 @@ const slides = ref([
 </template>
 
 <style scoped>
-/* Estilos personalizados (opcional) */
 .my-custom-swiper {
   width: 100%;
-  height: 300px;
+  height: 400px;
 }
 </style>
