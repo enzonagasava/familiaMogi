@@ -59,6 +59,11 @@ const toggleFavorite = () => {
   // Lógica para favoritar/desfavoritar
 };
 
+const toggleShare = () => {
+  alert('Togglou Share!');
+  // Lógica para favoritar/desfavoritar
+};
+
 </script>
 
 <template>
@@ -89,17 +94,23 @@ const toggleFavorite = () => {
             <div>
                 Home > Cogumelos > <span class="font-semibold text-gray-800">Shitake</span>
             </div>
-            <button @click="toggleFavorite" class="flex items-center text-green-600 hover:text-green-800">
+            <div class="flex">   
+            <button @click="toggleFavorite" class="flex items-center text-[#6aab9c] hover:text-[#6aab9c] cursor-pointer">
                 <svg class="w-5 h-5 mr-1 fill-current" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-                Comparar
+                Comparar / 
             </button>
+            <button @click="toggleShare" class="text-[#6aab9c] cursor-pointer">
+                Compartilhar
+            </button>
+
+            </div>
             </div>
 
             <h1 class="text-3xl font-bold text-gray-900 mb-2">{{ productName }}</h1>
 
             <div class="text-2xl font-bold text-gray-900 mb-4">
             R${{ productPrice.toFixed(2).replace('.', ',') }}
-            <p class="text-sm font-normal text-green-600 cursor-pointer hover:underline mt-1">Ver formas de pagamento</p>
+            <p class="text-sm font-normal text-black cursor-pointer hover:underline mt-1">Ver formas de pagamento</p>
             </div>
 
             <div class="mb-4">
@@ -107,15 +118,15 @@ const toggleFavorite = () => {
             <div class="flex space-x-2">
                 <button
                 @click="selectedWeight = '200g'"
-                class="px-4 py-2 rounded-md text-sm font-medium border-2"
-                :class="{ 'bg-green-600 text-white border-green-600': selectedWeight === '200g', 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50': selectedWeight !== '200g' }"
+                class="px-4 py-2 rounded-md text-sm font-medium border-2 cursor-pointer"
+                :class="{ 'bg-[#6aab9c] text-white': selectedWeight === '200g', 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50': selectedWeight !== '200g' }"
                 >
                 200g
                 </button>
                 <button
                 @click="selectedWeight = '1kg'"
-                class="px-4 py-2 rounded-md text-sm font-medium border-2"
-                :class="{ 'bg-green-600 text-white border-green-600': selectedWeight === '1kg', 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50': selectedWeight !== '1kg' }"
+                class="px-4 py-2 rounded-md text-sm font-medium border-2 cursor-pointer"
+                :class="{ 'bg-[#6aab9c] text-white': selectedWeight === '1kg', 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50': selectedWeight !== '1kg' }"
                 >
                 1kg
                 </button>
@@ -131,10 +142,10 @@ const toggleFavorite = () => {
             </div>
 
             <div class="flex flex-col space-y-3 mb-6">
-            <button @click="buyNow" class="w-full bg-green-600 text-white py-3 px-4 rounded-md font-semibold hover:bg-green-700 transition duration-300">
+            <button @click="buyNow" class="w-full bg-[#6aab9c] text-white py-3 px-4 rounded-md font-semibold hover:bg-[#77bdad] transition duration-300 cursor-pointer">
                 Comprar agora
             </button>
-            <button @click="addToCart" class="w-full bg-white text-green-600 border border-green-600 py-3 px-4 rounded-md font-semibold hover:bg-green-50 transition duration-300">
+            <button @click="addToCart" class="w-full bg-white text-[#6aab9c] border border-[#6aab9c] py-3 px-4 rounded-md font-semibold hover:bg-green-50 transition duration-300 cursor-pointer">
                 Adicionar no carrinho
             </button>
             </div>
@@ -145,7 +156,7 @@ const toggleFavorite = () => {
                 <input
                 type="text"
                 placeholder="Insira o seu CEP"
-                class="flex-grow border border-gray-300 rounded-md py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent mr-2"
+                class="flex-grow border border-gray-300 rounded-md py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#6aab9c] focus:border-transparent mr-2"
                 />
                 <button @click="calculateShipping" class="bg-gray-200 text-gray-700 py-2 px-4 rounded-md font-semibold hover:bg-gray-300 transition duration-300">
                 Calcular
