@@ -6,6 +6,8 @@ import 'swiper/css/pagination';
 
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import { Navigation, Thumbs, Pagination } from 'swiper/modules';
+import ButtonAddCart from './ui/button/ButtonAddCart.vue';
+import ButtonPortion from './ui/button/ButtonPortion.vue';
 
 const activeModules = [Navigation, Thumbs, Pagination];
 
@@ -14,16 +16,66 @@ const props = defineProps<{
 }>();
 
 const slides = ref([
-    { id: 1, title: 'Cogumelo Shitake', image:'/images/capa1.jpg'},
-    { id: 2, title: 'Cogumelo Shitake', image:'/images/capa1.jpg'},
-    { id: 3, title: 'Cogumelo Shitake', image:'/images/capa1.jpg'},
-    { id: 4, title: 'Cogumelo Shitake', image:'/images/capa1.jpg'},
-    { id: 5, title: 'Cogumelo Paris', image:'/images/capa2.jpg'},
-    { id: 6, title: 'Cogumelo Portobello', image:'/images/capa3.jpg'},
-    { id: 7, title: 'Cogumelo Eryngui', image:'/images/capa4.jpg'},
-    { id: 8, title: 'Cogumelo Hiratake', image:'/images/capa5.jpg'},
+    { id: 1, title: 'Cogumelo Shitake', image:'/images/capa1.jpg', porção: ['200g', '1kg']},
+    { id: 2, title: 'Cogumelo Shitake', image:'/images/capa1.jpg', porção: ['200g','1kg']},
+    { id: 3, title: 'Cogumelo Shitake', image:'/images/capa1.jpg', porção: ['200g', '1kg']},
+    { id: 4, title: 'Cogumelo Shitake', image:'/images/capa1.jpg', porção: ['200g', '1kg']},
+    { id: 5, title: 'Cogumelo Paris', image:'/images/capa2.jpg', porção: ['200g', '1kg']},
+    { id: 6, title: 'Cogumelo Portobello', image:'/images/capa3.jpg', porção: ['200g', '1kg']},
+    { id: 7, title: 'Cogumelo Eryngui', image:'/images/capa4.jpg', porção: ['200g', '1kg']},
+    { id: 8, title: 'Cogumelo Hiratake', image:'/images/capa5.jpg', porção: ['200g', '1kg']},
+    { id: 9, title: 'Cogumelo Shimeji', image:'/images/capa6.jpg', porção: ['200g', '1kg']},
+    { id: 10, title: 'Cogumelo Enoki', image:'/images/capa7.jpg', porção: ['200g', '1kg']},
 ]);
 
+// Reactive variables for portion selection and cart
+import { type Ref } from 'vue'; // Import type Ref
+const selectedPortions = ref<Record<number | string, string>>({});
+
+const cartItemCount = ref(0);
+interface CartItem {
+  slideId: number;
+  title: string;
+  portion: string;
+  quantity: number;
+}
+const cart: Ref<CartItem[]> = ref([]);
+
+const selectPortion = (slideId:number, portion:string) => {
+  selectedPortions.value[slideId] = portion;
+  console.log(`Slide ${slideId}: Selected portion ${portion}`);
+};
+
+const addToCart = (slideId: number) => {
+  console.log(slideId);
+  const portion = selectedPortions.value[slideId];
+  if (portion) {
+    console.log(`✅ Tentando adicionar ao carrinho: Slide ${slideId} - ${portion}`);
+    cartItemCount.value++;
+    console.log(`🛒 Total de itens no carrinho: ${cartItemCount.value}`);
+
+    const existingItemIndex = cart.value.findIndex(item => item.slideId === slideId && item.portion === portion);
+    if (existingItemIndex !== -1) {
+      cart.value[existingItemIndex].quantity++;
+    } else {
+      const slide = slides.value.find(s => s.id === slideId);
+      if (slide) {
+        cart.value.push({
+          slideId: slide.id,
+          title: slide.title,
+          portion: portion,
+          quantity: 1,
+        });
+      }
+    }
+    const currentTotalItemsInCart = cart.value.reduce((sum, item) => sum + item.quantity, 0);
+    console.log(`🛒 Carrinho atual (detalhado):`, cart.value);
+    console.log(`🔢 Total de itens únicos no carrinho: ${cart.value.length}`);
+    console.log(`🔢 Total de quantidades no carrinho: ${currentTotalItemsInCart}`);
+  } else {
+    console.warn(`⚠️ Nenhuma porção selecionada para o Slide ${slideId}. Por favor, selecione uma porção primeiro.`);
+  }
+};
 </script>
 
 <template>
@@ -58,12 +110,17 @@ const slides = ref([
                         </div>
                         <div class="text-xs text-gray-600 mb-2">selecione a porção</div>
                         <div class="flex gap-2 mb-3">
-                            <button class="border border-gray-400 rounded-full px-3 py-1 text-xs cursor-pointer">200g</button>
-                            <button class="border border-gray-400 rounded-full px-3 py-1 text-xs cursor-pointer">1kg</button>
-                        </div>
-                        <button class="bg-[#6aab9c] text-white rounded-full px-4 py-2 text-sm font-semibold mb-2 hover:bg-[#77bdad] transition cursor-pointer">
-                            Adicionar no carrinho
-                        </button>
+                          <ButtonPortion 
+                            :slide="slide" 
+                            :selectedPortions="selectedPortions" 
+                            @select-portion="selectPortion"
+                          />
+                        </div> 
+                        <ButtonAddCart 
+                            :slide="slide"
+                            :selectedPortions="selectedPortions" 
+                            @add-to-cart="addToCart"
+                        />                       
                     </div>
                 </SwiperSlide>
             </Swiper>
