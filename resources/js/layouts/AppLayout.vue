@@ -21,12 +21,6 @@ const closeMenu = () => {
     isMenuOpen.value = false;
 };
 
-const menuClasses = computed(() => {
-  return isMenuOpen.value
-    ? 'flex flex-col md:flex-row' // mobile aberto
-    : 'hidden md:flex';           // mobile fechado, desktop visível
-});
-
 </script>
 
 <template>    
