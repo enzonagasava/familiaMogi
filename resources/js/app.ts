@@ -1,9 +1,9 @@
-import '../css/app.css'; // Importa o CSS global
 import { createInertiaApp } from '@inertiajs/vue3'; // Core do Inertia.js
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers'; // Auxilia no carregamento dinâmico de componentes
 import type { DefineComponent } from 'vue'; // Tipagem do Vue
 import { createApp, h } from 'vue'; // Funções do Vue
 import { ZiggyVue } from 'ziggy-js'; // Integração com rotas Laravel
+import '../css/app.css'; // Importa o CSS global
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -20,4 +20,3 @@ createInertiaApp({
         color: '#4B5563',
     },
 });
-

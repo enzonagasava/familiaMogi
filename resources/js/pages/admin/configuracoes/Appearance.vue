@@ -14,7 +14,7 @@ const breadcrumbItems: BreadcrumbItem[] = [
         href: '/settings/appearance',
     },
 ];
-</script>   
+</script>
 
 <template>
     <AuthLayout :breadcrumbs="breadcrumbItems">

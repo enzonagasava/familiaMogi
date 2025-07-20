@@ -27,7 +27,7 @@ const submit = () => {
 </script>
 
 <template>
-    <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 text-black">
+    <div class="flex min-h-screen items-center justify-center px-4 py-12 text-black sm:px-6 lg:px-8">
         <Head title="Log in" />
 
         <div v-if="status" class="mb-4 text-center text-sm font-medium text-green-600">

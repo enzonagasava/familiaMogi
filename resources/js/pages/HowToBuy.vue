@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { Head } from '@inertiajs/vue3';
-import AppLayout from '@/layouts/AppLayout.vue';
 import HowToBuy from '@/components/HowToBuy.vue';
+import AppLayout from '@/layouts/AppLayout.vue';
+import { Head } from '@inertiajs/vue3';
 </script>
 
 <template>
@@ -10,7 +10,6 @@ import HowToBuy from '@/components/HowToBuy.vue';
         <meta name="description" content="Anúncio da Família Mogi" />
     </Head>
     <AppLayout>
-        <HowToBuy>
-        </HowToBuy>
+        <HowToBuy> </HowToBuy>
     </AppLayout>
 </template>
