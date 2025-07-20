@@ -32,11 +32,8 @@ Route::get('/carrinho', function () {
     return Inertia::render('Cart');
 })->name('carrinho');
 
-Route::get('dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
 Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
+require __DIR__.'/admin.php';
