@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import AuthBase from '@/layouts/AuthLayout.vue';
 import { Head, useForm } from '@inertiajs/vue3';
 import { LoaderCircle } from 'lucide-vue-next';
 
@@ -28,7 +27,7 @@ const submit = () => {
 </script>
 
 <template>
-    <AuthBase title="Log in to your account" description="Enter your email and password below to log in">
+    <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 text-black">
         <Head title="Log in" />
 
         <div v-if="status" class="mb-4 text-center text-sm font-medium text-green-600">
@@ -38,7 +37,7 @@ const submit = () => {
         <form @submit.prevent="submit" class="flex flex-col gap-6">
             <div class="grid gap-6">
                 <div class="grid gap-2">
-                    <Label for="email">Email address</Label>
+                    <Label for="email">Email</Label>
                     <Input
                         id="email"
                         type="email"
@@ -54,9 +53,9 @@ const submit = () => {
 
                 <div class="grid gap-2">
                     <div class="flex items-center justify-between">
-                        <Label for="password">Password</Label>
+                        <Label for="password">Senha</Label>
                         <TextLink v-if="canResetPassword" :href="route('password.request')" class="text-sm" :tabindex="5">
-                            Forgot password?
+                            Esqueci minha senha
                         </TextLink>
                     </div>
                     <Input
@@ -74,7 +73,7 @@ const submit = () => {
                 <div class="flex items-center justify-between">
                     <Label for="remember" class="flex items-center space-x-3">
                         <Checkbox id="remember" v-model="form.remember" :tabindex="3" />
-                        <span>Remember me</span>
+                        <span>Lembrar</span>
                     </Label>
                 </div>
 
@@ -85,9 +84,9 @@ const submit = () => {
             </div>
 
             <div class="text-center text-sm text-muted-foreground">
-                Don't have an account?
+                Não tem uma conta?
                 <TextLink :href="route('register')" :tabindex="5">Sign up</TextLink>
             </div>
         </form>
-    </AuthBase>
+    </div>
 </template>

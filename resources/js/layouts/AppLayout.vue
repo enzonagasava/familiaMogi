@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted } from 'vue';
 
 
 // Declara uma variável reativa para armazenar o ano atual.
