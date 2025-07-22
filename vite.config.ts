@@ -27,6 +27,18 @@ export default defineConfig({
         },
     },
     define: {
-        __VUE_PROD_DEVTOOLS__:  true,
+        __VUE_PROD_DEVTOOLS__: true,
+    },
+
+    // 🟢 Adicione isso aqui:
+    server: {
+        host: '0.0.0.0',
+        port: 5173,
+        strictPort: true,
+        hmr: {
+            host: '127.0.0.1',
+            protocol: 'ws',
+            port: 5173,
+        },
     },
 });
