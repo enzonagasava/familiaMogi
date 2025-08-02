@@ -2,7 +2,7 @@
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 
 import { Navigation, Pagination, Thumbs } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/vue';
@@ -28,8 +28,7 @@ const slides = ref([
     { id: 10, title: 'Cogumelo Enoki', image: '/images/capa7.jpg', porção: ['200g', '1kg'] },
 ]);
 
-// Reactive variables for portion selection and cart
-import { type Ref } from 'vue'; // Import type Ref
+import { type Ref } from 'vue';
 const selectedPortions = ref<Record<number | string, string>>({});
 
 const cartItemCount = ref(0);
@@ -43,17 +42,12 @@ const cart: Ref<CartItem[]> = ref([]);
 
 const selectPortion = (slideId: number, portion: string) => {
     selectedPortions.value[slideId] = portion;
-    console.log(`Slide ${slideId}: Selected portion ${portion}`);
 };
 
 const addToCart = (slideId: number) => {
-    console.log(slideId);
     const portion = selectedPortions.value[slideId];
     if (portion) {
-        console.log(`✅ Tentando adicionar ao carrinho: Slide ${slideId} - ${portion}`);
         cartItemCount.value++;
-        console.log(`🛒 Total de itens no carrinho: ${cartItemCount.value}`);
-
         const existingItemIndex = cart.value.findIndex((item) => item.slideId === slideId && item.portion === portion);
         if (existingItemIndex !== -1) {
             cart.value[existingItemIndex].quantity++;
@@ -68,24 +62,24 @@ const addToCart = (slideId: number) => {
                 });
             }
         }
-        const currentTotalItemsInCart = cart.value.reduce((sum, item) => sum + item.quantity, 0);
-        console.log(`🛒 Carrinho atual (detalhado):`, cart.value);
-        console.log(`🔢 Total de itens únicos no carrinho: ${cart.value.length}`);
-        console.log(`🔢 Total de quantidades no carrinho: ${currentTotalItemsInCart}`);
     } else {
-        console.warn(`⚠️ Nenhuma porção selecionada para o Slide ${slideId}. Por favor, selecione uma porção primeiro.`);
+        alert('Por favor, selecione uma porção antes de adicionar ao carrinho.');
     }
 };
 </script>
 
 <template>
-    <div class="flex w-full flex-col items-center rounded-lg bg-[#f5f5f5] px-2 py-6">
+    <div class="flex w-full flex-col items-center rounded-lg bg-[#f5f5f5] px-2 py-6 relative">
         <div class="relative w-full max-w-[1366px]">
             <h2 class="mb-4 w-full text-[24px] font-bold lg:text-[36px]">{{ props.title }}</h2>
+
             <Swiper
                 :modules="activeModules"
                 :slides-per-view="4"
-                :navigation="true"
+                :navigation="{
+                  prevEl: '.custom-swiper-prev',
+                  nextEl: '.custom-swiper-next'
+                }"
                 :loop="true"
                 :space-between="20"
                 class="my-custom-swiper"
@@ -97,12 +91,12 @@ const addToCart = (slideId: number) => {
                 }"
             >
                 <SwiperSlide v-for="slide in slides" :key="slide.id">
-                    <div class="flex flex-col items-center bg-white">
+                    <div class="flex flex-col items-center bg-white rounded-lg p-4 shadow-md">
                         <img
                             :src="slide.image"
                             :title="slide.title"
                             alt="Produto"
-                            class="mb-2 h-[300px] min-w-[300px] cursor-pointer rounded-[8px] border-4 object-cover hover:brightness-[1.10]"
+                            class="mb-2 h-[300px] w-[300px] cursor-pointer rounded-[8px] object-cover hover:brightness-[1.10]"
                             @click="$inertia.visit(route('anuncio'))"
                         />
                         <div class="mt-2 mb-1 text-lg font-semibold">
@@ -115,6 +109,12 @@ const addToCart = (slideId: number) => {
                         <ButtonAddCart :slide="slide" :selectedPortions="selectedPortions" @add-to-cart="addToCart" />
                     </div>
                 </SwiperSlide>
+
+                <!-- Navegação personalizada -->
+                <template #container-end>
+                  <button class="custom-swiper-prev nav-btn" aria-label="Anterior"><i class="fa-solid fa-angle-left"></i></button>
+                  <button class="custom-swiper-next nav-btn" aria-label="Próximo"><i class="fa-solid fa-angle-right"></i></button>
+                </template>
             </Swiper>
         </div>
     </div>
@@ -125,11 +125,69 @@ const addToCart = (slideId: number) => {
     width: 100%;
     height: 370px;
     padding: 0 3rem !important;
+    position: relative;
 }
 .swiper-slide {
     display: flex;
     justify-content: center;
     align-items: stretch;
     position: relative;
+}
+
+/* Botões de navegação customizados */
+.nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.85);
+    border: none;
+    border-radius: 50%;
+    width: 3rem;
+    height: 3rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    z-index: 10;
+    font-size: 1.5rem;
+    color: #48bb78;
+  }
+
+  .nav-btn > i {
+    font-size: 2rem;
+  }
+
+  .nav-btn:hover {
+    background: #48bb78;
+    color: white;
+  }
+
+  .custom-swiper-prev {
+    left: 0.5rem;
+  }
+
+  .custom-swiper-next {
+    right: 0.5rem;
+  }
+
+@media (max-width: 768px) {
+  .my-custom-swiper {
+    height: auto;
+    padding: 0 1rem !important;
+  }
+  .nav-btn {
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 1.2rem;
+  }
+  .custom-swiper-prev {
+    left: 0.25rem;
+  }
+  .custom-swiper-next {
+    right: 0.25rem;
+  }
 }
 </style>

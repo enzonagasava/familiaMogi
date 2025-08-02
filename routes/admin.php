@@ -17,7 +17,11 @@ use Inertia\Inertia;
             return Inertia::render('admin/BlogConfig');
         })->name('blog.config');
 
+        //Produtos Configurações
         Route::get('produtos/config', [ProdutoController::class, 'index'])
         ->name('produtos.config');
+        Route::get('produtos/addproduto', [ProdutoController::class, 'create'])
+        ->name('produtos.add');
+        Route::post('/produtos', [ProdutoController::class, 'store'])->name('produtos.store');
 
     }); 

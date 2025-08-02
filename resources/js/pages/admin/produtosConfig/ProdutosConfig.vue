@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import AuthLayout from '@/layouts/AuthLayout.vue';
-import { Head } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
 import { ref } from 'vue';
 
 // --- Dados de Exemplo ---
@@ -38,11 +38,11 @@ const deleteProduct = (productId: number) => {
                     <div class="border-b border-gray-200 bg-white p-6">
                         <div class="mb-6 flex items-center justify-between">
                             <h1 class="text-2xl font-bold text-gray-800">Gerenciar Produtos</h1>
-                            <button
+                            <Link href="/produtos/addproduto"
                                 class="focus:ring-opacity-50 rounded-md bg-green-600 px-4 py-2 text-white transition duration-150 ease-in-out hover:bg-green-700 focus:ring-2 focus:ring-green-500 focus:outline-none"
                             >
                                 + Adicionar Novo Produto
-                            </button>
+                            </Link>
                         </div>
 
                         <div class="overflow-x-auto">
