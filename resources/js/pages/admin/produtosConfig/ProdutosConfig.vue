@@ -23,7 +23,7 @@ const deleteProduct = (productId: number) => {
         // Aqui você removeria o item da lista após a exclusão no backend.
         products.value = products.value.filter((p) => p.id !== productId);
     }
-};
+}; 
 </script>
 
 <template>
