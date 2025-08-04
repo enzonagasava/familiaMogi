@@ -11,7 +11,22 @@ class ProdutoController extends Controller
 {
     public function index()
     {
-        return Inertia::render('admin/produtosConfig/ProdutosConfig');
+        $products = Anuncio::with('imagens')->get()->map(function ($product) {
+            return [
+                'id' => $product->id,
+                'nome' => $product->nome,
+                'descricao' => $product->descricao,
+                'estoque' => $product->estoque,
+                'tamanhos' => $product->tamanhos,
+                'imageUrl' => $product->imagens->first()
+                    ? asset('storage/' . $product->imagens->first()->imagem_path)
+                    : null,
+                'created_at' => $product->created_at->format('d/m/Y H:i'),
+            ];
+        });
+        
+        return Inertia::render('admin/produtosConfig/ProdutosConfig') ->with('products', $products);
+
     }
 
     public function create()
@@ -59,9 +74,21 @@ class ProdutoController extends Controller
             }
         }
 
+        return Inertia::location(route('produtos.config'));
+    }
 
+    public function edit($id)
+    {
+        $products = Anuncio::with('imagens')->where('id', $id)->first();
+        return Inertia::render('admin/produtosConfig/EditarProduto')->with('products', $products); ;
+    }
 
-        // Para este exemplo, só vamos retornar sucesso
-        return redirect()->back()->with('success', 'Produto salvo com sucesso!');
+    public function update(Request $request, $id)
+    {
+        $produto = Anuncio::findOrFail($id);
+        
+        $produto->update($request->all());
+
+        return Inertia::render('admin/produtosConfig/ProdutosConfig')->with('message', 'Produto atualizado com sucesso!');
     }
 }

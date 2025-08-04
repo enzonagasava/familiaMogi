@@ -1,22 +1,23 @@
-import { createInertiaApp } from '@inertiajs/vue3'; // Core do Inertia.js
-import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers'; // Auxilia no carregamento dinâmico de componentes
-import type { DefineComponent } from 'vue'; // Tipagem do Vue
-import { createApp, h } from 'vue'; // Funções do Vue
-import { ZiggyVue } from 'ziggy-js'; // Integração com rotas Laravel
-import '../css/app.css'; // Importa o CSS global
+import { createInertiaApp } from '@inertiajs/vue3';
+import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
+import type { DefineComponent } from 'vue';
+import { createApp, h } from 'vue';
+import { ZiggyVue } from 'ziggy-js';
+import '../css/app.css';
 
-const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
+const appName = import.meta.env.VITE_APP_NAME || 'FamiliaMogi';
 
 createInertiaApp({
-    title: (title) => (title ? `${title} - ${appName}` : appName),
-    resolve: (name) => resolvePageComponent(`./pages/${name}.vue`, import.meta.glob<DefineComponent>('./pages/**/*.vue')),
-    setup({ el, App, props, plugin }) {
-        createApp({ render: () => h(App, props) })
-            .use(plugin)
-            .use(ZiggyVue)
-            .mount(el);
-    },
-    progress: {
-        color: '#4B5563',
-    },
+  title: (title) => (title ? `${title} - ${appName}` : appName),
+  resolve: (name) =>
+    resolvePageComponent(`./pages/${name}.vue`, import.meta.glob<DefineComponent>('./pages/**/*.vue')),
+  setup({ el, App, props, plugin }) {
+    createApp({ render: () => h(App, props) })
+      .use(plugin)
+      .use(ZiggyVue)
+      .mount(el);
+  },
+  progress: {
+    color: '#4B5563',
+  },
 });

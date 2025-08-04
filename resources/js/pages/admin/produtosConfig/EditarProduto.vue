@@ -83,7 +83,7 @@ function handleSubmit() {
   formData.append('descricao', products.descricao)
   formData.append('estoque', products.estoque.toString())
   formData.append('tamanhos', JSON.stringify(products.tamanhos))
-  imagensFiles.value.forEach((file, index) => {
+  imagensFiles.value.forEach((file) => {
   formData.append('imagens[]', file)
   })
   Inertia.post(`/produtos/update-produto/${products.id}`, formData, {
