@@ -9,7 +9,7 @@ services:
       - ./:/var/www/html
     depends_on:
       - db
-    restart: always
+    restart: "no"
     environment:
       COMPOSER_ALLOW_SUPERUSER: "1"
     ports:
@@ -27,14 +27,14 @@ services:
     command: bash -c "npm install && npm run dev"
     depends_on:
       - app
-    restart: always
+    restart: "no"
 
   db:
     image: mysql:8.0
     container_name: mysql-db
     ports:
       - "3307:3306"
-    restart: always
+    restart: "no"
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword123
       MYSQL_DATABASE: familiaMogi

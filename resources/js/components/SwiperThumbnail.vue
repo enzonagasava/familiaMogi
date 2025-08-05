@@ -2,7 +2,8 @@
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
+import { usePage } from '@inertiajs/vue3';
 
 import { Navigation, Pagination, Thumbs } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/vue';
@@ -14,58 +15,27 @@ const activeModules = [Navigation, Thumbs, Pagination];
 const props = defineProps<{
     title?: string;
 }>();
+const page = usePage();
 
-const slides = ref([
-    { id: 1, title: 'Cogumelo Shitake', image: '/images/capa1.jpg', porção: ['200g', '1kg'] },
-    { id: 2, title: 'Cogumelo Shitake', image: '/images/capa1.jpg', porção: ['200g', '1kg'] },
-    { id: 3, title: 'Cogumelo Shitake', image: '/images/capa1.jpg', porção: ['200g', '1kg'] },
-    { id: 4, title: 'Cogumelo Shitake', image: '/images/capa1.jpg', porção: ['200g', '1kg'] },
-    { id: 5, title: 'Cogumelo Paris', image: '/images/capa2.jpg', porção: ['200g', '1kg'] },
-    { id: 6, title: 'Cogumelo Portobello', image: '/images/capa3.jpg', porção: ['200g', '1kg'] },
-    { id: 7, title: 'Cogumelo Eryngui', image: '/images/capa4.jpg', porção: ['200g', '1kg'] },
-    { id: 8, title: 'Cogumelo Hiratake', image: '/images/capa5.jpg', porção: ['200g', '1kg'] },
-    { id: 9, title: 'Cogumelo Shimeji', image: '/images/capa6.jpg', porção: ['200g', '1kg'] },
-    { id: 10, title: 'Cogumelo Enoki', image: '/images/capa7.jpg', porção: ['200g', '1kg'] },
-]);
+const produtos = page.props.produto || [];
+console.log(produtos);
 
-import { type Ref } from 'vue';
 const selectedPortions = ref<Record<number | string, string>>({});
 
-const cartItemCount = ref(0);
-interface CartItem {
-    slideId: number;
-    title: string;
-    portion: string;
-    quantity: number;
-}
-const cart: Ref<CartItem[]> = ref([]);
+// const cartItemCount = ref(0);
+// interface CartItem {
+//     slideId: number;
+//     title: string;
+//     portion: string;
+//     quantity: number;
+// }
+// const cart = ref<CartItem[]>([]);
 
 const selectPortion = (slideId: number, portion: string) => {
     selectedPortions.value[slideId] = portion;
 };
 
-const addToCart = (slideId: number) => {
-    const portion = selectedPortions.value[slideId];
-    if (portion) {
-        cartItemCount.value++;
-        const existingItemIndex = cart.value.findIndex((item) => item.slideId === slideId && item.portion === portion);
-        if (existingItemIndex !== -1) {
-            cart.value[existingItemIndex].quantity++;
-        } else {
-            const slide = slides.value.find((s) => s.id === slideId);
-            if (slide) {
-                cart.value.push({
-                    slideId: slide.id,
-                    title: slide.title,
-                    portion: portion,
-                    quantity: 1,
-                });
-            }
-        }
-    } else {
-        alert('Por favor, selecione uma porção antes de adicionar ao carrinho.');
-    }
-};
+
 </script>
 
 <template>
@@ -90,25 +60,25 @@ const addToCart = (slideId: number) => {
                     1024: { slidesPerView: 4, spaceBetween: 58 },
                 }"
             >
-                <SwiperSlide v-for="slide in slides" :key="slide.id">
-                    <div class="flex flex-col items-center bg-white rounded-lg p-4 shadow-md">
-                        <img
-                            :src="slide.image"
-                            :title="slide.title"
-                            alt="Produto"
-                            class="mb-2 h-[300px] w-[300px] cursor-pointer rounded-[8px] object-cover hover:brightness-[1.10]"
-                            @click="$inertia.visit(route('anuncio'))"
-                        />
-                        <div class="mt-2 mb-1 text-lg font-semibold">
-                            <h4 class="cursor-pointer" @click="$inertia.visit(route('anuncio'))">{{ slide.title }}</h4>
-                        </div>
-                        <div class="mb-2 text-xs text-gray-600">selecione a porção</div>
-                        <div class="mb-3 flex gap-2">
-                            <ButtonPortion :slide="slide" :selectedPortions="selectedPortions" @select-portion="selectPortion" />
-                        </div>
-                        <ButtonAddCart :slide="slide" :selectedPortions="selectedPortions" @add-to-cart="addToCart" />
+            <SwiperSlide v-for="produto in produtos" :key="produto.id">
+                <div class="flex flex-col items-center bg-white rounded-lg p-4 shadow-md">
+                    <img
+                        :src="produto.imageUrl"
+                        :title="produto.nome"
+                        alt="Produto"
+                        class="mb-2 h-[300px] w-[300px] cursor-pointer rounded-[8px] object-cover hover:brightness-[1.10]"
+                        @click="$inertia.visit(route('anuncio'))"
+                    />
+                    <div class="mt-2 mb-1 text-lg font-semibold">
+                        <h4 class="cursor-pointer" @click="$inertia.visit(route('anuncio'))">{{ produto.nome }}</h4>
                     </div>
-                </SwiperSlide>
+                    <div class="mb-2 text-xs text-gray-600">selecione a porção</div>
+                    <div class="mb-3 flex gap-2">
+                        <ButtonPortion :produto="produto" :selectedPortions="selectedPortions" @select-portion="selectPortion" />
+                    </div>
+                        <ButtonAddCart :produto="produto" :addProduct="addProduct" @add-to-cart="addToCart" />
+                </div>
+            </SwiperSlide>
 
                 <!-- Navegação personalizada -->
                 <template #container-end>

@@ -18,10 +18,14 @@ use Inertia\Inertia;
         })->name('blog.config');
 
         //Produtos Configurações
-        Route::get('produtos/config', [ProdutoController::class, 'index'])
-        ->name('produtos.config');
-        Route::get('produtos/addproduto', [ProdutoController::class, 'create'])
-        ->name('produtos.add');
-        Route::post('/produtos', [ProdutoController::class, 'store'])->name('produtos.store');
-
-    }); 
+        Route::get('produtos/config', [ProdutoController::class, 'index'], function () {
+            return Inertia::render('admin/produtosConfig/ProdutosConfig');
+        })->name('produtos.config');
+        Route::get('produtos/create-produto', [ProdutoController::class, 'create'], function () {
+            return Inertia::render('admin/produtosConfig/AdicionarProduto');
+        })->name('produtos.create');
+        Route::post('produtos/addprodutos', [ProdutoController::class, 'store'])->name('produtos.store');
+        Route::get('produtos/edit-produto/{id}', [ProdutoController::class, 'edit'])->name('produtos.edit');
+        Route::put('produtos/update-produto/{id}', [ProdutoController::class, 'update'])->name('produtos.update');
+        Route::delete('produtos/delete-produto/{id}', [ProdutoController::class, 'destroy'])->name('produtos.destroy'); 
+    });

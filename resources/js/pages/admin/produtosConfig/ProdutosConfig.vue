@@ -1,26 +1,25 @@
 <script setup lang="ts">
 import AuthLayout from '@/layouts/AuthLayout.vue';
-import { Head, Link } from '@inertiajs/vue3';
+import { Head, Link, usePage } from '@inertiajs/vue3';
+import { Inertia } from '@inertiajs/inertia';
 import { ref } from 'vue';
 
-// --- Dados de Exemplo ---
-// Em uma aplicação real, estes dados viriam do seu backend (ex: via props do Inertia).
-const products = ref([]);
-
-// --- Funções de Ação ---
-// Estas funções simulam o que aconteceria ao clicar nos botões.
-// Você deve substituí-las pela lógica de API (ex: usando o router do Inertia).
-
-const editProduct = (productId: number) => {
-    // Exemplo: router.get(`/admin/products/${productId}/edit`);
-    alert(`Redirecionando para editar o produto ID: ${productId}`);
-};
+const page = usePage();
+const products = ref(page.props.products || []);
 
 const deleteProduct = (productId: number) => {
     // Exemplo: router.delete(`/admin/products/${productId}`);
     if (confirm(`Tem certeza de que deseja excluir o produto ID: ${productId}?`)) {
         alert(`Excluindo o produto ID: ${productId}`);
         // Aqui você removeria o item da lista após a exclusão no backend.
+        Inertia.delete(`/produtos/delete-produto/${productId}`, {
+            onSuccess: () => {
+                alert(`Produto ID: ${productId} excluído com sucesso!`);
+            },
+            onError: () => {
+                alert(`Erro ao excluir o produto ID: ${productId}.`);
+            }
+        });
         products.value = products.value.filter((p) => p.id !== productId);
     }
 }; 
@@ -38,7 +37,7 @@ const deleteProduct = (productId: number) => {
                     <div class="border-b border-gray-200 bg-white p-6">
                         <div class="mb-6 flex items-center justify-between">
                             <h1 class="text-2xl font-bold text-gray-800">Gerenciar Produtos</h1>
-                            <Link href="/produtos/addproduto"
+                            <Link :href="route('produtos.create')"
                                 class="focus:ring-opacity-50 rounded-md bg-green-600 px-4 py-2 text-white transition duration-150 ease-in-out hover:bg-green-700 focus:ring-2 focus:ring-green-500 focus:outline-none"
                             >
                                 + Adicionar Novo Produto
@@ -67,16 +66,25 @@ const deleteProduct = (productId: number) => {
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <div class="text-sm font-medium text-gray-900">
-                                                {{ product.name }}
+                                                <span class="font-extrabold">Titulo: </span>{{ product.nome }}
                                             </div>
+                                            <div class="text-sm font-medium text-gray-900">
+                                                <span class="font-extrabold">Descrição: </span>{{ product.descricao }}
+                                            </div>
+                                            <div class="text-sm font-medium text-gray-900">
+                                                <span class="font-extrabold">Estoque: </span>{{ product.estoque }}
+                                            </div>
+                                            <div class="text-sm font-medium text-gray-900">
+                                                <span class="font-extrabold">Data de criação: </span>{{ product.created_at }}
+                                            </div>                                            
                                         </td>
                                         <td class="px-6 py-4 text-right text-sm font-medium whitespace-nowrap">
-                                            <button
-                                                @click="editProduct(product.id)"
+                                            <Link
+                                                :href="route('produtos.edit', product.id)"
                                                 class="mr-4 text-indigo-600 transition duration-150 ease-in-out hover:text-indigo-900"
                                             >
                                                 Editar
-                                            </button>
+                                            </Link>
                                             <button
                                                 @click="deleteProduct(product.id)"
                                                 class="text-red-600 transition duration-150 ease-in-out hover:text-red-900"

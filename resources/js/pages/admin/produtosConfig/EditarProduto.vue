@@ -1,19 +1,19 @@
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { ref, reactive } from 'vue'
 import AuthLayout from '@/layouts/AuthLayout.vue'
-import { Head } from '@inertiajs/vue3'
+import { Head, usePage } from '@inertiajs/vue3'
 import { Inertia } from '@inertiajs/inertia'
 
-const produto = reactive({
-  nome: '',
-  descricao: '',
-  tamanhos: [
-    { nome: '200g', preco: 19.90 },
-    { nome: '1kg', preco: 79.90 }
-  ],
-  estoque: 0,
-  imagemFile: null as File | null
-})
+
+const page = usePage();
+
+const rawProduct = page.props.products || {};
+
+const products = reactive({
+  ...rawProduct,
+  tamanhos: rawProduct.tamanhos ? JSON.parse(rawProduct.tamanhos) : [],
+});
+console.log(products.id);
 
 const previewImagens = ref<string[]>([])
 
@@ -21,11 +21,11 @@ const previewImagens = ref<string[]>([])
 const imagemModal = ref<string | null>(null)
 
 function adicionarTamanho() {
-  produto.tamanhos.push({ nome: '', preco: 0 })
+  products.tamanhos.push({ nome: '', preco: 0 })
 }
 
 function removerTamanho(index: number) {
-  produto.tamanhos.splice(index, 1)
+  products.tamanhos.splice(index, 1)
 }
 const imagensFiles = ref<File[]>([]);
 const fileInput = ref<HTMLInputElement | null>(null);
@@ -78,28 +78,29 @@ function fecharModal() {
 
 function handleSubmit() {
   const formData = new FormData()
-  formData.append('nome', produto.nome)
-  formData.append('descricao', produto.descricao)
-  formData.append('estoque', produto.estoque.toString())
-  formData.append('tamanhos', JSON.stringify(produto.tamanhos))
-    imagensFiles.value.forEach((file) => {
-    formData.append('imagens[]', file)
-    })
-  Inertia.post('/produtos/addprodutos', formData, {
-    forceFormData: true,
-    onSuccess: () => {
-      alert('Produto salvo com sucesso!')
-      // Resetar formulário
-      produto.nome = ''
-      produto.descricao = ''
-      produto.tamanhos = [{ nome: '200g', preco: 19.90 }, { nome: '1kg', preco: 79.90 }]
-      produto.estoque = 0
-      produto.imagemFile = null
-    },
-    onError: (errors) => {
-      alert('Erro ao salvar produto')
-      console.error(errors)
-    }
+  formData.append('_method', 'PUT');
+  formData.append('nome', products.nome)
+  formData.append('descricao', products.descricao)
+  formData.append('estoque', products.estoque.toString())
+  formData.append('tamanhos', JSON.stringify(products.tamanhos))
+  imagensFiles.value.forEach((file) => {
+  formData.append('imagens[]', file)
+  })
+  Inertia.post(`/produtos/update-produto/${products.id}`, formData, {
+      forceFormData: true,
+      onSuccess: () => {
+        alert('Produto salvo com sucesso!')
+        // Resetar formulário
+        products.nome = ''
+        products.descricao = ''
+        products.tamanhos = [{ nome: '200g', preco: 19.90 }, { nome: '1kg', preco: 79.90 }]
+        products.estoque = 0
+        products.imagemFile = null
+      },
+      onError: (errors) => {
+        alert('Erro ao salvar produto')
+        console.error(errors)
+      }
   })
 }
 </script>
@@ -122,7 +123,7 @@ function handleSubmit() {
               <label for="nome" class="block font-semibold mb-2 text-gray-700">Nome do Produto</label>
               <input
                 id="nome"
-                v-model="produto.nome"
+                v-model="products.nome"
                 type="text"
                 placeholder="Digite o nome do produto"
                 class="w-full rounded border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
@@ -134,7 +135,7 @@ function handleSubmit() {
               <label for="descricao" class="block font-semibold mb-2 text-gray-700">Descrição do Produto</label>
               <textarea
                 id="descricao"
-                v-model="produto.descricao"
+                v-model="products.descricao"
                 rows="4"
                 placeholder="Digite a descrição do produto"
                 class="w-full rounded border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
@@ -144,7 +145,7 @@ function handleSubmit() {
 
             <div>
               <label class="block font-semibold mb-2 text-gray-700">Tamanhos e Preços</label>
-              <div v-for="(tamanho, index) in produto.tamanhos" :key="index" class="flex gap-4 items-center mb-3">
+              <div v-for="(tamanho, index) in products.tamanhos" :key="index" class="flex gap-4 items-center mb-3">
                 <input
                   v-model="tamanho.nome"
                   type="text"
@@ -183,7 +184,7 @@ function handleSubmit() {
               <label for="estoque" class="block font-semibold mb-2 text-gray-700">Quantidade em Estoque</label>
               <input
                 id="estoque"
-                v-model.number="produto.estoque"
+                v-model.number="products.estoque"
                 type="number"
                 min="0"
                 placeholder="Quantidade disponível"
@@ -206,25 +207,27 @@ function handleSubmit() {
                 {{ imagensFiles.length }} arquivo{{ imagensFiles.length !== 1 ? 's' : '' }} selecionado{{ imagensFiles.length !== 1 ? 's' : '' }}.
                 </p>                
                 <div v-if="previewImagens.length" class="mt-4 flex gap-4 flex-wrap">
-                <div
-                v-for="(src, index) in previewImagens"
+            <div v-if="previewImagens.length" class="mt-4 flex gap-4 flex-wrap">
+            <div
+                v-for="(products, index) in previewImagens"
                 :key="index"
                 class="relative w-24 h-24 rounded overflow-hidden border border-gray-300 shadow cursor-pointer"
-                >
+            >
                 <img
-                    :src="src"
-                    alt="Preview da Imagem"
-                    class="w-full h-full object-cover"
-                    @click="abrirModal(index)"
+                :src="products.imagem_path ? product.imagem_path : ''"
+                alt="Preview da Imagem"
+                class="w-full h-full object-cover"
+                @click="abrirModal(index)"
                 />
                 <a
-                    @click.stop="removerImagem(index)"
-                    class="absolute top-1 right-1 bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-800"
-                    title="Remover imagem"
+                @click.stop="removerImagem(index)"
+                class="absolute top-1 right-1 bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-800"
+                title="Remover imagem"
                 >
-                    ×
+                ×
                 </a>
-                </div>
+            </div>
+            </div>
             </div>
             </div>
 
