@@ -1,25 +1,25 @@
 <script setup lang="ts">
 import AuthLayout from '@/layouts/AuthLayout.vue';
 import { Head, Link, usePage } from '@inertiajs/vue3';
+import { Inertia } from '@inertiajs/inertia';
 import { ref } from 'vue';
 
-// --- Dados de Exemplo ---
-// Em uma aplicação real, estes dados viriam do seu backend (ex: via props do Inertia).
 const page = usePage();
 const products = ref(page.props.products || []);
-// --- Funções de Ação ---
-// Estas funções simulam o que aconteceria ao clicar nos botões.
-// Você deve substituí-las pela lógica de API (ex: usando o router do Inertia).
-
-// const editProduct = (productId: number) => {
-//     Inertia.visit(`/produtos/edit-produto/${productId}`);
-// };
 
 const deleteProduct = (productId: number) => {
     // Exemplo: router.delete(`/admin/products/${productId}`);
     if (confirm(`Tem certeza de que deseja excluir o produto ID: ${productId}?`)) {
         alert(`Excluindo o produto ID: ${productId}`);
         // Aqui você removeria o item da lista após a exclusão no backend.
+        Inertia.delete(`/produtos/delete-produto/${productId}`, {
+            onSuccess: () => {
+                alert(`Produto ID: ${productId} excluído com sucesso!`);
+            },
+            onError: () => {
+                alert(`Erro ao excluir o produto ID: ${productId}.`);
+            }
+        });
         products.value = products.value.filter((p) => p.id !== productId);
     }
 };

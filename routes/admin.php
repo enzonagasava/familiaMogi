@@ -26,4 +26,6 @@ use Inertia\Inertia;
         })->name('produtos.create');
         Route::post('produtos/addprodutos', [ProdutoController::class, 'store'])->name('produtos.store');
         Route::get('produtos/edit-produto/{id}', [ProdutoController::class, 'edit'])->name('produtos.edit');
-        Route::put('produtos/update-produto/{id}', [ProdutoController::class, 'update'])->name('produtos.update');    }); 
+        Route::put('produtos/update-produto/{id}', [ProdutoController::class, 'update'])->name('produtos.update');
+        Route::delete('produtos/delete-produto/{id}', [ProdutoController::class, 'destroy'])->name('produtos.destroy'); 
+    });

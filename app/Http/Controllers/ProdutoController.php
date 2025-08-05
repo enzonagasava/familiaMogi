@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Anuncio;
 use App\Models\AnuncioImagem;
+use GuzzleHttp\Psr7\Message;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -89,6 +90,12 @@ class ProdutoController extends Controller
         
         $produto->update($request->all());
 
-        return Inertia::render('admin/produtosConfig/ProdutosConfig')->with('message', 'Produto atualizado com sucesso!');
+        return Inertia::location(route('produtos.config'));
+    }
+
+    public function destroy($id)
+    {
+        $produto = Anuncio::findOrFail($id);
+        $produto->delete();
     }
 }

@@ -2,40 +2,51 @@
 import { defineProps, defineEmits } from 'vue';
 
 const props = defineProps<{
-  slide: {
+  produto: {
     id: number;
     title: string;
     image: string;
-    porção: string[];
+    tamanhos: string;
   };
   selectedPortions: Record<number | string, string>;
 }>();
 
+// Criar uma variável computada para transformar a string JSON em array
+import { computed } from 'vue';
+
+const tamanhosArray = computed(() => {
+  try {
+    return JSON.parse(props.produto.tamanhos) as { nome: string; preco: number }[];
+  } catch (e) {
+    console.error('Erro ao parsear tamanhos:', e);
+    return [];
+  }
+});
+
 const emit = defineEmits(['selectPortion']);
 
-const handleSelectPortion = (portion: string) => {
-  emit('selectPortion', props.slide.id, portion);
-  console.log(props.slide)
+const handleSelectPortion = (portionNome: string) => {
+  emit('selectPortion', props.produto.id, portionNome);
 };
 
 </script>
 
 <template>
-    <button
-    v-for="(portion, index) in props.slide.porção"
+  <button
+    v-for="(portion, index) in tamanhosArray"
     :key="index"
-    @click="handleSelectPortion(portion)"
+    @click="handleSelectPortion(portion.nome)"
     :class="{
-        'border': true,
-        'border-gray-400': props.selectedPortions[props.slide.id] !== portion,
-        'border-blue-500 bg-blue-100 text-blue-700': props.selectedPortions[props.slide.id] === portion,
-        'rounded-full': true,
-        'px-3': true,
-        'py-1': true,
-        'text-xs': true,
-        'cursor-pointer': true
+      'border': true,
+      'border-gray-400': props.selectedPortions[props.produto.id] !== portion.nome,
+      'border-blue-500 bg-blue-100 text-blue-700': props.selectedPortions[props.produto.id] === portion.nome,
+      'rounded-full': true,
+      'px-3': true,
+      'py-1': true,
+      'text-xs': true,
+      'cursor-pointer': true
     }"
->
-    {{ portion }}
-</button>
+  >
+    {{ portion.nome }}
+  </button>
 </template>
