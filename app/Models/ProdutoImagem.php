@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class AnuncioImagem extends Model
+class ProdutoImagem extends Model
 {
-    protected $table = 'anuncio_imagens';
+    protected $table = 'produto_imagens';
     protected $fillable = [
-        'anuncio_id',
+        'produto_id',
         'user_id',
         'imagem_path',
         'ordem',
@@ -20,7 +20,7 @@ class AnuncioImagem extends Model
      */
     public function anuncio(): BelongsTo
     {
-        return $this->belongsTo(Anuncio::class);
+        return $this->belongsTo(Produto::class);
     }
 
     /**

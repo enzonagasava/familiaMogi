@@ -1,42 +1,30 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
+import { usePage } from '@inertiajs/vue3';
 
-const props = defineProps<{
-    product: {
-        id: number;
-        name: string;
-        description: string;
-        price: number;
-        stock: number;
-        weightOptions: { label: string; value: string }[];
-        images: string[]; // Array de URLs das imagens do produto
-        // Adicione outras propriedades do produto conforme necessário
-    };
-}>();
 
-// Dados de exemplo para renderização (em um cenário real, viriam das props)
-const productName = ref(props.product?.name || 'Bandeja Shitake');
-const productPrice = ref(props.product?.price || 19.9);
-const productDescription = ref(
-    props.product?.description ||
-        `
-    Você precisa conhecer o nosso cogumelo Shitake superfresco de qualidade premium!
-    Ele é cultivado pela família da Carol e Cecília em Sorocaba e tem um sabor bem marcante e acentuado.
-    Apesar de ser mais comum prepará-lo com shoyu, você pode experimentar grelhá-lo em uma frigideira bem quente, apenas com azeite, sal e temperos como ervas, para sentir todo o seu sabor.
-    E se você gosta de risoto, o Shitake é perfeito para dar um toque especial! Comece refogando os cogumelos com alho e separe em duas partes: uma para iniciar o risoto e outra para adicionar nos últimos minutos de cozimento do arroz e enriquecer ainda mais o prato.
-    Veja a receita completa de risoto de cogumelo shitake no nosso Blog.
-`,
-);
-const productStock = ref(props.product?.stock || 1); // Exemplo: 1 unidade disponível
-const selectedWeight = ref(props.product?.weightOptions[0]?.value || '200g'); // Peso selecionado padrão
-const mainImage = ref(props.product?.images[0] || '/images/default-main-product.jpg'); // Imagem principal
-const thumbnails = ref(props.product?.images || ['/images/thumb1.jpg', '/images/thumb2.jpg', '/images/thumb3.jpg', '/images/thumb4.jpg']); // Miniaturas das imagens
 
-// Funções para interação
-const selectImage = (imageSrc: string) => {
-    mainImage.value = imageSrc;
-};
+const page = usePage();
 
+const produto = ref(page.props.produto || {});
+const selectedWeight = ref('1k');
+
+// Computed que busca o preço no produto atual
+const precoSelecionado = computed(() => {
+  console.log('produto.value:', produto.value);
+  if (!produto.value) return 0; // Proteção caso produto esteja indefinido
+
+  const tamanhos = produto.value.tamanhos;
+  console.log('tamanhos:', tamanhos);
+
+  if (!Array.isArray(tamanhos)) {
+    console.warn('tamanhos não é um array');
+    return 0;
+  }
+
+  const tamanho = tamanhos.find(t => t.nome === selectedWeight.value);
+  return tamanho ? tamanho.preco : 0;
+});
 const addToCart = () => {
     alert('Produto adicionado ao carrinho!');
     // Lógica para adicionar ao carrinho (ex: fazer uma requisição Inertia ou Axios)
@@ -101,10 +89,10 @@ const toggleShare = () => {
                     </div>
                 </div>
 
-                <h1 class="mb-2 text-3xl font-bold text-gray-900">{{ productName }}</h1>
+                <h1 class="mb-2 text-3xl font-bold text-gray-900">{{ produto.nome }}</h1>
 
                 <div class="mb-4 text-2xl font-bold text-gray-900">
-                    R${{ productPrice.toFixed(2).replace('.', ',') }}
+                    R${{ precoSelecionado.toFixed(2) }}
                     <p class="mt-1 cursor-pointer text-sm font-normal text-black hover:underline">Ver formas de pagamento</p>
                 </div>
 
@@ -112,25 +100,17 @@ const toggleShare = () => {
                     <label class="mb-2 block text-sm font-bold text-gray-700">Selecione a porção</label>
                     <div class="flex space-x-2">
                         <button
-                            @click="selectedWeight = '200g'"
-                            class="cursor-pointer rounded-md border-2 px-4 py-2 text-sm font-medium"
-                            :class="{
-                                'bg-[#6aab9c] text-white': selectedWeight === '200g',
-                                'border-gray-300 bg-white text-gray-700 hover:bg-gray-50': selectedWeight !== '200g',
-                            }"
-                        >
-                            200g
-                        </button>
-                        <button
-                            @click="selectedWeight = '1kg'"
-                            class="cursor-pointer rounded-md border-2 px-4 py-2 text-sm font-medium"
-                            :class="{
-                                'bg-[#6aab9c] text-white': selectedWeight === '1kg',
-                                'border-gray-300 bg-white text-gray-700 hover:bg-gray-50': selectedWeight !== '1kg',
-                            }"
-                        >
-                            1kg
-                        </button>
+                                v-for="tamanho in produto.tamanhos"
+                                :key="tamanho.nome"
+                                @click="selectedWeight = tamanho.nome"
+                                :class="{
+                                'bg-[#6aab9c] text-white': selectedWeight === tamanho.nome,
+                                'border-gray-300 bg-white text-gray-700 hover:bg-gray-50': selectedWeight !== tamanho.nome,
+                                }"
+                                class="cursor-pointer rounded-md border-2 px-4 py-2 text-sm font-medium"
+                            >
+                                {{ tamanho.nome }}
+                            </button>
                     </div>
                 </div>
 
@@ -183,7 +163,7 @@ const toggleShare = () => {
 
     <div class="mx-auto mt-8 max-w-7xl rounded-lg bg-white px-4 py-8 shadow-xl sm:px-6 lg:px-8">
         <h2 class="mb-4 text-2xl font-bold text-gray-900">Descrição:</h2>
-        <div class="prose max-w-none text-gray-700" v-html="productDescription"></div>
+        <div class="prose max-w-none text-gray-700" v-html="produto.descricao"></div>
     </div>
 </template>
 

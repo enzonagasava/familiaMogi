@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Anuncio;
-use App\Models\AnuncioImagem;
-use GuzzleHttp\Psr7\Message;
+use App\Models\Produto;
+use App\Models\ProdutoImagem;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -12,7 +11,7 @@ class ProdutoController extends Controller
 {
     public function index()
     {
-        $products = Anuncio::with('imagens')->get()->map(function ($product) {
+        $products = Produto::with('imagens')->get()->map(function ($product) {
             return [
                 'id' => $product->id,
                 'nome' => $product->nome,
@@ -53,7 +52,7 @@ class ProdutoController extends Controller
                 $imagensPaths[] = $imagem->store('produtos', 'public');
             }
         }
-        $produto = new Anuncio();
+        $produto = new Produto();
         $produto->user_id = auth()->id(); 
         $produto->nome = $validated['nome'];
         $produto->descricao = $validated['descricao'];
@@ -65,8 +64,8 @@ class ProdutoController extends Controller
             $ordem = 1;
             foreach ($request->file('imagens') as $imagem) {
                 $path = $imagem->store('produtos', 'public');
-                AnuncioImagem::create([
-                    'anuncio_id' => $produto->id,
+                ProdutoImagem::create([
+                    'produto_id' => $produto->id,
                     'user_id' => auth()->id(), // se quiser manter user_id na tabela
                     'imagem_path' => $path,
                     'ordem' => $ordem,
@@ -80,13 +79,13 @@ class ProdutoController extends Controller
 
     public function edit($id)
     {
-        $products = Anuncio::with('imagens')->where('id', $id)->first();
-        return Inertia::render('admin/produtosConfig/EditarProduto')->with('products', $products); ;
+        $products = Produto::with('imagens')->where('id', $id)->first();
+        return Inertia::render('admin/produtosConfig/EditarProduto')->with('products', $products);
     }
 
     public function update(Request $request, $id)
     {
-        $produto = Anuncio::findOrFail($id);
+        $produto = Produto::findOrFail($id);
         
         $produto->update($request->all());
 
@@ -95,7 +94,14 @@ class ProdutoController extends Controller
 
     public function destroy($id)
     {
-        $produto = Anuncio::findOrFail($id);
+        $produto = Produto::findOrFail($id);
         $produto->delete();
+    }
+
+    public function anuncio($id){
+        $produto = Produto::findOrFail($id);
+
+        $produto->tamanhos = json_decode($produto->tamanhos, true);
+        return Inertia::render('Anuncio')->with('produto', $produto);
     }
 }

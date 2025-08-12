@@ -49,6 +49,6 @@ class User extends Authenticatable
 
     public function anuncios()
     {
-        return $this->hasMany(Anuncio::class);
+        return $this->hasMany(Produto::class);
     }
 }

@@ -4,11 +4,10 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\CartController; 
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ProdutoController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/anuncio', function () {
-    return Inertia::render('Anuncio');
-})->name('anuncio');
+Route::get('/anuncio/{id}', [ProdutoController::class, 'anuncio'])->name('anuncio');
 
 Route::get('/produtos', function () {
     return Inertia::render('Produtos');

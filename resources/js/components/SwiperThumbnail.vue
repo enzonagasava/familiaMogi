@@ -18,7 +18,6 @@ const props = defineProps<{
 const page = usePage();
 
 const produtos = page.props.produto || [];
-console.log(produtos);
 
 const selectedPortions = ref<Record<number | string, string>>({});
 
@@ -67,10 +66,10 @@ const selectPortion = (slideId: number, portion: string) => {
                         :title="produto.nome"
                         alt="Produto"
                         class="mb-2 h-[300px] w-[300px] cursor-pointer rounded-[8px] object-cover hover:brightness-[1.10]"
-                        @click="$inertia.visit(route('anuncio'))"
+                        @click="$inertia.visit(route('anuncio', produto.id))"
                     />
                     <div class="mt-2 mb-1 text-lg font-semibold">
-                        <h4 class="cursor-pointer" @click="$inertia.visit(route('anuncio'))">{{ produto.nome }}</h4>
+                        <h4 class="cursor-pointer" @click="$inertia.visit(route('anuncio', produto.id))">{{ produto.nome }}</h4>
                     </div>
                     <div class="mb-2 text-xs text-gray-600">selecione a porção</div>
                     <div class="mb-3 flex gap-2">
