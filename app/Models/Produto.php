@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Anuncio extends Model
+class Produto extends Model
 {
         protected $fillable = [
         'user_id',
@@ -24,7 +24,7 @@ class Anuncio extends Model
      */
     public function imagens(): HasMany
     {
-        return $this->hasMany(AnuncioImagem::class)->orderBy('ordem');
+        return $this->hasMany(ProdutoImagem::class, 'produto_id')->orderBy('ordem');
     }
 
     public function user()
