@@ -1,13 +1,22 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { usePage } from '@inertiajs/vue3';
-
+import 'vue3-carousel/carousel.css';
+import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel';
 
 
 const page = usePage();
 
 const produto = ref(page.props.produto || {});
-const selectedWeight = ref('1k');
+const imagens = produto.value.imagens;
+const selectedWeight = ref(
+  produto.value.tamanhos && produto.value.tamanhos.length > 0
+    ? produto.value.tamanhos[0].nome
+    : ''
+);
+
+const imagem_paths = imagens.map(element => element.imagem_path);
+console.log(imagens[0].imagem_path);
 
 // Computed que busca o preço no produto atual
 const precoSelecionado = computed(() => {
@@ -49,6 +58,11 @@ const toggleShare = () => {
     alert('Togglou Share!');
     // Lógica para favoritar/desfavoritar
 };
+
+const carouselConfig = {
+  itemsToShow: 1,
+  wrapAround: true
+}
 </script>
 
 <template>
@@ -67,9 +81,17 @@ const toggleShare = () => {
                             <img :src="thumb" alt="Miniatura" class="h-full w-full object-cover" />
                         </button>
                     </div>
-                    <div class="flex flex-grow items-center justify-center overflow-hidden rounded-lg border border-gray-200">
-                        <img :src="mainImage" :alt="productName" class="max-h-[500px] max-w-full object-contain" />
-                    </div>
+                    <Carousel v-bind="carouselConfig" class="flex-grow">
+                      <Slide v-for="(img, index) in imagem_paths" :key="index">
+                        <div class="flex h-full items-center justify-center overflow-hidden rounded-lg border border-gray-200">
+                          <img :src="`/storage/${img}`" :alt="productName" class="max-h-[500px] max-w-full object-contain" />
+                        </div>
+                      </Slide>
+                      <template #addons>
+                        <Pagination class="absolute bottom-4 left-1/2 -translate-x-1/2" />
+                        <Navigation class="absolute top-1/2 -translate-y-1/2" />
+                      </template>
+                    </Carousel>
                 </div>
             </div>
 

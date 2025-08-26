@@ -100,8 +100,9 @@ class ProdutoController extends Controller
 
     public function anuncio($id){
         $produto = Produto::findOrFail($id);
+        $imagem = $produto->imagens;
 
         $produto->tamanhos = json_decode($produto->tamanhos, true);
-        return Inertia::render('Anuncio')->with('produto', $produto);
+        return Inertia::render('Anuncio')->with('produto', $produto, 'imagem', $imagem);
     }
 }
