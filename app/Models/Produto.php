@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;;
 
 class Produto extends Model
 {
@@ -12,12 +12,11 @@ class Produto extends Model
         'nome',
         'descricao',
         'estoque',
-        'tamanhos',
     ];
 
-    protected $casts = [
-        'tamanhos' => 'array', // cast para json array
-    ];
+    // protected $casts = [
+    //     'tamanhos' => 'array', // cast para json array
+    // ];
 
     /**
      * Relacionamento 1:N com imagens do anúncio
@@ -30,5 +29,10 @@ class Produto extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+     public function tamanhos()
+    {
+        return $this->belongsToMany(Tamanho::class, 'produto_tamanho')->withPivot('preco');
     }
 }

@@ -1,37 +1,21 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-
-interface CartItem {
-    id: number;
-    image: string;
-    name: string;
-    portion: string;
-    price: number;
-    quantity: number;
-}
+import { usePage } from '@inertiajs/vue3';
+import ProdutosConfig from '@/pages/admin/produtosConfig/ProdutosConfig.vue';
 
 // Dados do carrinho (em um cenário real, viriam das props do Laravel ou de um store global)
-const cartItems = ref<CartItem[]>([
-    { id: 1, image: '/images/cogumelo_shiitake.jpg', name: 'Cogumelo Shitake', portion: '200g', price: 19.9, quantity: 1 },
-    { id: 2, image: '/images/cogumelo_shiitake.jpg', name: 'Cogumelo Shitake', portion: '200g', price: 19.9, quantity: 1 },
-    { id: 3, image: '/images/cogumelo_shiitake.jpg', name: 'Cogumelo Shitake', portion: '200g', price: 19.9, quantity: 1 },
-]);
+interface CartProps {
+    cart: Record<string, any>; // O carrinho virá como um objeto do Laravel
+}
+
+const page = usePage<CartProps>();
+
+// Converte o objeto do carrinho em um array para o `v-for`
+const cartItems = computed(() => Object.values(page.props.cart));
+const porcaoSelecionada = page.props.porcao || '';
+
 
 const cepInput = ref('');
-
-// --- Funções de Lógica do Carrinho ---
-
-const incrementQuantity = (item: CartItem) => {
-    item.quantity++;
-    // Em um app real: enviar atualização para o backend/store
-};
-
-const decrementQuantity = (item: CartItem) => {
-    if (item.quantity > 1) {
-        item.quantity--;
-        // Em um app real: enviar atualização para o backend/store
-    }
-};
 
 const removeItem = (id: number) => {
     cartItems.value = cartItems.value.filter((item) => item.id !== id);
@@ -50,7 +34,7 @@ const calculateShipping = () => {
 
 // --- Computed Property para o Total ---
 const cartTotal = computed(() => {
-    return cartItems.value.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    return cartItems.value.reduce((sum, item) => sum + item.preco * item.quantidade, 0);
 });
 </script>
 
@@ -77,8 +61,8 @@ const cartTotal = computed(() => {
                     <div class="col-span-12 flex items-center md:col-span-6">
                         <img :src="item.image" :alt="item.name" class="mr-4 h-20 w-20 rounded-md border border-gray-600 object-cover" />
                         <div>
-                            <p class="font-semibold text-black">{{ item.name }}</p>
-                            <p class="text-sm text-black">Porção: {{ item.portion }}</p>
+                            <p class="font-semibold text-black">{{ item.nome }}</p>
+                            <p class="text-sm text-black">Porção: {{ item.tamanhos }}</p>
                         </div>
                     </div>
 
@@ -89,9 +73,9 @@ const cartTotal = computed(() => {
                             </button>
                             <input
                                 type="text"
-                                v-model.number="item.quantity"
+                                v-model.number="item.quantidade"
                                 class="w-10 border-x border-gray-600 bg-white text-center text-black focus:outline-none"
-                                @change="item.quantity = Math.max(1, Math.floor(item.quantity))"
+                                @change="item.quantidade = Math.max(1, Math.floor(item.quantidade))"
                             />
                             <button @click="incrementQuantity(item)" class="p-2 text-green-400 hover:text-green-500">
                                 <svg class="h-4 w-4 fill-current" viewBox="0 0 20 20"><path d="M13 9H11V7H10V9H8V10H10V12H11V10H13V9Z" /></svg>
@@ -100,7 +84,7 @@ const cartTotal = computed(() => {
                     </div>
 
                     <div class="col-span-6 mt-2 flex items-center justify-end pr-2 md:col-span-3 md:mt-0 md:pr-0">
-                        <span class="mr-4 text-lg font-bold text-black">R$ {{ (item.price * item.quantity).toFixed(2).replace('.', ',') }}</span>
+                        <span class="mr-4 text-lg font-bold text-black">R$ {{ (item.preco * item.quantidade).toFixed(2).replace('.', ',') }}</span>
                         <button @click="removeItem(item.id)" class="text-red-500 transition-colors duration-200 hover:text-red-600">
                             <svg class="h-6 w-6 fill-current" viewBox="0 0 24 24">
                                 <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />

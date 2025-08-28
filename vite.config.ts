@@ -43,13 +43,11 @@ export default defineConfig(({ command, mode }) => {
     server: isDev
       ? {
           host: '0.0.0.0',
-          port: 5173,
           strictPort: true,
           cors: true,
           hmr: {
-            host: env.VITE_APP_URL,
-            protocol: 'wss',
-            port: 443,
+            host: env.VITE_HMR_HOST,
+            protocol: 'ws',
           },
           origin: env.VITE_APP_URL,
           allowedHosts: [

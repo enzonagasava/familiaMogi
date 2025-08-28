@@ -8,8 +8,7 @@ const produto = reactive({
   nome: '',
   descricao: '',
   tamanhos: [
-    { nome: '200g', preco: 19.90 },
-    { nome: '1kg', preco: 79.90 }
+    { nome: '', preco: 0}
   ],
   estoque: 0,
   imagemFile: null as File | null
@@ -81,7 +80,13 @@ function handleSubmit() {
   formData.append('nome', produto.nome)
   formData.append('descricao', produto.descricao)
   formData.append('estoque', produto.estoque.toString())
-  formData.append('tamanhos', JSON.stringify(produto.tamanhos))
+// --- Nova lógica para enviar os tamanhos ---
+    produto.tamanhos.forEach((tamanho, index) => {
+        formData.append(`tamanhos[${index}][nome]`, tamanho.nome)
+        formData.append(`tamanhos[${index}][preco]`, tamanho.preco.toString())
+    })
+    // --- Fim da nova lógica ---
+
     imagensFiles.value.forEach((file) => {
     formData.append('imagens[]', file)
     })
@@ -92,7 +97,7 @@ function handleSubmit() {
       // Resetar formulário
       produto.nome = ''
       produto.descricao = ''
-      produto.tamanhos = [{ nome: '200g', preco: 19.90 }, { nome: '1kg', preco: 79.90 }]
+      produto.tamanhos = [{ nome: '', preco: 0 }]
       produto.estoque = 0
       produto.imagemFile = null
     },

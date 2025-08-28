@@ -25,10 +25,8 @@ Route::get('/contact', function () {
     return Inertia::render('Contact');
 })->name('contact');
 
-Route::get('/carrinho', function () {
-    return Inertia::render('Cart');
-})->name('carrinho');
-
+Route::get('/carrinho', [CartController::class, 'index'])->name('carrinho.index');
+Route::post('/carrinho/adicionar', [CartController::class, 'adicionar'])->name('carrinho.adicionar');
 Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
 
 require __DIR__.'/settings.php';

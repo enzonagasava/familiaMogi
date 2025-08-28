@@ -11,13 +11,24 @@ class HomeController extends Controller
      * @return string
      */
     public function index(){
-        $produto = Produto::with('imagens')->get()->map(function ($produto) {
+        // Carrega as relações `imagens` e `tamanhos`
+        $produtos = Produto::with(['imagens', 'tamanhos'])->get()->map(function ($produto) {
+
+            // Mapeia os dados da relação `tamanhos` para uma estrutura limpa
+            $tamanhosData = $produto->tamanhos->map(function ($tamanho) {
+                return [
+                    'id' => $tamanho->id,
+                    'nome' => $tamanho->nome,
+                    'preco' => $tamanho->pivot->preco, // Acessa o preço da tabela intermediária
+                ];
+            });
+
             return [
                 'id' => $produto->id,
                 'nome' => $produto->nome,
                 'descricao' => $produto->descricao,
                 'estoque' => $produto->estoque,
-                'tamanhos' => $produto->tamanhos,
+                'tamanhos' => $tamanhosData,
                 'imageUrl' => $produto->imagens->first()
                     ? asset('storage/' . $produto->imagens->first()->imagem_path)
                     : null,
@@ -26,7 +37,7 @@ class HomeController extends Controller
         });
 
         return Inertia::render('Home', [
-            'produto' => $produto,
+            'produtos' => $produtos,
         ]);
     }
 }

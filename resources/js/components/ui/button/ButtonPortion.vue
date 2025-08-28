@@ -1,27 +1,18 @@
 <script setup lang="ts">
 import { defineProps, defineEmits } from 'vue';
 
+
 const props = defineProps<{
   produto: {
     id: number;
     title: string;
     image: string;
-    tamanhos: string;
+    tamanhos: { nome: string; preco: number }[];
   };
   selectedPortions: Record<number | string, string>;
 }>();
 
-// Criar uma variável computada para transformar a string JSON em array
-import { computed } from 'vue';
-
-const tamanhosArray = computed(() => {
-  try {
-    return JSON.parse(props.produto.tamanhos) as { nome: string; preco: number }[];
-  } catch (e) {
-    console.error('Erro ao parsear tamanhos:', e);
-    return [];
-  }
-});
+const tamanhosArray = props.produto.tamanhos || [];
 
 const emit = defineEmits(['selectPortion']);
 

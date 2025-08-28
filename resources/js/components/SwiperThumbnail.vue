@@ -17,7 +17,7 @@ const props = defineProps<{
 }>();
 const page = usePage();
 
-const produtos = page.props.produto || [];
+const produtos = page.props.produtos || [];
 
 const selectedPortions = ref<Record<number | string, string>>({});
 
