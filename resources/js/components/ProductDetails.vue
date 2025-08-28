@@ -31,10 +31,6 @@ const addToCart = () => {
     // Lógica para adicionar ao carrinho (ex: fazer uma requisição Inertia ou Axios)
 };
 
-const buyNow = () => {
-    alert('Comprar agora!');
-    // Lógica para comprar agora
-};
 
 const calculateShipping = () => {
     alert('Calcular frete!');

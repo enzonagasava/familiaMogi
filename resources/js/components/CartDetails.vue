@@ -12,7 +12,6 @@ const page = usePage<CartProps>();
 
 // Converte o objeto do carrinho em um array para o `v-for`
 const cartItems = computed(() => Object.values(page.props.cart));
-const porcaoSelecionada = page.props.porcao || '';
 
 
 const cepInput = ref('');
