@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Produto;
 
 
 class CartController extends Controller
@@ -13,6 +14,44 @@ class CartController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse
      */
+    public function index()
+    {
+        $cart = session()->get('cart', []);
+        return inertia('Cart', ['cart' => $cart]);
+    }
+
+  public function adicionar(Request $request)
+    {
+        // 1. Validar e obter os dados do produto e da porção
+        $produtoId = $request->input('id');
+        $porcao = $request->input('porcao');
+        $produto = Produto::findOrFail($produtoId);
+        // 2. Acessa o carrinho na sessão
+        $cart = session()->get('cart', []);
+
+        // 3. Cria um ID único para o item no carrinho
+        $cartItemId = $produtoId . '_' . $porcao;
+
+        // 4. Se o item já existe, incrementa a quantidade
+        if (isset($cart[$cartItemId])) {
+            $cart[$cartItemId]['quantidade']++;
+        } else {
+            // 5. Se não existe, adiciona o novo item com todas as informações
+            $cart[$cartItemId] = [
+                'id' => $produto->id,
+                'nome' => $produto->nome,
+                'porcao' => $porcao,
+                'preco' => $produto->tamanhos->firstWhere('nome', $porcao)['preco'] ?? 0
+            ];
+        }
+
+        // 6. Salva o carrinho atualizado de volta na sessão
+        session()->put('cart', $cart);
+
+        // 7. Redireciona para a rota GET, que irá exibir o carrinho atualizado
+        return redirect()->route('carrinho.index');
+    }
+
     public function add(Request $request)
     {
         // 1. Validar os dados recebidos do frontend
@@ -52,4 +91,5 @@ class CartController extends Controller
         // 4. Salvar o carrinho atualizado de volta na sessão
         session()->put('cart', $cart);
     }
+
 }

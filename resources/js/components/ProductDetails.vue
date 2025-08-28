@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { usePage } from '@inertiajs/vue3';
+import { usePage, Link } from '@inertiajs/vue3';
 import 'vue3-carousel/carousel.css';
 import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel';
 
@@ -8,11 +8,13 @@ import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel';
 const page = usePage();
 
 const produto = ref(page.props.produto || {});
+
 const imagens = produto.value.imagens;
+
 const selectedWeight = ref(
-  produto.value.tamanhos && produto.value.tamanhos.length > 0
-    ? produto.value.tamanhos[0].nome
-    : ''
+    produto.value.tamanhos && produto.value.tamanhos.length > 0
+        ? produto.value.tamanhos[0].nome
+        : ''
 );
 
 const imagem_paths = imagens.map(element => element.imagem_path);
@@ -20,19 +22,9 @@ const productStock = produto.value.estoque || 0;
 
 // Computed que busca o preço no produto atual
 const precoSelecionado = computed(() => {
-  console.log('produto.value:', produto.value);
-  if (!produto.value) return 0; // Proteção caso produto esteja indefinido
-
-  const tamanhos = produto.value.tamanhos;
-  console.log('tamanhos:', tamanhos);
-
-  if (!Array.isArray(tamanhos)) {
-    console.warn('tamanhos não é um array');
-    return 0;
-  }
-
-  const tamanho = tamanhos.find(t => t.nome === selectedWeight.value);
-  return tamanho ? tamanho.preco : 0;
+    if (!produto.value || !Array.isArray(produto.value.tamanhos)) return 0;
+    const tamanho = produto.value.tamanhos.find(t => t.nome === selectedWeight.value);
+    return tamanho && tamanho.pivot ? parseFloat(tamanho.pivot.preco) : 0;
 });
 const addToCart = () => {
     alert('Produto adicionado ao carrinho!');
@@ -147,12 +139,14 @@ const carouselConfig = {
                 </div>
 
                 <div class="mb-6 flex flex-col space-y-3">
-                    <button
-                        @click="buyNow"
+                    <Link
+                        :href="route('carrinho.adicionar')"
+                        :data="{ id: produto.id, porcao: selectedWeight, produto: produto }"
+                        method="post"
                         class="w-full cursor-pointer rounded-md bg-[#6aab9c] px-4 py-3 font-semibold text-white transition duration-300 hover:bg-[#77bdad]"
                     >
                         Comprar agora
-                    </button>
+                    </Link>
                     <button
                         @click="addToCart"
                         class="w-full cursor-pointer rounded-md border border-[#6aab9c] bg-white px-4 py-3 font-semibold text-[#6aab9c] transition duration-300 hover:bg-green-50"

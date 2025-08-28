@@ -6,6 +6,7 @@ use App\Models\Produto;
 use App\Models\ProdutoImagem;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Models\Tamanho;
 
 class ProdutoController extends Controller
 {
@@ -34,39 +35,44 @@ class ProdutoController extends Controller
         return Inertia::render('admin/produtosConfig/AdicionarProduto');
     }
 
-    public function store(Request $request)
+ public function store(Request $request)
     {
-        // Validação básica
+        // 1. Validação do request.
         $validated = $request->validate([
             'nome' => 'required|string|max:255',
             'descricao' => 'required|string',
             'estoque' => 'required|integer|min:0',
-            'tamanhos' => 'required|string', // JSON string
-            'imagens.*' => 'nullable|image|max:2048' // max 2MB
+            'tamanhos' => 'required|array', // Agora é um array
+            'tamanhos.*.nome' => 'required|string|max:255', // Valida cada item do array
+            'tamanhos.*.preco' => 'required|numeric|min:0', // Valida o preço
+            'imagens.*' => 'nullable|image|max:2048'
         ]);
 
-        $imagensPaths = [];
-
-        if ($request->hasFile('imagens')) {
-            foreach ($request->file('imagens') as $imagem) {
-                $imagensPaths[] = $imagem->store('produtos', 'public');
-            }
-        }
+        // 2. Criação do produto principal
         $produto = new Produto();
-        $produto->user_id = auth()->id(); 
+        $produto->user_id = auth()->id();
         $produto->nome = $validated['nome'];
         $produto->descricao = $validated['descricao'];
         $produto->estoque = $validated['estoque'];
-        $produto->tamanhos = $validated['tamanhos'];
         $produto->save();
 
+        // 3. Associar os tamanhos e preços (a parte crucial!)
+        foreach ($validated['tamanhos'] as $tamanhoData) {
+            // Encontre ou crie o tamanho no seu catálogo `tamanhos`
+            $tamanho = Tamanho::firstOrCreate(['nome' => $tamanhoData['nome']]);
+            
+            // Anexar o tamanho ao produto com o preço na tabela intermediária
+            $produto->tamanhos()->attach($tamanho->id, ['preco' => $tamanhoData['preco']]);
+        }
+
+        // 4. Salvar as imagens (sua lógica atual, que parece correta)
         if ($request->hasFile('imagens')) {
             $ordem = 1;
             foreach ($request->file('imagens') as $imagem) {
                 $path = $imagem->store('produtos', 'public');
                 ProdutoImagem::create([
                     'produto_id' => $produto->id,
-                    'user_id' => auth()->id(), // se quiser manter user_id na tabela
+                    'user_id' => auth()->id(),
                     'imagem_path' => $path,
                     'ordem' => $ordem,
                 ]);
@@ -76,6 +82,7 @@ class ProdutoController extends Controller
 
         return Inertia::location(route('produtos.config'));
     }
+
 
     public function edit($id)
     {
@@ -99,10 +106,9 @@ class ProdutoController extends Controller
     }
 
     public function anuncio($id){
-        $produto = Produto::findOrFail($id);
+        $produto = Produto::with(['imagens', 'tamanhos'])->findOrFail($id);
         $imagem = $produto->imagens;
 
-        $produto->tamanhos = json_decode($produto->tamanhos, true);
         return Inertia::render('Anuncio')->with('produto', $produto, 'imagem', $imagem);
     }
 }
