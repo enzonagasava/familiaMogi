@@ -12,7 +12,7 @@ const page = usePage<CartProps>();
 
 // Converte o objeto do carrinho em um array para o `v-for`
 const cartItems = computed(() => Object.values(page.props.cart));
-
+console.log(cartItems);
 
 const cepInput = ref('');
 
@@ -58,10 +58,10 @@ const cartTotal = computed(() => {
                     class="grid grid-cols-12 items-center gap-4 border-b border-gray-700 py-4 last:border-b-0"
                 >
                     <div class="col-span-12 flex items-center md:col-span-6">
-                        <img :src="item.image" :alt="item.name" class="mr-4 h-20 w-20 rounded-md border border-gray-600 object-cover" />
+                        <img :src="item.thumbnail" :alt="item.name" class="mr-4 h-20 w-20 rounded-md border border-gray-600 object-cover" />
                         <div>
                             <p class="font-semibold text-black">{{ item.nome }}</p>
-                            <p class="text-sm text-black">Porção: {{ item.tamanhos }}</p>
+                            <p class="text-sm text-black">Porção: {{ item.porcao }}</p>
                         </div>
                     </div>
 
