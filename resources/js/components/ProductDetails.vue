@@ -19,6 +19,7 @@ const selectedWeight = ref(
 
 const imagem_paths = imagens.map(element => element.imagem_path);
 const productStock = produto.value.estoque || 0;
+const quantidadeSelecionada = ref(1); 
 
 // Computed que busca o preço no produto atual
 const precoSelecionado = computed(() => {
@@ -128,7 +129,7 @@ const carouselConfig = {
                     <p class="mb-2 text-sm font-bold text-gray-700">Estoque disponível</p>
                     <div class="flex items-center">
                         <label class="mr-2 text-gray-900">Quantidade: </label>
-                        <select name="quantidade" id="quantidade">
+                        <select v-model="quantidadeSelecionada"  name="quantidade" id="quantidade">
                             <option v-for="n in Math.min(productStock)" :key="n" :value="n">{{ n }}</option>
                         </select>
                     </div>
@@ -137,7 +138,7 @@ const carouselConfig = {
                 <div class="mb-6 flex flex-col space-y-3">
                     <Link
                         :href="route('carrinho.adicionar')"
-                        :data="{ id: produto.id, porcao: selectedWeight, produto: produto }"
+                        :data="{ id: produto.id, porcao: selectedWeight, produto: produto, preco: precoSelecionado, quantidade: quantidadeSelecionada }"
                         method="post"
                         class="w-full cursor-pointer rounded-md bg-[#6aab9c] px-4 py-3 font-semibold text-white transition duration-300 hover:bg-[#77bdad]"
                     >

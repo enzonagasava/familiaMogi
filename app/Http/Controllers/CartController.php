@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Produto;
 
+use function Pest\Laravel\call;
 
 class CartController extends Controller
 {
@@ -25,29 +26,41 @@ class CartController extends Controller
         // 1. Validar e obter os dados do produto e da porção
         $produtoId = $request->input('id');
         $porcao = $request->input('porcao');
+        $preco = $request->input('preco');
+        $quantidade = $request->input('quantidade');
         $produto = Produto::findOrFail($produtoId);
+        $imagens = $produto->imagens->first()->imagem_path;
+
         // 2. Acessa o carrinho na sessão
         $cart = session()->get('cart', []);
 
         // 3. Cria um ID único para o item no carrinho
-        $cartItemId = $produtoId . '_' . $porcao;
+        $normalizedPorcao = strtolower(preg_replace('/\s+/', '', $porcao));
+        $baseCartItemId = $produtoId . '_' . $normalizedPorcao;
 
-        // 4. Se o item já existe, incrementa a quantidade
-        if (isset($cart[$cartItemId])) {
-            $cart[$cartItemId]['quantidade']++;
-        } else {
-            // 5. Se não existe, adiciona o novo item com todas as informações
-            $cart[$cartItemId] = [
-                'id' => $produto->id,
-                'nome' => $produto->nome,
-                'porcao' => $porcao,
-                'preco' => $produto->tamanhos->firstWhere('nome', $porcao)['preco'] ?? 0
-            ];
+        // Gera um hash único baseado no ID base + microtime para garantir que seja diferente
+        $uniqueString = $baseCartItemId . '_' . microtime(true);
+        $cartItemId = $produtoId . '_' . substr(md5($uniqueString), 0, 8);
+
+        // Caso queira garantir que não exista no carrinho (muito improvável)
+        while (isset($cart[$cartItemId])) {
+            $uniqueString = $baseCartItemId . '_' . microtime(true) . rand();
+            $cartItemId = $produtoId . '_' . substr(md5($uniqueString), 0, 8);
         }
+
+        // Adiciona o novo item sempre com quantidade 1
+        $cart[$cartItemId] = [
+            'id' => $produto->id,
+            'nome' => $produto->nome,
+            'porcao' => $porcao,
+            'preco' => $preco,
+            'quantidade' => $quantidade,
+            'thumbnail' => $imagens ? asset('storage/' . $imagens) : null,
+        ];
 
         // 6. Salva o carrinho atualizado de volta na sessão
         session()->put('cart', $cart);
-
+        \Log::info('Carrinho atualizado: ' . json_encode($cart));
         // 7. Redireciona para a rota GET, que irá exibir o carrinho atualizado
         return redirect()->route('carrinho.index');
     }
