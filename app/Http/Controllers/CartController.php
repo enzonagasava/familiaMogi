@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Produto;
+use Inertia\Inertia;
 
 use function Pest\Laravel\call;
 
@@ -105,4 +106,19 @@ class CartController extends Controller
         session()->put('cart', $cart);
     }
 
+
+    public function remover(Request $request, string $cartItemId)
+    {
+        $cart = session()->get('cart', []);
+        if (isset($cart[$cartItemId])) {
+            unset($cart[$cartItemId]);
+            session()->put('cart', $cart);
+
+            // Redireciona para a rota do carrinho com dados atualizados
+ return response()->json([
+        'success' => true,
+        'cart' => $cart,
+        'message' => 'Item removido do carrinho.',
+    ]);        }
+    }
 }

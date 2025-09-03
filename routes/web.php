@@ -28,6 +28,7 @@ Route::get('/contact', function () {
 Route::get('/carrinho', [CartController::class, 'index'])->name('carrinho.index');
 Route::post('/carrinho/adicionar', [CartController::class, 'adicionar'])->name('carrinho.adicionar');
 Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
+Route::delete('/carrinho/remover/{cartItemId}', [CartController::class, 'remover'])->name('carrinho.remover');
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';

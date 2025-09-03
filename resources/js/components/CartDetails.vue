@@ -2,6 +2,8 @@
 import { computed, ref } from 'vue';
 import { usePage } from '@inertiajs/vue3';
 import ProdutosConfig from '@/pages/admin/produtosConfig/ProdutosConfig.vue';
+import { Inertia } from '@inertiajs/inertia';
+import axios from 'axios';
 
 // Dados do carrinho (em um cenário real, viriam das props do Laravel ou de um store global)
 interface CartProps {
@@ -11,16 +13,32 @@ interface CartProps {
 const page = usePage<CartProps>();
 
 // Converte o objeto do carrinho em um array para o `v-for`
-const cartItems = computed(() => Object.values(page.props.cart));
-console.log(cartItems);
+    var cartItems = ref(
+    Object.entries(page.props.cart).map(([key, item]) => ({
+        key,
+        ...item,
+    }))
+    );
 
-const cepInput = ref('');
 
-const removeItem = (id: number) => {
-    cartItems.value = cartItems.value.filter((item) => item.id !== id);
-    // Em um app real: enviar atualização para o backend/store
-};
+    const cepInput = ref('');
 
+    function removeItem(key: string) {
+    axios.delete(route('carrinho.remover', { cartItemId: key }))
+        .then(response => {
+        if (response.data.success) {
+            // Atualiza o estado local cartItems
+            cartItems.value = Object.entries(response.data.cart).map(([key, item]) => ({
+            key,
+            ...item,
+            }));
+        }
+        })
+        .catch(error => {
+        console.error('Erro ao remover item:', error);
+        });
+    }
+    
 const calculateShipping = () => {
     if (cepInput.value.length === 8) {
         // Exemplo de validação simples para CEP
@@ -54,7 +72,7 @@ const cartTotal = computed(() => {
             <div v-else class="space-y-6">
                 <div
                     v-for="item in cartItems"
-                    :key="item.id"
+                    :key="item.key"
                     class="grid grid-cols-12 items-center gap-4 border-b border-gray-700 py-4 last:border-b-0"
                 >
                     <div class="col-span-12 flex items-center md:col-span-6">
@@ -84,7 +102,7 @@ const cartTotal = computed(() => {
 
                     <div class="col-span-6 mt-2 flex items-center justify-end pr-2 md:col-span-3 md:mt-0 md:pr-0">
                         <span class="mr-4 text-lg font-bold text-black">R$ {{ (item.preco * item.quantidade).toFixed(2).replace('.', ',') }}</span>
-                        <button @click="removeItem(item.id)" class="text-red-500 transition-colors duration-200 hover:text-red-600">
+                        <button @click="removeItem(item.key)" class="text-red-500 transition-colors duration-200 hover:text-red-600">
                             <svg class="h-6 w-6 fill-current" viewBox="0 0 24 24">
                                 <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
                             </svg>
