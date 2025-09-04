@@ -53,6 +53,20 @@ const calculateShipping = () => {
 const cartTotal = computed(() => {
     return cartItems.value.reduce((sum, item) => sum + item.preco * item.quantidade, 0);
 });
+
+function incrementQuantity(item: any) {
+    if (item.quantidade < item.estoque) {
+        item.quantidade = Math.floor(item.quantidade) + 1;
+    } else {
+        alert(`Quantidade máxima disponível em estoque: ${item.estoque}`);
+    }
+}
+
+
+// Função para decrementar a quantidade (mínimo 1)
+function decrementQuantity(item: any) {
+    item.quantidade = Math.max(1, Math.floor(item.quantidade) - 1);
+}
 </script>
 
 <template>
