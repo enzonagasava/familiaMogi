@@ -53,6 +53,7 @@ class CartController extends Controller
         $cart[$cartItemId] = [
             'id' => $produto->id,
             'nome' => $produto->nome,
+            'estoque' => $produto->estoque,
             'porcao' => $porcao,
             'preco' => $preco,
             'quantidade' => $quantidade,
@@ -115,10 +116,10 @@ class CartController extends Controller
             session()->put('cart', $cart);
 
             // Redireciona para a rota do carrinho com dados atualizados
- return response()->json([
-        'success' => true,
-        'cart' => $cart,
-        'message' => 'Item removido do carrinho.',
-    ]);        }
+        return response()->json([
+                'success' => true,
+                'cart' => $cart,
+                'message' => 'Item removido do carrinho.',
+            ]);        }
     }
 }
