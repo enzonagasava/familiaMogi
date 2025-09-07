@@ -30,33 +30,6 @@ const precoSelecionado = computed(() => {
     return tamanho && tamanho.pivot ? parseFloat(tamanho.pivot.preco) : 0;
 });
 
-
-const addToCart = ({ id, portion }: { id: number; portion: string }) => {
-  // Pega o carrinho atual da sessionStorage
-  const cart = JSON.parse(sessionStorage.getItem('cart') || '{}');
-
-  // Se já existe o produto com essa porção, incrementa a quantidade
-  const key = `${id}-${portion}`; // chave única produto+porção
-
-  if (cart[key]) {
-    cart[key].quantity += 1;
-  } else {
-    cart[key] = {
-      productId: id,
-      portion: portion,
-      quantity: 1,
-    };
-  }
-
-  // Salva o carrinho atualizado
-  sessionStorage.setItem('cart', JSON.stringify(cart));
-  
-  // Opcional: mostrar feedback para o usuário
-  console.log('Produto adicionado ao carrinho:', cart[key]);
-};
-
-
-
 const calculateShipping = () => {
     alert('Calcular frete!');
     // Lógica para calcular frete
