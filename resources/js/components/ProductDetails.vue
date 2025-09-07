@@ -3,6 +3,8 @@ import { ref, computed } from 'vue';
 import { usePage, Link } from '@inertiajs/vue3';
 import 'vue3-carousel/carousel.css';
 import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel';
+import ButtonAddCart from './ui/button/ButtonAddCart.vue';
+
 
 
 const page = usePage();
@@ -27,11 +29,6 @@ const precoSelecionado = computed(() => {
     const tamanho = produto.value.tamanhos.find(t => t.nome === selectedWeight.value);
     return tamanho && tamanho.pivot ? parseFloat(tamanho.pivot.preco) : 0;
 });
-const addToCart = () => {
-    alert('Produto adicionado ao carrinho!');
-    // Lógica para adicionar ao carrinho (ex: fazer uma requisição Inertia ou Axios)
-};
-
 
 const calculateShipping = () => {
     alert('Calcular frete!');
@@ -144,12 +141,11 @@ const carouselConfig = {
                     >
                         Comprar agora
                     </Link>
-                    <button
-                        @click="addToCart"
-                        class="w-full cursor-pointer rounded-md border border-[#6aab9c] bg-white px-4 py-3 font-semibold text-[#6aab9c] transition duration-300 hover:bg-green-50"
-                    >
-                        Adicionar no carrinho
-                    </button>
+                    <ButtonAddCart 
+                    :produto="produto" 
+                    :portion="selectedWeight" 
+                    @add-to-cart="cartItemCount++"
+                    />  
                 </div>
 
                 <div class="mb-6">

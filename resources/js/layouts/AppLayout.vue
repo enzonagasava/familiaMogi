@@ -1,6 +1,24 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, computed } from 'vue';
+import { usePage } from '@inertiajs/vue3';
+import { useCartStore } from '@/stores/cart';
+import { watch } from 'vue';
+
+const page = usePage();
+const cartStore = useCartStore();
+
+// Inicializa a store com os dados do backend
+cartStore.setCart(page.props.cartItems || []);
+
+// Atualiza a store caso as props mudem (ex: navegação Inertia)
+watch(
+  () => page.props.cartItems,
+  (newItems) => {
+    cartStore.setCart(newItems || []);
+  }
+);
+
 
 // Declara uma variável reativa para armazenar o ano atual.
 const currentYear = ref(0);
@@ -28,6 +46,7 @@ const closeMenu = () => {
         <link rel="stylesheet" href="/css/app.css" />
         <link rel="preconnect" href="https://rsms.me/" />
         <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+        
     </Head>
     <header class="fixed top-0 right-0 left-0 z-50 bg-white shadow-md">
         <div class="flex h-[70px] w-screen justify-center px-4 sm:px-6 lg:px-8">
@@ -50,7 +69,7 @@ const closeMenu = () => {
                             <Link href="#" @click="closeMenu" class="rounded px-4 py-2 hover:bg-gray-100">Área do Produtor</Link>
                         </nav>
                         <Link href="/carrinho" @click="closeMenu" class="rounded bg-[#6aab9c] px-4 py-2 text-white transition hover:bg-[#77bdad]">
-                            Carrinho (0)
+                            Carrinho ({{ cartStore.cartQuantity }})
                         </Link>
                     </div>
                 </div>

@@ -33,8 +33,6 @@ const selectedPortions = ref<Record<number | string, string>>({});
 const selectPortion = (slideId: number, portion: string) => {
     selectedPortions.value[slideId] = portion;
 };
-
-
 </script>
 
 <template>
@@ -75,8 +73,12 @@ const selectPortion = (slideId: number, portion: string) => {
                     <div class="mb-3 flex gap-2">
                         <ButtonPortion :produto="produto" :selectedPortions="selectedPortions" @select-portion="selectPortion" />
                     </div>
-                        <ButtonAddCart :produto="produto" :addProduct="addProduct" @add-to-cart="addToCart" />
-                </div>
+                        <ButtonAddCart 
+                          :produto="produto" 
+                          :portion="selectedPortions[produto.id]" 
+                          @add-to-cart="cartItemCount++"
+                        />                
+                    </div>
             </SwiperSlide>
 
                 <!-- Navegação personalizada -->
