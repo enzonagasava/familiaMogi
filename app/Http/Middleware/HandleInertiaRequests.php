@@ -39,6 +39,9 @@ class HandleInertiaRequests extends Middleware
     {
         [$message, $author] = str(Inspiring::quotes()->random())->explode('-');
 
+        $cart = $request->session()->get('cart', []);
+        $cartQuantity = array_sum(array_column($cart, 'quantidade'));
+
         return [
             ...parent::share($request),
             'name' => config('app.name'),
@@ -51,6 +54,8 @@ class HandleInertiaRequests extends Middleware
                 'location' => $request->url(),
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
+            'cartQuantity' => $cartQuantity,
+            'cartItems' => array_values($cart),
         ];
     }
 }

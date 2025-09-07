@@ -1,31 +1,63 @@
 <script setup lang="ts">
-import { defineProps, defineEmits } from 'vue';
+import { ref } from 'vue';
+import axios from 'axios';
+import { useCartStore } from '@/stores/cart';
 
-
-const props = defineProps<{
-  produto: {
-    id: number;
-    title: string;
-    image: string;
-    tamanhos: string;
-  };
-    addProduct: Record <number | string, string> ;
-}>();
-
-
-
-
-const emit = defineEmits(['addProduct']);
-
-const addProductItem = () =>{
-    emit('addProduct', props.produto.id);
+interface Produto {
+  id: number;
+  name: string;
 }
 
+const props = withDefaults(
+  defineProps<{
+    produto: Produto;
+    portion: string;
+    price?: number;
+  }>(),
+  { price: 0 }
+);
+
+const emit = defineEmits<{
+  (e: 'add-to-cart', produto: Produto, portion: string): void;
+}>();
+
+const cartStore = useCartStore();
+const isLoading = ref(false);
+
+const addToCart = async (e: SubmitEvent) => {
+  e.preventDefault();        // evita recarregar a página
+  if (isLoading.value) return;
+
+  isLoading.value = true;
+
+  try {
+    const { data } = await axios.post('/cart/add', {
+      id: props.produto.id,
+      porcao: props.portion,
+      preco: props.price,
+      quantidade: 1,
+    });
+
+    console.log('RESPOSTA /cart/add =>', data);
+
+    cartStore.setCart(Object.values(data.cart));
+    emit('add-to-cart', props.produto, props.portion);
+  } catch (err) {
+    console.error('Erro ao adicionar produto:', err);
+  } finally {
+    isLoading.value = false;
+  }
+};
 </script>
+
 <template>
-    <button class="bg-[#6aab9c] text-white rounded-full px-4 py-2 text-sm font-semibold mb-2 hover:bg-[#77bdad] transition cursor-pointer" 
-    @click="addProductItem()"
+  <form @submit="addToCart">
+    <button
+      type="submit"
+      :disabled="isLoading"
+      class="bg-[#6aab9c] text-white rounded-full px-4 py-2 text-sm font-semibold mb-2 hover:bg-[#77bdad] transition cursor-pointer disabled:opacity-50"
     >
-        Adicionar no carrinho
+      {{ isLoading ? 'Adicionando…' : 'Adicionar no carrinho' }}
     </button>
+  </form>
 </template>
