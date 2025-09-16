@@ -37,7 +37,7 @@ class HomeController extends Controller
         });
 
         return Inertia::render('Home', [
-            'produtos' => $produtos,
+            'produtoSwiper' => $produtos,
         ]);
     }
 }

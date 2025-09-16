@@ -5,6 +5,7 @@ use Inertia\Inertia;
 use App\Http\Controllers\CartController; 
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProdutoController;
+use App\Http\Controllers\PaymentController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/anuncio/{id}', [ProdutoController::class, 'anuncio'])->name('anuncio');
@@ -29,6 +30,8 @@ Route::get('/carrinho', [CartController::class, 'index'])->name('carrinho.index'
 Route::post('/carrinho/adicionar', [CartController::class, 'adicionar'])->name('carrinho.adicionar');
 Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
 Route::delete('/carrinho/remover/{cartItemId}', [CartController::class, 'remover'])->name('carrinho.remover');
+
+Route::get('/pagepay', [PaymentController::class, 'index'])->name('payment.index');
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
