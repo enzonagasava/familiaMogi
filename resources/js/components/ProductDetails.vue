@@ -1,10 +1,14 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { usePage, Link } from '@inertiajs/vue3';
-import 'vue3-carousel/carousel.css';
-import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel';
 import ButtonAddCart from './ui/button/ButtonAddCart.vue';
+import { Navigation, Pagination, Thumbs } from 'swiper/modules';
+import { Swiper, SwiperSlide } from 'swiper/vue';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
 
+const activeModules = [Navigation, Thumbs, Pagination];
 
 
 const page = usePage();
@@ -44,11 +48,6 @@ const toggleShare = () => {
     alert('Togglou Share!');
     // Lógica para favoritar/desfavoritar
 };
-
-const carouselConfig = {
-  itemsToShow: 1,
-  wrapAround: true
-}
 </script>
 
 <template>
@@ -67,17 +66,26 @@ const carouselConfig = {
                             <img :src="thumb" alt="Miniatura" class="h-full w-full object-cover" />
                         </button>
                     </div>
-                    <Carousel v-bind="carouselConfig" class="flex-grow">
-                      <Slide v-for="(img, index) in imagem_paths" :key="index">
+                    <Swiper :modules="activeModules"
+                            :slides-per-view="1"
+                            :navigation="{
+                            prevEl: '.custom-swiper-prev',
+                            nextEl: '.custom-swiper-next'
+                            }"
+                            :loop="true"
+                            :space-between="20"
+                            class="my-custom-swiper"
+>
+                      <SwiperSlide v-for="(img, index) in imagem_paths" :key="index">
                         <div class="flex h-full items-center justify-center overflow-hidden rounded-lg border border-gray-200">
                           <img :src="`/storage/${img}`" :alt="productName" class="max-h-[500px] max-w-full object-contain" />
                         </div>
-                      </Slide>
-                      <template #addons>
-                        <Pagination class="absolute bottom-4 left-1/2 -translate-x-1/2" />
-                        <Navigation class="absolute top-1/2 -translate-y-1/2" />
-                      </template>
-                    </Carousel>
+                      </SwiperSlide>
+                        <template #container-end>
+                            <button class="custom-swiper-prev nav-btn" aria-label="Anterior"><i class="fa-solid fa-angle-left"></i></button>
+                            <button class="custom-swiper-next nav-btn" aria-label="Próximo"><i class="fa-solid fa-angle-right"></i></button>
+                        </template>
+                    </Swiper>
                 </div>
             </div>
 
@@ -182,5 +190,63 @@ const carouselConfig = {
 }
 .prose li {
     margin-bottom: 0.5em;
+}
+
+
+/* Botões de navegação customizados */
+.nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.85);
+    border: none;
+    border-radius: 50%;
+    width: 3rem;
+    height: 3rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    z-index: 10;
+    font-size: 1.5rem;
+    color: #48bb78;
+  }
+
+  .nav-btn > i {
+    font-size: 2rem;
+  }
+
+  .nav-btn:hover {
+    background: #48bb78;
+    color: white;
+  }
+
+  .custom-swiper-prev {
+    left: 0.5rem;
+  }
+
+  .custom-swiper-next {
+    right: 0.5rem;
+  }
+
+@media (max-width: 768px) {
+  .my-custom-swiper {
+    height: auto;
+    padding: 0 1rem !important;
+  }
+  .nav-btn {
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 1.2rem;
+  }
+  .custom-swiper-prev {
+    left: 0.25rem;
+  }
+  .custom-swiper-next {
+    right: 0.25rem;
+  }
 }
 </style>
