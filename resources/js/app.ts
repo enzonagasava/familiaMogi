@@ -5,6 +5,7 @@ import { createApp, h } from 'vue';
 import { ZiggyVue } from 'ziggy-js';
 import { createPinia } from 'pinia';
 import '../css/app.css';
+import Toast from './components/ui/toast/Toast.vue';
 
 const appName = import.meta.env.VITE_APP_NAME || 'FamiliaMogi';
 const pinia = createPinia();
@@ -24,3 +25,5 @@ createInertiaApp({
     color: '#4B5563',
   },
 });
+
+createApp(Toast).use(pinia).mount('#toast-container');

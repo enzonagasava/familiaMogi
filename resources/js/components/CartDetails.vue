@@ -62,6 +62,9 @@ function incrementQuantity(item: any) {
     }
 }
 
+function pagepay(){
+    Inertia.visit(route('payment.index'));
+}
 
 // Função para decrementar a quantidade (mínimo 1)
 function decrementQuantity(item: any) {
@@ -148,8 +151,10 @@ function decrementQuantity(item: any) {
                     </button>
                 </div>
             </div>
-
             <div class="mt-8 flex h-64 items-center justify-center rounded-lg bg-white p-6 text-center text-black">[Localização ou Mapa aqui]</div>
+            <button
+            @click="pagepay()" 
+            class="w-full rounded-md bg-green-600 px-6 py-2 font-semibold text-black transition duration-300 hover:bg-green-700 sm:w-auto">Próximo</button>
         </div>
     </div>
 </template>

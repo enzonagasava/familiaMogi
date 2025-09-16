@@ -26,5 +26,6 @@
     </head>
     <body class="font-sans antialiased" box-border>
         @inertia
+        <div id="toast-container"></div>
     </body>
 </html>

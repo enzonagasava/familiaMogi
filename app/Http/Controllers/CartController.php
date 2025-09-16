@@ -19,7 +19,19 @@ class CartController extends Controller
     public function index()
     {
         $cart = session()->get('cart', []);
-        return inertia('Cart', ['cart' => $cart]);
+        $produtosRelacionados = Produto::with(['imagens', 'tamanhos'])
+            ->get()
+            ->map(function ($p) {
+                return [
+                    'id' => $p->id,
+                    'nome' => $p->nome,
+                    'tamanhos' => $p->tamanhos, // passe os tamanhos para o front
+                    'imageUrl' => $p->imagens->first()
+                        ? asset('storage/' . $p->imagens->first()->imagem_path)
+                        : null,
+                ];
+            });
+        return inertia('Cart', ['cart' => $cart,'produtoSwiper' => $produtosRelacionados]);
     }
 
   public function adicionar(Request $request)
@@ -82,73 +94,82 @@ class CartController extends Controller
             ]);        }
     }
 
-public function addToCart(Request $request)
-{
-    $produtoId = $request->input('id');
-    $porcao = $request->input('porcao', 'default'); // caso porção não seja enviada, usa 'default'
-    $preco = $request->input('preco');
-    $quantidade = (int) $request->input('quantidade', 1);
+    public function addToCart(Request $request)
+    {
+        $produtoId = $request->input('id');
+        $porcao = $request->input('porcao', 'default');
+        $preco = $request->input('preco');
+        $quantidade = (int) $request->input('quantidade', 1);
 
-    $produto = Produto::with('tamanhos')->findOrFail($produtoId);
+        $produto = Produto::with('tamanhos')->findOrFail($produtoId);
 
-    $preco = null;
+        $preco = null;
 
-    foreach ($produto->tamanhos as $tamanho) {
-        if ($tamanho->nome == $porcao) {
-            $preco = $tamanho->pivot->preco;
-            break;
+        foreach ($produto->tamanhos as $tamanho) {
+            if ($tamanho->nome == $porcao) {
+                $preco = $tamanho->pivot->preco;
+                break;
+            }
         }
-    }
 
-    if ($preco === null) {
-        $preco = 0;
-    }
-
-    $imagens = $produto->imagens->first()->imagem_path ?? null;
-
-    $cart = $request->session()->get('cart', []);
-
-    // Normaliza a porção para criar o ID único do item no carrinho
-    $normalizedPorcao = strtolower(preg_replace('/\s+/', '', $porcao));
-    $baseCartItemId = $produtoId . '_' . $normalizedPorcao;
-
-    // Gera um hash único para o item no carrinho
-    $uniqueString = $baseCartItemId . '_' . microtime(true);
-    $cartItemId = $produtoId . '_' . substr(md5($uniqueString), 0, 8);
-
-    // Se o item com essa chave existir, atualiza quantidade, senão cria novo item
-    // Para evitar duplicatas, vamos buscar se algum item no carrinho tem o mesmo produto e porção
-    $existingCartItemId = null;
-    foreach ($cart as $key => $item) {
-        if (isset($item['id'], $item['porcao'])
-            && $item['id'] == $produtoId
-            && strtolower(preg_replace('/\s+/', '', $item['porcao'])) == $normalizedPorcao) {
-            $existingCartItemId = $key;
-            break;
+        if ($preco === null) {
+            $preco = 0;
         }
+
+        $imagens = $produto->imagens->first()->imagem_path ?? null;
+
+        $cart = $request->session()->get('cart', []);
+
+        // Normaliza a porção para criar o ID único do item no carrinho
+        $normalizedPorcao = strtolower(preg_replace('/\s+/', '', $porcao));
+        $baseCartItemId = $produtoId . '_' . $normalizedPorcao;
+
+        // Gera um hash único para o item no carrinho
+        $uniqueString = $baseCartItemId . '_' . microtime(true);
+        $cartItemId = $produtoId . '_' . substr(md5($uniqueString), 0, 8);
+
+        // Busca se algum item no carrinho tem o mesmo produto e porção
+        $existingCartItemId = null;
+        foreach ($cart as $key => $item) {
+            if (isset($item['id'], $item['porcao'])
+                && $item['id'] == $produtoId
+                && strtolower(preg_replace('/\s+/', '', $item['porcao'])) == $normalizedPorcao) {
+                $existingCartItemId = $key;
+                break;
+            }
+        }
+
+        if ($existingCartItemId) {
+            $novaQuantidade = $cart[$existingCartItemId]['quantidade'] + $quantidade;
+
+            if ($novaQuantidade > $produto->estoque) {
+                $novaQuantidade = $produto->estoque;
+                return response()->json([
+                    'success' => false,
+                    'message' => 'A quantidade solicitada ultrapassa o estoque disponível.',
+                    'estoque_disponivel' => $produto->estoque,
+                ], 400);
+            }
+
+            $cart[$existingCartItemId]['quantidade'] = $novaQuantidade;
+        } else {
+            // Adiciona novo item no carrinho
+            $cart[$cartItemId] = [
+                'id' => $produto->id,
+                'nome' => $produto->nome,
+                'estoque' => $produto->estoque,
+                'porcao' => $porcao,
+                'preco' => $preco,
+                'quantidade' => $quantidade,
+                'thumbnail' => $imagens ? asset('storage/' . $imagens) : null,
+            ];
+        }
+
+        $request->session()->put('cart', $cart);
+
+        return response()->json([
+            'success' => true,
+            'cart' => $cart,
+        ]);
     }
-
-    if ($existingCartItemId) {
-        // Atualiza a quantidade do item existente
-        $cart[$existingCartItemId]['quantidade'] += $quantidade;
-    } else {
-        // Adiciona novo item no carrinho
-        $cart[$cartItemId] = [
-            'id' => $produto->id,
-            'nome' => $produto->nome,
-            'estoque' => $produto->estoque,
-            'porcao' => $porcao,
-            'preco' => $preco,
-            'quantidade' => $quantidade,
-            'thumbnail' => $imagens ? asset('storage/' . $imagens) : null,
-        ];
-    }
-
-    $request->session()->put('cart', $cart);
-
-    return response()->json([
-        'success' => true,
-        'cart' => $cart,
-    ]);
-}
 }

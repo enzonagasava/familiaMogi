@@ -105,10 +105,26 @@ class ProdutoController extends Controller
         $produto->delete();
     }
 
-    public function anuncio($id){
+    public function anuncio($id)
+    {
         $produto = Produto::with(['imagens', 'tamanhos'])->findOrFail($id);
-        $imagem = $produto->imagens;
 
-        return Inertia::render('Anuncio')->with('produto', $produto, 'imagem', $imagem);
+        $produtosRelacionados = Produto::with(['imagens', 'tamanhos'])
+            ->get()
+            ->map(function ($p) {
+                return [
+                    'id' => $p->id,
+                    'nome' => $p->nome,
+                    'tamanhos' => $p->tamanhos, // passe os tamanhos para o front
+                    'imageUrl' => $p->imagens->first()
+                        ? asset('storage/' . $p->imagens->first()->imagem_path)
+                        : null,
+                ];
+            });
+
+        return Inertia::render('Anuncio', [
+            'produto' => $produto,
+            'produtoSwiper' => $produtosRelacionados,
+        ]);
     }
 }

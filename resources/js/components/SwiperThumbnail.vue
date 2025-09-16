@@ -16,7 +16,8 @@ const props = defineProps<{
 }>();
 const page = usePage();
 
-const produtos = page.props.produtos || [];
+const produtos = page.props.produtoSwiper || [];
+console.log('Produtos do carrossel:', produtos);
 
 const selectedPortions = ref<Record<number | string, string>>({});
 
@@ -65,7 +66,8 @@ const selectPortion = (slideId: number, portion: string) => {
                     </div>
                         <ButtonAddCart 
                           :produto="produto" 
-                          :portion="selectedPortions[produto.id]" 
+                          :portion="selectedPortions[produto.id]"
+                          title="Adicionar no Carrinho"
                           @add-to-cart="cartItemCount++"
                         />                
                     </div>
