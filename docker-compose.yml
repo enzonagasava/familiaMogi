@@ -24,7 +24,7 @@ services:
       - ./:/app
     ports:
       - "5173:5173"
-    command: bash -c "npm install && chmod +x node_modules/.bin/vite && npm run build"
+    command: bash -c "npm install && chmod +x node_modules/.bin/vite && npm run dev"
     depends_on:
       - app
     restart: "no"

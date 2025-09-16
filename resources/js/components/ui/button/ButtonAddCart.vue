@@ -55,7 +55,7 @@ const addToCart = async (e: SubmitEvent) => {
     <button
       type="submit"
       :disabled="isLoading"
-      class="bg-[#6aab9c] text-white rounded-full px-4 py-2 text-sm font-semibold mb-2 hover:bg-[#77bdad] transition cursor-pointer disabled:opacity-50"
+      class="bg-[#6aab9c] text-white rounded-md px-4 py-3 text-white font-semibold mb-2 hover:bg-[#77bdad] transition cursor-pointer disabled:opacity-50 w-full"
     >
       {{ isLoading ? 'Adicionando…' : 'Adicionar no carrinho' }}
     </button>

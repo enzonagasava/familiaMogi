@@ -4,7 +4,6 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import { ref } from 'vue';
 import { usePage } from '@inertiajs/vue3';
-
 import { Navigation, Pagination, Thumbs } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import ButtonAddCart from './ui/button/ButtonAddCart.vue';
@@ -20,15 +19,6 @@ const page = usePage();
 const produtos = page.props.produtos || [];
 
 const selectedPortions = ref<Record<number | string, string>>({});
-
-// const cartItemCount = ref(0);
-// interface CartItem {
-//     slideId: number;
-//     title: string;
-//     portion: string;
-//     quantity: number;
-// }
-// const cart = ref<CartItem[]>([]);
 
 const selectPortion = (slideId: number, portion: string) => {
     selectedPortions.value[slideId] = portion;
@@ -63,7 +53,7 @@ const selectPortion = (slideId: number, portion: string) => {
                         :src="produto.imageUrl"
                         :title="produto.nome"
                         alt="Produto"
-                        class="mb-2 h-[300px] w-[300px] cursor-pointer rounded-[8px] object-cover hover:brightness-[1.10]"
+                        class="mb-2 h-[100%] w-[300px] cursor-pointer rounded-[8px] object-cover hover:brightness-[1.10]"
                         @click="$inertia.visit(route('anuncio', produto.id))"
                     />
                     <div class="mt-2 mb-1 text-lg font-semibold">
