@@ -9,6 +9,8 @@ use Inertia\Inertia;
 class PaymentController extends Controller
 {
     public function index(){
-        return inertia('PagePay', []);
+        $cart = session()->get('cart', []);
+
+        return inertia('PagePay', ['cart' => $cart]);
     }
 }

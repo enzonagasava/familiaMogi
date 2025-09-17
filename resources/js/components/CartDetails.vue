@@ -1,43 +1,40 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { usePage } from '@inertiajs/vue3';
-import ProdutosConfig from '@/pages/admin/produtosConfig/ProdutosConfig.vue';
 import { Inertia } from '@inertiajs/inertia';
 import axios from 'axios';
 
-// Dados do carrinho (em um cenário real, viriam das props do Laravel ou de um store global)
 interface CartProps {
-    cart: Record<string, any>; // O carrinho virá como um objeto do Laravel
+    cart: Record<string, any>; 
 }
 
 const page = usePage<CartProps>();
 
 // Converte o objeto do carrinho em um array para o `v-for`
-    var cartItems = ref(
-    Object.entries(page.props.cart).map(([key, item]) => ({
+var cartItems = ref(
+Object.entries(page.props.cart).map(([key, item]) => ({
+    key,
+    ...item,
+}))
+);
+
+const cepInput = ref('');
+
+function removeItem(key: string) {
+axios.delete(route('carrinho.remover', { cartItemId: key }))
+    .then(response => {
+    if (response.data.success) {
+        // Atualiza o estado local cartItems
+        cartItems.value = Object.entries(response.data.cart).map(([key, item]) => ({
         key,
         ...item,
-    }))
-    );
-
-
-    const cepInput = ref('');
-
-    function removeItem(key: string) {
-    axios.delete(route('carrinho.remover', { cartItemId: key }))
-        .then(response => {
-        if (response.data.success) {
-            // Atualiza o estado local cartItems
-            cartItems.value = Object.entries(response.data.cart).map(([key, item]) => ({
-            key,
-            ...item,
-            }));
-        }
-        })
-        .catch(error => {
-        console.error('Erro ao remover item:', error);
-        });
+        }));
     }
+    })
+    .catch(error => {
+    console.error('Erro ao remover item:', error);
+    });
+}
     
 const calculateShipping = () => {
     if (cepInput.value.length === 8) {
