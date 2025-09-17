@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
 import { onMounted, ref, computed } from 'vue';
-import { usePage } from '@inertiajs/vue3';
+import { usePage, useForm } from '@inertiajs/vue3';
 import { useCartStore } from '@/stores/cart';
 import { watch } from 'vue';
+import { Inertia } from '@inertiajs/inertia';
 
 const page = usePage();
 const cartStore = useCartStore();
@@ -37,6 +38,19 @@ const toggleMenu = () => {
 const closeMenu = () => {
     isMenuOpen.value = false;
 };
+
+const user = computed(() => !!page.props.auth?.user);
+const userLogado = user.value;
+
+const logoutForm = useForm({});
+
+const logout = () => {
+  logoutForm.post('/logout', {
+    onFinish: () => {
+      Inertia.visit('/');
+    },
+  });
+};
 </script>
 
 <template>
@@ -68,6 +82,12 @@ const closeMenu = () => {
                             <Link href="/contact" @click="closeMenu" class="rounded px-4 py-2 hover:bg-gray-100">Contato</Link>
                             <Link href="#" @click="closeMenu" class="rounded px-4 py-2 hover:bg-gray-100">Área do Produtor</Link>
                         </nav>
+                        <Link v-if="userLogado" :href="'/logout'" @click.prevent="logout" class="rounded bg-[#6aab9c] px-4 py-2 text-white transition hover:bg-[#77bdad]">
+                            Logout
+                        </Link>
+                        <Link v-else href="/login" @click="closeMenu" class="rounded bg-[#6aab9c] px-4 py-2 text-white transition hover:bg-[#77bdad]">
+                            Login
+                        </Link>                        
                         <Link href="/carrinho" @click="closeMenu" class="rounded bg-[#6aab9c] px-4 py-2 text-white transition hover:bg-[#77bdad]">
                             Carrinho ({{ cartStore.cartQuantity }})
                         </Link>

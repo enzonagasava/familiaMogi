@@ -22,6 +22,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'cargo_id',
     ];
 
     /**
@@ -50,5 +51,10 @@ class User extends Authenticatable
     public function anuncios()
     {
         return $this->hasMany(Produto::class);
+    }
+
+    public function cargo()
+    {
+        return $this->belongsTo(Cargo::class, 'cargo_id');
     }
 }
