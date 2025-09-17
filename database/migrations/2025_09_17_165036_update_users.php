@@ -11,13 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (!Schema::hasTable('tamanhos')) {
-            Schema::create('tamanhos', function (Blueprint $table) {
-                $table->id();
-                $table->string('nome');
-                $table->timestamps();
-            });
-        }
+    Schema::table('users', function (Blueprint $table) {
+        $table->unsignedBigInteger('cargo_id')->nullable()->after('id');
+        $table->foreign('cargo_id')->references('id')->on('cargos');
+    });
     }
 
     /**
