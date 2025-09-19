@@ -1,12 +1,14 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use App\Models\Produto;
 use App\Models\ProdutoImagem;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Tamanho;
+use App\Http\Controllers\Controller;
+
 
 class ProdutoController extends Controller
 {

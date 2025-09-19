@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\CartController; 
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\ProdutoController;
+use App\Http\Controllers\Admin\ProdutoController;
 use App\Http\Controllers\PaymentController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');

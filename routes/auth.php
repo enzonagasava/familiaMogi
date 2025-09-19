@@ -19,11 +19,14 @@ Route::middleware('guest')->group(function () {
     // Route::get('admin', [AuthenticatedSessionController::class, 'create'])
     // ->name('admin');
 
-    Route::get('login', [AuthenticatedSessionController::class, 'create'])
+    Route::get('login', [AuthenticatedSessionController::class, 'login'])
     ->name('login');
 
-    Route::post('login', [AuthenticatedSessionController::class, 'store'])
-    ->name('login');
+    Route::post('me', [AuthenticatedSessionController::class, 'me'])
+    ->name('me');
+
+    Route::post('login/store', [AuthenticatedSessionController::class, 'store'])
+    ->name('loginStore');
 
     Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
         ->name('password.request');
@@ -38,7 +41,7 @@ Route::middleware('guest')->group(function () {
         ->name('password.store');
 });
 
-Route::middleware('auth')->group(function () {
+Route::middleware('jwt.cookie','auth')->group(function () {
     Route::get('verify-email', EmailVerificationPromptController::class)
         ->name('verification.notice');
 
@@ -55,6 +58,8 @@ Route::middleware('auth')->group(function () {
 
     Route::post('confirm-password', [ConfirmablePasswordController::class, 'store']);
 
-    Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
-        ->name('logout');
+    // Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
+    //     ->name('logout');
+
+    Route::post('logout', [AuthenticatedSessionController::class, 'logout'])->name('logout');
 });
