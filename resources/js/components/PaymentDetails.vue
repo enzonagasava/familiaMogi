@@ -15,12 +15,6 @@ const cartItems = ref(
   }))
 );
 
-interface OrderItem {
-  id: number;
-  name: string;
-  price: number;
-}
-
 interface FormData {
   name: string;
   email: string;
