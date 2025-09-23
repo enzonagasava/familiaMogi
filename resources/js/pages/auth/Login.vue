@@ -6,12 +6,6 @@ defineProps<{
     status?: string;
     canResetPassword: boolean;
 }>();
-
-const form = useForm({
-    email: '',
-    password: '',
-    remember: false,
-});
 </script>
 
 <template>
