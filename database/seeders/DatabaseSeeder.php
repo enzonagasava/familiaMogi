@@ -13,11 +13,17 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        $adminExists = User::where('email', 'admin@teste.com')->exists();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        if (!$adminExists) {
+            User::factory()->create([
+                'name' => 'admin',
+                'email' => 'admin@teste.com',
+                'password' => bcrypt('123456789'), // Sempre use bcrypt para senha
+                'cargo_id' => 1,
+            ]);
+        }
+        
+        $this->call(CargoSeeder::class);
     }
 }

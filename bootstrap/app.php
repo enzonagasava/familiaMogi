@@ -16,6 +16,12 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (\Illuminate\Foundation\Configuration\Middleware $middleware) {
+
+        $middleware->alias([
+            'jwt.cookie' => \App\Http\Middleware\JwtCookieMiddleware::class,
+            'admin' => \App\Http\Middleware\AdminMiddleware::class,
+            'cliente' => \App\Http\Middleware\ClienteMiddleware::class,
+        ]);       
         $middleware->encryptCookies(except: ['appearance', 'sidebar_state']);
 
         $middleware->web(append: [

@@ -45,8 +45,37 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
+        $credentials = $request->only('email', 'password');
+
+        $token = auth()->attempt($credentials);
+
+        if (!$token) {
+            // Retorne erro Inertia válido (pode ser com redirect back com erros)
+            return back()->withErrors(['email' => 'Credenciais inválidas']);
+        }
+
         Auth::login($user);
 
-        return to_route('dashboard');
+        $cookie = cookie(
+            'jwt_token',      // nome do cookie
+            $token,           // valor do token
+            60,               // tempo de vida em minutos
+            null,             // path (default '/')
+            null,             // domain (default)
+            false,            // secure (false para localhost)
+            true,             // httpOnly
+            false,            // raw
+            'Strict'          // SameSite
+        );
+
+        if ($user->cargo_id === 1) {
+            $redirectUrl = route('admin.dashboard');
+        } elseif ($user->cargo_id === 2) {
+            $redirectUrl = route('cliente.dashboard');
+        } else {
+            $redirectUrl = route('home'); // fallback válido
+        }
+
+        return Inertia::location($redirectUrl)->withCookie($cookie);
     }
 }
