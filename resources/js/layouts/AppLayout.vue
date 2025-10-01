@@ -12,7 +12,6 @@ const cartStore = useCartStore();
 // Inicializa a store com os dados do backend
 cartStore.setCart(page.props.cartItems || []);
 
-// Atualiza a store caso as props mudem (ex: navegação Inertia)
 watch(
   () => page.props.cartItems,
   (newItems) => {
@@ -20,8 +19,6 @@ watch(
   }
 );
 
-
-// Declara uma variável reativa para armazenar o ano atual.
 const currentYear = ref(0);
 const isMenuOpen = ref(false);
 
@@ -83,9 +80,23 @@ const logout = () => {
                             <Link href="#" @click="closeMenu" class="rounded px-4 py-2 hover:bg-gray-100">Área do Produtor</Link>
                         </nav>
                         <div class="items-center flex">
-                            <Link v-if="userLogado" :href="'/logout'" @click.prevent="logout" class="rounded bg-[#6aab9c] px-4 py-2 text-white transition hover:bg-[#77bdad]">
-                                Logout
-                            </Link>
+                            <div v-if="userLogado" class="relative group inline-block">
+                                <button class="flex items-center rounded bg-[#6aab9c] px-4 py-2 text-white transition hover:bg-[#77bdad] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#6aab9c]">
+                                    <span>{{ page.props.auth.user.name || 'Usuário' }}</span>
+                                    <svg class="ml-2 h-4 w-4 fill-current transition-transform duration-200 group-hover:rotate-180" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                        <path d="M5.516 7.548a.75.75 0 011.06 0L10 10.97l3.424-3.423a.75.75 0 111.06 1.06l-4 4a.75.75 0 01-1.06 0l-4-4a.75.75 0 010-1.06z" />
+                                    </svg>
+                                </button>
+                                <div class="absolute right-0 w-36 origin-top-right rounded-md bg-white shadow-lg opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-opacity duration-200">
+                                    <Link :href="page.props.auth.user.cargo_id === 1 ? '/admin/dashboard' : '/cliente/dashboard'" @click="closeMenu"
+                                        class="block px-4 py-2 text-gray-800 hover:bg-gray-100 rounded-t-md">
+                                        Dashboard
+                                    </Link>
+                                    <button @click="logout" class="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100 rounded-b-md">
+                                        Logout
+                                    </button>
+                                </div>
+                            </div>
                             <Link v-else href="/login" @click="closeMenu" class="rounded bg-[#6aab9c] px-4 py-2 text-white transition hover:bg-[#77bdad]">
                                 Login
                             </Link>                        
