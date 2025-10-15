@@ -73,7 +73,7 @@ const logout = () => {
                         }"
                     >
                         <nav class="ml-4 flex flex-col gap-2 md:flex-row md:gap-4">
-                            <Link href="/produtos" @click="closeMenu" class="rounded px-4 py-2 hover:bg-gray-100">Produtos</Link>
+                            <Link :href="route('produtos.index')" @click="closeMenu" class="rounded px-4 py-2 hover:bg-gray-100">Produtos</Link>
                             <Link href="/about-us" @click="closeMenu" class="rounded px-4 py-2 hover:bg-gray-100">Quem Somos</Link>
                             <Link href="/how-to-buy" @click="closeMenu" class="rounded px-4 py-2 hover:bg-gray-100">Como Comprar</Link>
                             <Link href="/contact" @click="closeMenu" class="rounded px-4 py-2 hover:bg-gray-100">Contato</Link>

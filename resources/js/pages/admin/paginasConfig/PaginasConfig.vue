@@ -27,8 +27,8 @@ const deleteProduct = (productId: number) => {
 
 <template>
     <Head>
-        <title>Gerenciar Produtos - Família Mogi</title>
-        <meta name="description" content="Gerenciamento de produtos da Família Mogi" />
+        <title>Gerenciar Páginas - Família Mogi</title>
+        <meta name="description" content="Gerenciamento de páginas da Família Mogi" />
     </Head>
     <AuthLayout>
         <div class="py-12">
@@ -36,12 +36,7 @@ const deleteProduct = (productId: number) => {
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="border-b border-gray-200 bg-white p-6">
                         <div class="mb-6 flex items-center justify-between">
-                            <h1 class="text-2xl font-bold text-gray-800">Gerenciar Produtos</h1>
-                            <Link :href="route('produtos.create')"
-                                class="focus:ring-opacity-50 rounded-md bg-green-600 px-4 py-2 text-white transition duration-150 ease-in-out hover:bg-green-700 focus:ring-2 focus:ring-green-500 focus:outline-none"
-                            >
-                                + Adicionar Novo Produto
-                            </Link>
+                            <h1 class="text-2xl font-bold text-gray-800">Gerenciar Páginas</h1>
                         </div>
 
                         <div class="overflow-x-auto">
@@ -49,7 +44,7 @@ const deleteProduct = (productId: number) => {
                                 <thead class="bg-gray-50">
                                     <tr>
                                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
-                                            Produto
+                                            Página
                                         </th>
                                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
                                             Descrição do Produto
