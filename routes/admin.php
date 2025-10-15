@@ -14,6 +14,11 @@ use Inertia\Inertia;
             return Inertia::render('admin/AnuncioConfig');
         })->name('anuncio.config');
 
+
+        Route::get('paginas/config', function () {
+            return Inertia::render('admin/paginasConfig/PaginasConfig');
+        })->name('paginas.config');
+
         Route::get('blog/config', function () {
             return Inertia::render('admin/BlogConfig');
         })->name('blog.config');

@@ -20,6 +20,7 @@ const handleLogout = () => {
             <nav class="space-y-2">
                 <Link :href="route('admin.dashboard')" class="block rounded px-2 py-2 hover:bg-gray-700">Dashboard</Link>
                 <Link :href="route('anuncio.config')" class="block rounded px-2 py-2 hover:bg-gray-700">Anúncios</Link>
+                <Link :href="route('paginas.config')" class="block rounded px-2 py-2 hover:bg-gray-700">Páginas</Link>
                 <Link :href="route('produtos.config')" class="block rounded px-2 py-2 hover:bg-gray-700">Produtos</Link>
                 <Link :href="route('blog.config')" class="block rounded px-2 py-2 hover:bg-gray-700">Blogs</Link>
                 <Link :href="route('appearance')" class="block rounded px-2 py-2 hover:bg-gray-700">Configurações</Link>

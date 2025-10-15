@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Tamanho;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Log;
 
 
 class ProdutoController extends Controller
@@ -86,17 +87,95 @@ class ProdutoController extends Controller
     }
 
 
-    public function edit($id)
-    {
-        $products = Produto::with('imagens')->where('id', $id)->first();
-        return Inertia::render('admin/produtosConfig/EditarProduto')->with('products', $products);
-    }
+public function edit($id)
+{
+    $product = Produto::with(['imagens', 'tamanhos'])->findOrFail($id);
+    $productArray = $product->toArray();
+
+    // Retorna array com id e url da imagem
+    $imagensComId = array_map(function ($imagem) {
+        return [
+            'id' => $imagem['id'],
+            'url' => asset('storage/' . $imagem['imagem_path']),
+        ];
+    }, $productArray['imagens']);
+
+    $productTamanhos = $product->tamanhos->map(function ($tamanho) {
+        return [
+            'id' => $tamanho->id,
+            'nome' => $tamanho->nome,
+            'preco' => $tamanho->pivot->preco,
+        ];
+    })->toArray();
+
+    $productArray['imagens'] = $imagensComId;
+
+    return Inertia::render('admin/produtosConfig/EditarProduto', [
+        'products' => $productArray,
+        'imagemPaths' => $imagensComId,
+        'productTamanhos' => $productTamanhos,
+    ]);
+}
+
 
     public function update(Request $request, $id)
     {
         $produto = Produto::findOrFail($id);
         
         $produto->update($request->all());
+        
+        $tamanhos = $request->input('tamanhos', []);
+
+        if (is_string($tamanhos)) {
+            $tamanhos = json_decode($tamanhos, true);
+        }
+
+        $tamanhosSync = [];
+
+        foreach ($tamanhos as $tamanhoData) {
+            $tamanho = Tamanho::firstOrCreate(['nome' => $tamanhoData['nome']]);
+            $tamanhosSync[$tamanho->id] = ['preco' => $tamanhoData['preco']];
+        }
+
+        // Sincroniza tamanhos: adiciona novos, atualiza e remove os que não estão no array
+        $produto->tamanhos()->sync($tamanhosSync);
+
+
+        $imagensExistentes = json_decode($request->input('imagensExistentes', '[]'), true);
+
+        $idsParaManter = [];
+
+        if (!empty($imagensExistentes)) {
+            if (isset($imagensExistentes[0]) && is_array($imagensExistentes[0]) && isset($imagensExistentes[0]['id'])) {
+                $idsParaManter = array_map(fn($img) => $img['id'], $imagensExistentes);
+            } else {
+                $idsParaManter = $imagensExistentes;
+            }
+        }
+
+        ProdutoImagem::where('produto_id', $produto->id)
+            ->whereNotIn('id', $idsParaManter)
+            ->delete();
+
+        // Descobre a maior ordem atual
+        $maxOrdem = ProdutoImagem::where('produto_id', $produto->id)->max('ordem');
+        $maxOrdem = $maxOrdem ?? 0; // se null, começa em zero
+
+        // Salva as imagens novas com a ordem correta
+        $ordemAtual = $maxOrdem;
+        if ($request->hasFile('imagensNovas')) {
+            foreach ($request->file('imagensNovas') as $imagem) {
+                $path = $imagem->store('produtos', 'public');
+                $ordemAtual++;
+
+                ProdutoImagem::create([
+                    'produto_id' => $produto->id,
+                    'user_id' => auth()->id(),
+                    'imagem_path' => $path,
+                    'ordem' => $ordemAtual,
+                ]);
+            }
+        }
 
         return Inertia::location(route('produtos.config'));
     }
@@ -129,4 +208,35 @@ class ProdutoController extends Controller
             'produtoSwiper' => $produtosRelacionados,
         ]);
     }
+
+    public function show(){
+        $produtos = Produto::with(['imagens', 'tamanhos'])->get()->map(function ($produto) {
+
+            // Mapeia os dados da relação `tamanhos` para uma estrutura limpa
+            $tamanhosData = $produto->tamanhos->map(function ($tamanho) {
+                return [
+                    'id' => $tamanho->id,
+                    'nome' => $tamanho->nome,
+                    'preco' => $tamanho->pivot->preco, // Acessa o preço da tabela intermediária
+                ];
+            });
+
+            return [
+                'id' => $produto->id,
+                'nome' => $produto->nome,
+                'descricao' => $produto->descricao,
+                'estoque' => $produto->estoque,
+                'tamanhos' => $tamanhosData,
+                'imageUrl' => $produto->imagens->first()
+                    ? asset('storage/' . $produto->imagens->first()->imagem_path)
+                    : null,
+                'created_at' => $produto->created_at->format('d/m/Y H:i'),
+            ];
+        });
+            Log::info('Produtos:', $produtos->toArray()); // Registra no log
+        return Inertia::render('Produtos', [
+            'produtoSwiper' => $produtos,
+        ]);
+    }
+    
 }
