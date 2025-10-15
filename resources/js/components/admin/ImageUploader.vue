@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { defineProps, defineEmits } from 'vue'
 
-const props = defineProps({
+const _props = defineProps({
   imagensParaRenderizar: Array,
   imagemModal: String,
 })
 
-const emits = defineEmits(['onFilesChange', 'removerImagem', 'abrirModal', 'fecharModal'])
+const _emits = defineEmits(['onFilesChange', 'removerImagem', 'abrirModal', 'fecharModal'])
 
 </script>
 
