@@ -7,8 +7,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Head, useForm } from '@inertiajs/vue3';
 import { LoaderCircle } from 'lucide-vue-next';
-import { Inertia } from '@inertiajs/inertia';
-import axios from 'axios';
 
 defineProps<{
     status?: string;

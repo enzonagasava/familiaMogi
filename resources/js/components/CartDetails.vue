@@ -11,7 +11,7 @@ interface CartProps {
 const page = usePage<CartProps>();
 
 // Converte o objeto do carrinho em um array para o `v-for`
-var cartItems = ref(
+const cartItems = ref(
 Object.entries(page.props.cart).map(([key, item]) => ({
     key,
     ...item,

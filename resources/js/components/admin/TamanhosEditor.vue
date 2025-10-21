@@ -6,7 +6,7 @@ type Tamanho = {
   preco: number;
 }
 
-const props = defineProps<{
+defineProps<{
   tamanhos: Tamanho[]
 }>()
 
