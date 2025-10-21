@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { usePage, Link } from '@inertiajs/vue3';
+import { usePage } from '@inertiajs/vue3';
 import ButtonAddCart from './ui/button/ButtonAddCart.vue';
 import { Navigation, Pagination, Thumbs } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
-import { watch } from 'vue';
 
 const activeModules = [Navigation, Thumbs, Pagination];
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head } from '@inertiajs/vue3';
 import LoginDetails from '@/components/LoginDetails.vue';
 
 defineProps<{
