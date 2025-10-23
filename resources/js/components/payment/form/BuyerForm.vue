@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineEmits, defineProps } from 'vue';
+import { reactive, watch } from 'vue';
 
 interface FormData {
   name: string;
@@ -11,28 +11,34 @@ interface FormData {
   cvv: string;
 }
 
-const props = defineProps<{
-  form: FormData;
-}>();
+const props = defineProps<{ form: FormData }>();
+const emit = defineEmits(['update:form', 'submit', 'whatsapp']);
 
-const emit = defineEmits(['submit', 'whatsapp']);
+const localForm = reactive({ ...props.form });
+
+watch(() => props.form, (newForm) => {
+  Object.assign(localForm, newForm);
+});
+
+watch(localForm, (newVal) => {
+  emit('update:form', newVal);
+}, { deep: true });
 
 function formatCardNumber() {
-  props.form.cardNumber = props.form.cardNumber
+  localForm.cardNumber = localForm.cardNumber
     .replace(/\D/g, '')
     .replace(/(.{4})/g, '$1 ')
     .trim();
 }
 
 function formatExpiry() {
-  props.form.expiry = props.form.expiry
+  localForm.expiry = localForm.expiry
     .replace(/\D/g, '')
     .replace(/^(\d{2})(\d)/, '$1/$2')
     .slice(0, 5);
 }
 
 function onSubmit() {
-  // Aqui você pode validar o form antes de emitir
   emit('submit');
 }
 
@@ -46,30 +52,30 @@ function onWhatsapp() {
     <h2>Informações do Comprador</h2>
     <form @submit.prevent="onSubmit">
       <label for="name">Nome Completo</label>
-      <input id="name" v-model="form.name" type="text" placeholder="Seu nome completo" required />
+      <input id="name" v-model="localForm.name" type="text" placeholder="Seu nome completo" required />
 
       <label for="email">E-mail</label>
-      <input id="email" v-model="form.email" type="email" placeholder="seu@email.com" required />
+      <input id="email" v-model="localForm.email" type="email" placeholder="seu@email.com" required />
 
       <label for="telefone">Telefone</label>
-      <input id="telefone" v-model="form.telefone" type="text" placeholder="0000000" required />
+      <input id="telefone" v-model="localForm.telefone" type="text" placeholder="0000000" required />
 
       <h2>Forma de Pagamento</h2>
       <label for="paymentMethod">Selecione a forma de pagamento</label>
-      <select id="paymentMethod" v-model="form.paymentMethod" required>
+      <select id="paymentMethod" v-model="localForm.paymentMethod" required>
         <option value="" disabled>Selecione...</option>
         <option value="cartao">Cartão de Crédito</option>
         <option value="pix">Pix</option>
         <option value="boleto">Boleto</option>
       </select>
 
-      <template v-if="form.paymentMethod === 'cartao'">
+      <template v-if="localForm.paymentMethod === 'cartao'">
         <h2>Dados do Cartão</h2>
 
         <label for="cardNumber">Número do Cartão</label>
         <input
           id="cardNumber"
-          v-model="form.cardNumber"
+          v-model="localForm.cardNumber"
           type="text"
           placeholder="1234 5678 9012 3456"
           maxlength="19"
@@ -82,7 +88,7 @@ function onWhatsapp() {
             <label for="expiry">Validade</label>
             <input
               id="expiry"
-              v-model="form.expiry"
+              v-model="localForm.expiry"
               type="text"
               placeholder="MM/AA"
               maxlength="5"
@@ -92,7 +98,7 @@ function onWhatsapp() {
           </div>
           <div>
             <label for="cvv">CVV</label>
-            <input id="cvv" v-model="form.cvv" type="password" placeholder="123" maxlength="3" required />
+            <input id="cvv" v-model="localForm.cvv" type="password" placeholder="123" maxlength="3" required />
           </div>
         </div>
       </template>
@@ -104,6 +110,7 @@ function onWhatsapp() {
     </form>
   </section>
 </template>
+
 
 <style scoped>
 .form-section,
@@ -179,6 +186,5 @@ button:hover {
     flex-direction: column;
   }
 }
-
 
 </style>

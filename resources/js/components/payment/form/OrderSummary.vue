@@ -10,7 +10,7 @@ interface CartItem {
   thumbnail?: string;
 }
 
-const props = defineProps<{
+defineProps<{
   cartItems: CartItem[];
   cartTotal: number;
 }>();
