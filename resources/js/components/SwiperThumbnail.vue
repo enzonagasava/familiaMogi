@@ -17,7 +17,8 @@ const props = defineProps<{
 const page = usePage();
 
 const produtos = page.props.produtoSwiper || [];
-console.log('Produtos do carrossel:', produtos);
+
+console.log(produtos);
 
 const selectedPortions = ref<Record<number | string, string>>({});
 

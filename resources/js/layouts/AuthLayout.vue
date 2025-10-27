@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Link, router } from '@inertiajs/vue3';
 import { LogOut } from 'lucide-vue-next';
+import { House } from 'lucide-vue-next';
 
 defineProps<{
     title?: string;
@@ -19,11 +20,15 @@ const handleLogout = () => {
             <nav class="space-y-2">
                 <Link :href="route('admin.dashboard')" class="block rounded px-2 py-2 hover:bg-gray-700">Dashboard</Link>
                 <Link :href="route('anuncio.config')" class="block rounded px-2 py-2 hover:bg-gray-700">Anúncios</Link>
+                <Link :href="route('paginas.config')" class="block rounded px-2 py-2 hover:bg-gray-700">Páginas</Link>
                 <Link :href="route('produtos.config')" class="block rounded px-2 py-2 hover:bg-gray-700">Produtos</Link>
                 <Link :href="route('blog.config')" class="block rounded px-2 py-2 hover:bg-gray-700">Blogs</Link>
                 <Link :href="route('appearance')" class="block rounded px-2 py-2 hover:bg-gray-700">Configurações</Link>
+                <Link :href="route('home')" class="flex w-full rounded px-2 py-2 hover:bg-gray-700">
+                    <House class="mr-[0.5rem]"/>
+                    Ir para o site</Link>
                 <Link class="flex w-full rounded px-2 py-2 hover:bg-gray-700" method="post" :href="route('logout')" @click="handleLogout" as="button">
-                    <LogOut />
+                    <LogOut class="mr-[0.5rem]"/>
                     Log out
                 </Link>
             </nav>

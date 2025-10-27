@@ -9,10 +9,7 @@ use App\Http\Controllers\PaymentController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/anuncio/{id}', [ProdutoController::class, 'anuncio'])->name('anuncio');
-
-Route::get('/produtos', function () {
-    return Inertia::render('Produtos');
-})->name('produtos');
+Route::get('/produtos', [ProdutoController::class, 'show'])->name('produtos.index');
 
 Route::get('/about-us', function () {
     return Inertia::render('AboutUs');

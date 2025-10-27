@@ -18,7 +18,7 @@ class AuthenticatedSessionController extends Controller
     {
             if (auth()->check()) {
         // Usuário já está autenticado, redireciona para dashboard
-        return redirect('/dashboard');
+        return redirect('/');
     }
 
         return Inertia::render('auth/Login', [
