@@ -45,3 +45,4 @@ services:
 
 volumes:
   dbdata:
+      external: true
