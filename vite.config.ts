@@ -11,7 +11,7 @@ export default defineConfig(({ command, mode }) => {
   const isDev = command === 'serve';
 
   return {
-    base: env.VITE_BASE_URL || '/',
+    base: isDev ? '/' : '/build/', 
     plugins: [
       laravel({
         input: ['resources/js/app.ts'],
