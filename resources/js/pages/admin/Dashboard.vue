@@ -3,8 +3,8 @@ import AuthLayout from '@/layouts/AuthLayout.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { Head, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
-import DashboardClient from '@/components/dashboard/DashboardClient.vue';
-import DashboardAdmin from '@/components/dashboard/DashboardAdmin.vue';
+import DashboardClient from '@/components/app/dashboard/DashboardClient.vue';
+import DashboardAdmin from '@/components/admin/dashboard/DashboardAdmin.vue';
 
 const page = usePage();
 

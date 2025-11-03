@@ -13,13 +13,11 @@ class CargoCreationTest extends TestCase
     /** @test */
     public function it_can_create_a_cargo()
     {
-        // Cria um cargo usando factory
         $cargo = Cargo::create([
             'nome' => 'Admin',
             'descricao' => 'Cargo de administrador do sistema',
         ]);
 
-        // Verifica se o cargo foi criado no banco de dados
         $this->assertDatabaseHas('cargos', [
             'id' => $cargo->id,
             'nome' => 'Admin',

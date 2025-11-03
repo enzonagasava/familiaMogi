@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Cliente;
+namespace App\Http\Controllers\App;
 
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;

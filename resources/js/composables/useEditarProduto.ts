@@ -70,7 +70,6 @@ export function useProduto() {
       }),
     ];
   });
-  console.log(imagensParaRenderizar);
 
   function removerImagem(id: string) {
     const indexExistente = imagensExistentes.value.findIndex(img => img.id === id);
