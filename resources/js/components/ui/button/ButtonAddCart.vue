@@ -50,7 +50,6 @@ const addToCart = async (e: SubmitEvent) => {
       quantidade: props.quantidade,
     });
 
-    console.log('RESPOSTA /cart/add =>', data);
     toast.show('Produto adicionado com sucesso!', 'success')
     cartStore.setCart(Object.values(data.cart));
     emit('add-to-cart', props.produto, props.portion);
