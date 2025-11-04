@@ -153,6 +153,7 @@ function handleSubmit() {
                     id="numero_endereco"
                     v-model="cliente.numero_endereco"
                     type="text"
+                    v-maska="'########'"
                     placeholder="Digite o número do endereço"
                     class="w-full rounded border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
                     required

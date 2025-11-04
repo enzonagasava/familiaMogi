@@ -20,7 +20,6 @@ createInertiaApp({
     app.use(pinia)
     app.use(ZiggyVue)
 
-    // ✅ registra o Toast globalmente
     app.component('Toast', Toast)
 
     app.mount(el)
