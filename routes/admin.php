@@ -44,7 +44,6 @@ use Inertia\Inertia;
         Route::post('clientes/adicionarCliente', [ClienteController::class, 'store'])->name('clientes.store');
         Route::delete('clientes/deletar-cliente/{id}', [ClienteController::class, 'destroy'])->name('clientes.destroy');
 
-        Route::get('config/geral', [ProfileController::class, 'edit'])->name('config.geral');
     });
 
     Route::middleware(['jwt.cookie', 'auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {

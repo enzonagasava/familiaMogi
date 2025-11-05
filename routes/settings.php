@@ -5,17 +5,10 @@ use App\Http\Controllers\Settings\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::middleware('auth')->group(function () {
-    Route::redirect('settings', '/settings/profile');
+Route::middleware(['jwt.cookie', 'auth', 'verified'])->group(function () {
 
-    Route::get('settings/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('settings/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('settings/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('config/geral', [ProfileController::class, 'edit'])->name('config.geral');
 
-    Route::get('settings/password', [PasswordController::class, 'edit'])->name('password.edit');
-    Route::put('settings/password', [PasswordController::class, 'update'])->name('password.update');
-
-    Route::get('settings/appearance', function () {
-        return Inertia::render('admin/configuracoes/Appearance');
-    })->name('appearance');
+    Route::patch('config/geral', [ProfileController::class, 'update'])->name('config.update');
+    Route::delete('config/geral', [ProfileController::class, 'destroy'])->name('config.destroy');
 });

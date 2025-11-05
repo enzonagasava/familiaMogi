@@ -22,13 +22,16 @@ const form = useForm({
 });
 
 const submit = () => {
-  form.patch(route('profile.update'), {
+  form.patch(route('config.update'), {
     preserveScroll: true,
     onSuccess: () => {
-        form.reset();
+      Object.assign(props.user, form.data());
+
+      form.reset('current_password', 'password', 'password_confirmation');
     }
   });
 };
+
 </script>
 
 <template>

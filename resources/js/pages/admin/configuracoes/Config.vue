@@ -13,7 +13,7 @@ interface Props {
 defineProps<Props>();
 
 const breadcrumbs: BreadcrumbItem[] = [
-    { title: 'Configurações', href: '/settings/profile' },
+    { title: 'Configurações', href: '/config/geral' },
 ];
 
 // Pega o usuário logado direto das props do Inertia
