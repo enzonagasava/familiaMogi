@@ -9,7 +9,7 @@ test('profile page is displayed', function () {
 
     $response = $this
         ->actingAs($user)
-        ->get('/settings/profile');
+        ->get('/config/geral');
 
     $response->assertOk();
 });
@@ -19,14 +19,14 @@ test('profile information can be updated', function () {
 
     $response = $this
         ->actingAs($user)
-        ->patch('/settings/profile', [
+        ->patch('/config/geral', [
             'name' => 'Test User',
             'email' => 'test@example.com',
+            'numero' => '(11) 12345-6789'
         ]);
 
     $response
-        ->assertSessionHasNoErrors()
-        ->assertRedirect('/settings/profile');
+        ->assertSessionHasNoErrors();
 
     $user->refresh();
 
@@ -40,14 +40,14 @@ test('email verification status is unchanged when the email address is unchanged
 
     $response = $this
         ->actingAs($user)
-        ->patch('/settings/profile', [
+        ->patch('/config/geral', [
             'name' => 'Test User',
             'email' => $user->email,
+            'numero' => '(11) 12345-6789',
         ]);
 
     $response
-        ->assertSessionHasNoErrors()
-        ->assertRedirect('/settings/profile');
+        ->assertSessionHasNoErrors();
 
     expect($user->refresh()->email_verified_at)->not->toBeNull();
 });
@@ -57,7 +57,7 @@ test('user can delete their account', function () {
 
     $response = $this
         ->actingAs($user)
-        ->delete('/settings/profile', [
+        ->delete('/config/geral', [
             'password' => 'password',
         ]);
 
@@ -74,14 +74,14 @@ test('correct password must be provided to delete account', function () {
 
     $response = $this
         ->actingAs($user)
-        ->from('/settings/profile')
-        ->delete('/settings/profile', [
+        ->from('/config/geral')
+        ->delete('/config/geral', [
             'password' => 'wrong-password',
         ]);
 
     $response
         ->assertSessionHasErrors('password')
-        ->assertRedirect('/settings/profile');
+        ->assertRedirect('/config/geral');
 
     expect($user->fresh())->not->toBeNull();
 });
