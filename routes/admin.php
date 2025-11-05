@@ -4,12 +4,11 @@ use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\App\DashboardController as ClienteDashboardController;
 use App\Http\Controllers\Admin\ProdutoController;
 use App\Http\Controllers\Admin\ClienteController;
+use App\Http\Controllers\Settings\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
     Route::middleware(['jwt.cookie', 'auth', 'verified'])->group(function () {
-        // Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-
 
         Route::get('anuncio/config', function () {
             return Inertia::render('admin/AnuncioConfig');
@@ -45,6 +44,7 @@ use Inertia\Inertia;
         Route::post('clientes/adicionarCliente', [ClienteController::class, 'store'])->name('clientes.store');
         Route::delete('clientes/deletar-cliente/{id}', [ClienteController::class, 'destroy'])->name('clientes.destroy');
 
+        Route::get('config/geral', [ProfileController::class, 'edit'])->name('config.geral');
     });
 
     Route::middleware(['jwt.cookie', 'auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {

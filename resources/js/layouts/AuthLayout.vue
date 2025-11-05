@@ -32,7 +32,7 @@ const handleLogout = () => {
 
                 </DropdownButtonAdmin>
                 <Link :href="route('blog.config')" class="block rounded px-2 py-2 hover:bg-gray-700">Blogs</Link>
-                <Link :href="route('appearance')" class="block rounded px-2 py-2 hover:bg-gray-700">Configurações</Link>
+                <Link :href="route('config.geral')" class="block rounded px-2 py-2 hover:bg-gray-700">Configurações</Link>
                 <Link :href="route('home')" class="flex w-full rounded px-2 py-2 hover:bg-gray-700">
                     <House class="mr-[0.5rem]"/>
                     Ir para o site</Link>

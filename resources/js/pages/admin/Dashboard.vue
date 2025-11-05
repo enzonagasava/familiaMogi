@@ -11,7 +11,6 @@ const page = usePage();
 const user = computed(() => page.props.auth?.user || null);
 
 const userCargo = user.value.cargo_id;
-console.log(userCargo);
 </script>
 
 <template>
