@@ -184,6 +184,8 @@ public function edit($id)
     {
         $produto = Produto::findOrFail($id);
         $produto->delete();
+
+        return response()->noContent();
     }
 
     public function anuncio($id)

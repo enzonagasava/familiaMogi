@@ -1,0 +1,83 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use Illuminate\Http\Request;
+use App\Models\Cliente;
+use Inertia\Inertia;
+use App\Http\Controllers\Controller;
+
+
+class ClienteController extends Controller
+{
+    public function index()
+    {
+        $clientes = Cliente::all()->map(function ($cliente) {
+            $cliente->endereco_completo = "{$cliente->endereco}, {$cliente->numero_endereco} - {$cliente->municipio} - {$cliente->estado}";
+            return $cliente;
+        });
+
+        return Inertia::render('admin/clientes/Clientes', [
+            'clientes' => $clientes
+        ]);
+    }
+
+    public function create()
+    {
+        return Inertia::render('admin/clientes/AdicionarClientes');
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'nome' => 'required|string|max:255',
+            'email' => 'nullable|string|email|max:255|unique:clientes',
+            'numero' => 'required|string|max:20|unique:clientes',
+            'cep' => 'nullable|string|max:10',
+            'endereco' => 'nullable|string|max:255',
+            'numero_endereco' => 'nullable|string|max:10',
+            'municipio' => 'nullable|string|max:100',
+            'estado' => 'nullable|string|max:100',
+        ]);
+
+        Cliente::create($validated);
+
+        return Inertia::location(route('clientes.index'));
+    }
+
+    public function edit($id){
+        $cliente = Cliente::findOrFail($id);
+
+        return Inertia::render('admin/clientes/EditarClientes', [
+            'cliente' => $cliente
+        ]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $cliente = Cliente::findOrFail($id);
+
+        $validated = $request->validate([
+            'nome' => 'required|string|max:255',
+            'email' => 'nullable|string|email|max:255|unique:clientes,email,' . $id,
+            'numero' => 'required|string|max:20|unique:clientes,numero,' . $id,
+            'cep' => 'nullable|string|max:10',
+            'endereco' => 'nullable|string|max:255',
+            'numero_endereco' => 'nullable|string|max:10',
+            'municipio' => 'nullable|string|max:100',
+            'estado' => 'nullable|string|max:100',
+        ]);
+
+        $cliente->update($validated);
+
+        return Inertia::location(route('clientes.index'));
+    }
+
+    public function destroy($id){
+        $cliente = Cliente::findOrFail($id);
+        $cliente->delete();
+
+        return Inertia::location(route('clientes.index'));
+    }
+}
+
