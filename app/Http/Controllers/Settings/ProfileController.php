@@ -56,7 +56,6 @@ class ProfileController extends Controller
 
     /**
      * Delete the user's profile.
-     */
     public function destroy(Request $request): RedirectResponse
     {
         $request->validate([
@@ -74,4 +73,6 @@ class ProfileController extends Controller
 
         return redirect('/');
     }
+     */
+
 }

@@ -62,7 +62,7 @@ const submit = () => {
     </div>
 
     <div class="grid gap-2">
-      <Label for="numero">Número</Label>
+      <Label for="numero">Número <span class="text-xs text-gray-500">* para o bot da IA</span></Label>
       <Input
         id="numero"
         type="text"
