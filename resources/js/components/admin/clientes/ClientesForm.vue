@@ -3,6 +3,7 @@ import { reactive, watch } from 'vue'
 import Button from '@/components/ui/button/Button.vue'
 import { Inertia } from '@inertiajs/inertia'
 import { vMaska } from 'maska/vue'
+import HeadingSmall from '@/components/ui/header/HeadingSmall.vue'
 
 interface Cliente {
   id?: number
@@ -74,7 +75,7 @@ function handleSubmit() {
       <!-- Main Content -->
       <main class="flex-1 p-10">
         <div class="mx-auto bg-white rounded shadow p-8">
-            <h2 class="text-2xl font-bold mb-6">Adicionar Novo Cliente</h2>
+            <HeadingSmall title='Adicionar Novo Cliente'/>
 
             <form @submit.prevent="handleSubmit" class="grid gap-6">
             <!-- Linha 1 -->
@@ -173,7 +174,7 @@ function handleSubmit() {
                 </div>
 
                 <div>
-                <label for="estado" class="block font-semibold mb-2 text-gray-700">Estado</label>
+                <label for="estado" class="block font-semibold mb-2 text-gray-700">UF</label>
                 <input
                     id="estado"
                     v-model="cliente.estado"

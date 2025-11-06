@@ -4,6 +4,7 @@ import { ButtonTable, Button } from '@/components/ui/button'
 import { Pencil, Eye } from 'lucide-vue-next'
 import { ref } from 'vue';
 import ClienteModal from '@/components/admin/clientes/ClientesModal.vue'
+import HeadingSmall from '@/components/ui/header/HeadingSmall.vue'
 
 const page = usePage();
 const clientes = ref(Array.isArray(page.props.clientes) ? page.props.clientes : []);
@@ -20,7 +21,7 @@ function verCliente(cliente: any) {
 <template>
 
     <div class="mb-6 flex items-center justify-between">
-        <h1 class="text-2xl font-bold text-gray-800">Gerenciar Clientes</h1>
+        <HeadingSmall title='Gerenciar Clientes'/>
         <Link :href="route('adicionar.clientes')">
             <Button>
                 + Adicionar Novo Cliente

@@ -4,6 +4,7 @@ import { ref } from 'vue';
 interface Props {
   label: string
   openByDefault?: boolean
+  icon?: any
 }
 
 const props = defineProps<Props>()

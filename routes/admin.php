@@ -4,12 +4,11 @@ use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\App\DashboardController as ClienteDashboardController;
 use App\Http\Controllers\Admin\ProdutoController;
 use App\Http\Controllers\Admin\ClienteController;
+use App\Http\Controllers\Settings\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
     Route::middleware(['jwt.cookie', 'auth', 'verified'])->group(function () {
-        // Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-
 
         Route::get('anuncio/config', function () {
             return Inertia::render('admin/AnuncioConfig');
