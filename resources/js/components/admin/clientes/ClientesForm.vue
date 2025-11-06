@@ -174,7 +174,7 @@ function handleSubmit() {
                 </div>
 
                 <div>
-                <label for="estado" class="block font-semibold mb-2 text-gray-700">Estado</label>
+                <label for="estado" class="block font-semibold mb-2 text-gray-700">UF</label>
                 <input
                     id="estado"
                     v-model="cliente.estado"

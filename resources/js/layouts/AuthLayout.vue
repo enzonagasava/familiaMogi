@@ -31,8 +31,15 @@ const handleLogout = () => {
                     </Link>
 
                 </DropdownButtonAdmin>
+
                 <Link :href="route('blog.config')" class="block rounded px-2 py-2 hover:bg-gray-700">Blogs</Link>
-                <Link :href="route('config.geral')" class="block rounded px-2 py-2 hover:bg-gray-700">Configurações</Link>
+
+                <DropdownButtonAdmin label="Configurações" class="relative">
+                    <Link :href="route('config.geral')" class="block rounded px-4 py-2 hover:bg-gray-700">Acesso</Link>
+                    <Link :href="route('empresa.config.geral')" class="block rounded px-4 py-2 hover:bg-gray-700">Informações da Empresa</Link>
+                    <Link :href="route('config.pagamento')" class="block rounded px-4 py-2 hover:bg-gray-700">Métodos de Pagamento</Link>
+
+                </DropdownButtonAdmin>
                 <Link :href="route('home')" class="flex w-full rounded px-2 py-2 hover:bg-gray-700">
                     <House class="mr-[0.5rem]"/>
                     Ir para o site</Link>
