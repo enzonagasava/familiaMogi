@@ -26,8 +26,8 @@ Route::middleware(['jwt.cookie', 'auth', 'verified'])->group(function () {
 
     });
 
+    //Configuraçao Métodos de Pagamento
     Route::get('config/pagamento', [PagamentoConfigController::class, 'index'])->name('config.pagamento');
     Route::patch('config/pagamento', [PagamentoConfigController::class, 'update'])->name('config.pagamento.update');
-
 
 });

@@ -32,7 +32,12 @@ const handleLogout = () => {
 
                 </DropdownButtonAdmin>
 
-                <Link :href="route('blog.config')" class="block rounded px-2 py-2 hover:bg-gray-700">Blogs</Link>
+                <DropdownButtonAdmin label='Pedidos' class="relative">
+                    <Link :href="route('admin.pedidos.create')" class="block rounded px-4 py-2 hover:bg-gray-700">Adicionar Pedido</Link>
+                    <Link :href="route('admin.pedidos.index', 'Em Andamento')" class="block rounded px-4 py-2  hover:bg-gray-700">Pedidos em Andamento</Link>
+                    <Link :href="route('admin.pedidos.index', 'Finalizado')" class="block rounded px-4 py-2  hover:bg-gray-700">Pedidos Finalizados</Link>
+
+                </DropdownButtonAdmin>
 
                 <DropdownButtonAdmin label="Configurações" class="relative">
                     <Link :href="route('config.geral')" class="block rounded px-4 py-2 hover:bg-gray-700">Acesso</Link>

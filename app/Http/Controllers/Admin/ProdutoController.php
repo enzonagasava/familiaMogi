@@ -9,6 +9,7 @@ use Inertia\Inertia;
 use App\Models\Tamanho;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Log;
+use App\Helpers\NumberHelper;
 
 
 class ProdutoController extends Controller
@@ -45,9 +46,9 @@ class ProdutoController extends Controller
             'nome' => 'required|string|max:255',
             'descricao' => 'required|string',
             'estoque' => 'required|integer|min:0',
-            'tamanhos' => 'required|array', // Agora é um array
-            'tamanhos.*.nome' => 'required|string|max:255', // Valida cada item do array
-            'tamanhos.*.preco' => 'required|numeric|min:0', // Valida o preço
+            'tamanhos' => 'required|array',
+            'tamanhos.*.nome' => 'required|string|max:255',
+            'tamanhos.*.preco' => 'required|string|min:0',
             'imagens.*' => 'nullable|image|max:2048'
         ]);
 
@@ -61,12 +62,13 @@ class ProdutoController extends Controller
 
         // 3. Associar os tamanhos e preços (a parte crucial!)
         foreach ($validated['tamanhos'] as $tamanhoData) {
-            // Encontre ou crie o tamanho no seu catálogo `tamanhos`
             $tamanho = Tamanho::firstOrCreate(['nome' => $tamanhoData['nome']]);
-            
-            // Anexar o tamanho ao produto com o preço na tabela intermediária
-            $produto->tamanhos()->attach($tamanho->id, ['preco' => $tamanhoData['preco']]);
+
+            $produto->tamanhos()->attach($tamanho->id, [
+                'preco' => NumberHelper::parseMoney($tamanhoData['preco']),
+            ]);
         }
+
 
         // 4. Salvar as imagens (sua lógica atual, que parece correta)
         if ($request->hasFile('imagens')) {
@@ -121,7 +123,7 @@ public function edit($id)
     public function update(Request $request, $id)
     {
         $produto = Produto::findOrFail($id);
-        
+
         $produto->update($request->all());
         
         $tamanhos = $request->input('tamanhos', []);
@@ -134,7 +136,9 @@ public function edit($id)
 
         foreach ($tamanhos as $tamanhoData) {
             $tamanho = Tamanho::firstOrCreate(['nome' => $tamanhoData['nome']]);
-            $tamanhosSync[$tamanho->id] = ['preco' => $tamanhoData['preco']];
+            $tamanhosSync[$tamanho->id] = [
+                'preco' => NumberHelper::parseMoney($tamanhoData['preco']),
+            ];
         }
 
         // Sincroniza tamanhos: adiciona novos, atualiza e remove os que não estão no array
@@ -185,7 +189,7 @@ public function edit($id)
         $produto = Produto::findOrFail($id);
         $produto->delete();
 
-        return response()->noContent();
+        return redirect()->route('produtos.config');
     }
 
     public function anuncio($id)
