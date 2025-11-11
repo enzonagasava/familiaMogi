@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { defineProps, defineEmits } from 'vue'
+import { useMoneyConfig } from '@/composables/useMoneyConfig'
 
+const moneyConfig = useMoneyConfig()
 type Tamanho = {
   nome: string;
-  preco: number;
+  preco: string;
 }
 
 defineProps<{
@@ -32,10 +34,8 @@ function onRemover(index: number) {
         required
       />
       <input
-        v-model.number="tamanho.preco"
-        type="number"
-        min="0"
-        step="0.01"
+        v-model.lazy="tamanho.preco"
+        v-money3="moneyConfig"
         placeholder="Preço"
         class="w-32 rounded border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
         required

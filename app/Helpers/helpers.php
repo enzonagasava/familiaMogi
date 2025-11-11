@@ -1,5 +1,4 @@
 <?php
-
 use Carbon\Carbon;
 
 if (!function_exists('formatDate')) {
@@ -21,4 +20,3 @@ if (!function_exists('formatDate')) {
             ->format($format);
     }
 }
-

@@ -3,8 +3,10 @@
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\App\DashboardController as ClienteDashboardController;
 use App\Http\Controllers\Admin\ProdutoController;
+use App\Http\Controllers\Admin\PedidoController;
 use App\Http\Controllers\Admin\ClienteController;
 use App\Http\Controllers\Settings\ProfileController;
+use App\Http\Controllers\SearchController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -43,12 +45,29 @@ use Inertia\Inertia;
         Route::post('clientes/atualizarCliente/{id}', [ClienteController::class, 'update'])->name('atualizar.clientes');
         Route::post('clientes/adicionarCliente', [ClienteController::class, 'store'])->name('clientes.store');
         Route::delete('clientes/deletar-cliente/{id}', [ClienteController::class, 'destroy'])->name('clientes.destroy');
+        Route::get('/clientes/buscar', [SearchController::class, 'buscarCliente'])->name('clientes.buscar');
+
 
     });
 
     Route::middleware(['jwt.cookie', 'auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
-        // rotas admin...
+
+        //Rotas Pedidos
+        Route::get('/pedidos/{status}', [PedidoController::class, 'index'])->where('status', 'Em Andamento|Finalizado')->name('pedidos.index');
+        Route::get('/pedidos/adicionarPedido', [PedidoController::class, 'create'])->name('pedidos.create');
+        Route::post('/pedidos/adicionarPedido', [PedidoController::class, 'store'])->name('pedidos.store');
+
+        Route::get('/pedidos/{pedido}/editar', [PedidoController::class, 'edit'])
+            ->name('pedidos.edit');
+        Route::put('/pedidos/{pedido}/editar', [PedidoController::class, 'update'])
+            ->name('pedidos.update');
+
+        Route::get('/pedidos/{pedido}/visualizar', [PedidoController::class, 'view'])->name('pedidos.view');
+
+        Route::get('/pedidos/buscarProduto', [SearchController::class, 'buscarProduto'])->name('pedidos.buscarProduto');
+
+
     });
 
     Route::middleware(['jwt.cookie','auth', 'cliente'])->prefix('cliente')->name('cliente.')->group(function () {

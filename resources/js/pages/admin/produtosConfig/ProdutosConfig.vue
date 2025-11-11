@@ -11,12 +11,7 @@ const deleteProduct = (productId: number) => {
     if (confirm(`Tem certeza de que deseja excluir o produto ID: ${productId}?`)) {
         alert(`Excluindo o produto ID: ${productId}`);
         Inertia.delete(`/produtos/delete-produto/${productId}`, {
-            onSuccess: () => {
-                alert(`Produto ID: ${productId} excluído com sucesso!`);
-            },
-            onError: () => {
-                alert(`Erro ao excluir o produto ID: ${productId}.`);
-            }
+
         });
         products.value = products.value.filter((p) => p.id !== productId);
     }
