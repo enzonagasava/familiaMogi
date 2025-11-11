@@ -15,6 +15,18 @@ class ProdutoImagem extends Model
         'ordem',
     ];
 
+    /* cria um campo virtual e o proprio eloquent relaciona com a função logo abaixo
+    */
+    protected $appends = ['imagem_url'];
+    public function getImagemUrlAttribute()
+    {
+        if (!$this->imagem_path) {
+            return null;
+        }
+
+        return asset('storage/' . $this->imagem_path);
+    }
+
     /**
      * Relacionamento inverso com o anúncio
      */

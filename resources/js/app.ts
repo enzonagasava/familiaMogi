@@ -5,6 +5,8 @@ import { ZiggyVue } from 'ziggy-js'
 import { createPinia } from 'pinia'
 import '../css/app.css'
 import Toast from './components/ui/toast/Toast.vue'
+import api from './lib/axios'
+import money from 'v-money3'
 
 const appName = import.meta.env.VITE_APP_NAME || 'FamiliaMogi'
 const pinia = createPinia()
@@ -20,7 +22,11 @@ createInertiaApp({
     app.use(pinia)
     app.use(ZiggyVue)
 
+    app.use(money)
     app.component('Toast', Toast)
+
+    app.config.globalProperties.$axios = api
+    app.provide('axios', api)
 
     app.mount(el)
   },

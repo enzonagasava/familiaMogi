@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Models\Cliente;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Cache;
 use App\Http\Controllers\Controller;
 
 
@@ -79,5 +80,37 @@ class ClienteController extends Controller
 
         return Inertia::location(route('clientes.index'));
     }
+
+    public function buscar(Request $request)
+    {
+        $search = trim($request->query('search', ''));
+
+        if ($search === '') {
+            return response()->json([]);
+        }
+
+        $key = 'clientes_busca_' . md5($search);
+
+        return Cache::remember($key, now()->addSeconds(5), function () use ($search) {
+            // FULLTEXT super rápido
+            $clientes = Cliente::select('id', 'nome', 'email')
+                ->whereRaw("MATCH(nome, email) AGAINST(? IN BOOLEAN MODE)", [$search . '*'])
+                ->limit(8)
+                ->get();
+
+            // fallback pra LIKE se fulltext não encontrar nada
+            if ($clientes->isEmpty()) {
+                $clientes = Cliente::select('id', 'nome', 'email')
+                    ->where('nome', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->limit(8)
+                    ->get();
+            }
+
+            return $clientes;
+        });
+    }
+
+
 }
 

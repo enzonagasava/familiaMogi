@@ -3,7 +3,10 @@ import { reactive, ref } from 'vue'
 import AuthLayout from '@/layouts/AuthLayout.vue'
 import { Head } from '@inertiajs/vue3'
 import { Inertia } from '@inertiajs/inertia'
+import { useMoneyConfig } from '@/composables/useMoneyConfig'
 
+
+const moneyConfig = useMoneyConfig()
 const produto = reactive({
   nome: '',
   descricao: '',
@@ -158,10 +161,8 @@ function handleSubmit() {
                   required
                 />
                 <input
-                  v-model.number="tamanho.preco"
-                  type="number"
-                  min="0"
-                  step="0.01"
+                  v-model.lazy="tamanho.preco"
+                  v-money3="moneyConfig"
                   placeholder="Preço"
                   class="w-32 rounded border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
                   required
