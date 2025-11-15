@@ -22,11 +22,14 @@ class PedidosStoreRequest extends FormRequest
             'clienteSelecionado.numero' => ['nullable', 'string', 'max:20'],
 
             // --- Pedido ---
+            'id' => ['nullable', 'integer'],
             'data' => ['required', 'date'],
-            'status' => ['required', 'in:Em Andamento,Finalizado'],
+            'status' => ['required', 'string', 'max:30'],
             'valorTotal' => ['required', 'numeric'],
             'endereco' => ['required', 'string', 'max:225'],
             'plataformaSelecionada' => ['nullable', 'integer'],
+            'cod_pedido' => ['nullable', 'string'],
+            'valorTotal' => ['nullable', 'numeric'],
 
             // --- Produtos ---
             'produtos' => ['required', 'array', 'min:1'],
@@ -45,7 +48,7 @@ class PedidosStoreRequest extends FormRequest
             'clienteSelecionado.id.required' => 'Selecione um cliente válido.',
             'produtos.required' => 'Adicione ao menos um produto.',
             'produtos.*.id.exists' => 'Um dos produtos selecionados não existe.',
-            'status.in' => 'Status inválido. Use "Em Andamento" ou "Finalizado".',
+            'status.in' => 'Status inválido. Use "Em Andamento", "A Caminho", "Finalizado".',
             'endereco' => 'endereço inválido'
         ];
     }

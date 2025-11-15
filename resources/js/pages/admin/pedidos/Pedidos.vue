@@ -10,7 +10,7 @@ defineProps({
   },
   status: {
     type: String,
-    default: 'Em Andamento'
+    default: 'em-andamento'
   }
 })
 </script>

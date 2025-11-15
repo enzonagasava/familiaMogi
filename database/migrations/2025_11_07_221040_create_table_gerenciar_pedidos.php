@@ -18,7 +18,7 @@ return new class extends Migration
             $table->integer('valor');
             $table->string('endereco');
             $table->foreignId('plataforma_id')->constrained('plataforma_pedido')->cascadeOnDelete();
-            $table->enum('status', ['Em Andamento', 'Finalizado'])->default('Em Andamento');
+            $table->string('status');
             $table->timestamps();
         });
     }
