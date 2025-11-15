@@ -10,13 +10,14 @@ use Inertia\Inertia;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Pedidos\PedidosStoreRequest;
 use App\Models\Pedido;
+use App\Models\Produto;
 
 
 class PedidoController extends Controller
 {
     public function index(string $status)
     {
-        $statusValido = in_array($status, ['Em Andamento', 'Finalizado']) ? $status : 'Em Andamento';
+        $statusValido = in_array($status, ['em-andamento', 'a-caminho', 'finalizado']) ? $status : 'em-andamento';
 
         $pedidos = GerenciarPedido::with([
             'cliente:id,nome',
@@ -59,8 +60,18 @@ class PedidoController extends Controller
 
       $codigoPedido = 'PED-' . strtoupper(Str::random(8));
 
-
       foreach ($data['produtos'] as $produto) {
+          $produtoModel = Produto::findOrFail($produto['id']);
+
+          if ($produtoModel->estoque < $produto['quantidade']) {
+              return back()->withErrors([
+                  'estoque' => "O produto {$produtoModel->nome} não possui estoque suficiente."
+              ]);
+          }
+
+        $produtoModel->estoque -= $produto['quantidade'];
+        $produtoModel->save();
+
           Pedido::create([
               'produto_id' => $produto['id'],
               'quantidade' => $produto['quantidade'],
@@ -78,6 +89,7 @@ class PedidoController extends Controller
           'plataforma_id'  => $data['plataformaSelecionada'] ?? null,
       ]);
 
+
       return Inertia::render('admin/pedidos/Pedidos', [
           'status' => $data['status'],
           'message' => 'Pedido adicionado com sucesso'
@@ -89,7 +101,6 @@ class PedidoController extends Controller
       $pedido = GerenciarPedido::with([
           'cliente:id,nome,email',
           'CodPedidos.produto:id,nome',
-
       ])->findOrFail($id);
 
       $plataformas = Plataforma::orderBy('nome')->get(['id', 'nome']);
@@ -105,38 +116,77 @@ class PedidoController extends Controller
   {
       $pedido = GerenciarPedido::findOrFail($id);
 
-      $validated = fill($request->validated());
+      $data = $request->validated();
 
       $pedido->CodPedidos()->delete();
-        foreach ($request->produtos as $p) {
-            $pedido->CodPedidos()->create([
-                'produto_id' => $p['id'],
-                'quantidade' => $p['quantidade'],
-                'valor_pedido' => $produto['valor'],
-                'cod_pedido' => $pedido->cod_pedido,
+
+      foreach ($request->produtos as $p) {
+        $produtoModel = Produto::findOrFail($p['id']);
+
+        if ($produtoModel->estoque < $p['quantidade']) {
+            return back()->withErrors([
+                'estoque' => "O produto {$produtoModel->nome} não possui estoque suficiente."
             ]);
         }
 
-      $pedido->update($validated);
+        $produtoModel->estoque -= $p['quantidade'];
+        $produtoModel->save();
+
+        $pedido->CodPedidos()->create([
+            'produto_id' => $p['id'],
+            'quantidade' => $p['quantidade'],
+            'valor_pedido' => $p['valor'],
+            'cod_pedido' => $pedido->cod_pedido,
+        ]);
+      }
+
+      $pedido->update([
+          'cliente_id'  => $data['clienteSelecionado']['id'],
+          'cod_pedido'  => $pedido->cod_pedido,
+          'valor'       => $data['valorTotal'],
+          'endereco'    => $data['endereco'] ?? null,
+          'status'      => $data['status'],
+          'plataforma_id'  => $data['plataformaSelecionada'] ?? null,
+      ]);
+
 
       return Inertia::render('admin/pedidos/Pedidos', [
             'message' => 'Pedido Atualizado com Sucesso'
         ]);
   }
 
-    public function view($id){
-      $pedido = GerenciarPedido::with([
-          'cliente:id,nome,email',
-          'CodPedidos.produto:id,nome',
-      ])->findOrFail($id);
+  public function view($id){
+    $pedido = GerenciarPedido::with([
+        'cliente:id,nome,email',
+        'CodPedidos.produto:id,nome',
+    ])->findOrFail($id);
 
-      $plataformas = Plataforma::orderBy('nome')->get(['id', 'nome']);
+    $plataformas = Plataforma::orderBy('nome')->get(['id', 'nome']);
 
 
-      return Inertia::render('admin/pedidos/VisualizarPedido', [
-          'pedido' => $pedido,
-          'plataformas' => $plataformas
+    return Inertia::render('admin/pedidos/VisualizarPedido', [
+        'pedido' => $pedido,
+        'plataformas' => $plataformas
+    ]);
+  }
+
+  public function avancarStatus($id)
+  {
+      $pedido = GerenciarPedido::findOrFail($id);
+
+      $etapas = ['em-andamento', 'a-caminho', 'finalizado'];
+
+      $atual = array_search($pedido->status, $etapas);
+
+      if ($atual !== false && $atual < count($etapas) - 1) {
+          $pedido->status = $etapas[$atual + 1];
+          $pedido->save();
+      }
+
+      return Inertia::render('admin/pedidos/Pedidos', [
+            'message' => 'Pedido Atualizado com Sucesso'
       ]);
   }
+
 
 }

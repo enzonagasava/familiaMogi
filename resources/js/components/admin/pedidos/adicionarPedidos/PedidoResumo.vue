@@ -28,7 +28,6 @@ async function salvarPedido() {
       alert('✅ Pedido criado com sucesso!')
     }
 
-    // redireciona após salvar (opcional)
     router.visit(route('admin.pedidos.index', props.pedido.status))
   } catch (e: any) {
     console.error(e)

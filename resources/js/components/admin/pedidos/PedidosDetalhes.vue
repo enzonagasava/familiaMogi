@@ -5,6 +5,11 @@ defineProps({
     required: true
   }
 })
+
+const formatStatus = (status: string) => {
+  if (!status) return ''
+  return status.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
+}
 </script>
 
 <template>
@@ -48,7 +53,7 @@ defineProps({
     <!-- Resumo -->
     <section class="text-right">
       <p class="text-gray-700">
-        <strong>Status:</strong> {{ pedido.status }}
+        <strong>Status:</strong> {{ formatStatus(pedido.status) }}
       </p>
       <p class="text-xl font-semibold mt-2">
         Total: R$ {{ pedido.valor.toFixed(2) }}
