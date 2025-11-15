@@ -1,31 +1,54 @@
 <script setup lang="ts">
-import { Link, usePage } from '@inertiajs/vue3'
+import { Link, router } from '@inertiajs/vue3'
 import { ButtonTable, Button } from '@/components/ui/button'
-import { Pencil, Eye } from 'lucide-vue-next'
-import { ref, computed } from 'vue'
+import { Pencil, Eye, ArrowRight, ShoppingCart, Check  } from 'lucide-vue-next'
+import { computed } from 'vue'
 import HeadingSmall from '@/components/ui/header/HeadingSmall.vue'
+import axios from 'axios'
 
-const page = usePage()
-const pedidos = ref(Array.isArray(page.props.pedidos) ? page.props.pedidos : [])
-const status = page.props.status as string
-
-// 🔍 Computed para filtrar automaticamente conforme o status recebido
-const pedidosFiltrados = computed(() => {
-  if (status === 'Em Andamento') {
-    return pedidos.value.filter(p => p.status.toLowerCase() === 'em andamento')
+const props = defineProps({
+  pedidos: {
+    type: Array,
+    required: true
+  },
+  status: {
+    type: String,
+    required: true
   }
-  if (status === 'Finalizado') {
-    return pedidos.value.filter(p => p.status.toLowerCase() === 'finalizado')
-  }
-  return pedidos.value
 })
+
+const pedidosFiltrados = computed(() => {
+  return props.pedidos.filter(p => p.status.toLowerCase() === props.status)
+})
+
+const formatStatus = (status: string) => {
+  if (!status) return ''
+  return status.replace(/-/g, ' ')
+               .replace(/\b\w/g, l => l.toUpperCase())
+}
+
+async function avancarStatus(pedidoId: number) {
+  try {
+    await axios.put(route('admin.pedidos.avancar.status', pedidoId))
+    alert('✅ Pedido atualizado com sucesso!')
+    router.reload()
+  } catch (e) {
+    console.error(e)
+    alert('Erro ao avançar o status.')
+  }
+}
 </script>
 
 <template>
   <div class="mb-6 flex items-center justify-between">
     <HeadingSmall
-      :title="status === 'Em Andamento' ? 'Pedidos em Andamento' : 'Pedidos Finalizados'"
+      :title="props.status === 'em-andamento'
+        ? 'Pedidos em Andamento'
+        : props.status === 'a-caminho'
+          ? 'Pedidos a Caminho'
+          : 'Pedidos Finalizados'"
     />
+
     <Link :href="route('admin.pedidos.create')">
       <Button> + Adicionar Novo Pedido </Button>
     </Link>
@@ -61,12 +84,14 @@ const pedidosFiltrados = computed(() => {
             <span
               :class="[
                 'px-3 py-1 rounded-full text-xs font-semibold',
-                pedido.status.toLowerCase() === 'em andamento'
-                  ? 'bg-yellow-100 text-yellow-800'
+                pedido.status.toLowerCase() === 'em-andamento'
+                ? 'bg-yellow-100 text-yellow-800'
+                : pedido.status.toLowerCase() === 'a-caminho'
+                  ? 'bg-blue-100 text-blue-800'
                   : 'bg-green-100 text-green-800'
               ]"
             >
-              {{ pedido.status }}
+              {{ formatStatus(pedido.status) }}
             </span>
           </td>
           <td class="text-center">{{ pedido.created_at_formatted }}</td>
@@ -84,16 +109,23 @@ const pedidosFiltrados = computed(() => {
               :icon="Eye"
               label="Ver"
               variant="ghost"
-              class="text-red-600 hover:text-red-900"
+              class="text-gray-700 hover:text-gray-900"
             />
             </Link>
-
+            <ButtonTable
+              v-if="pedido.status !== 'finalizado'"
+              :icon="pedido.status.toLowerCase() === 'em-andamento' ? ShoppingCart : Check"
+              :label="pedido.status === 'em-andamento' ? 'Enviar' : 'Finalizar'"
+              variant="ghost"
+              class="text-green-600 hover:text-green-900"
+              @click="avancarStatus(pedido.id)"
+            />
           </td>
         </tr>
 
         <tr v-if="pedidosFiltrados.length === 0">
           <td colspan="8" class="py-6 text-center text-gray-500">
-            Nenhum pedido {{ status === 'andamento' ? 'em andamento' : 'finalizado' }} encontrado.
+            Nenhum pedido {{ props.status.replace('-', ' ') }} encontrado.
           </td>
         </tr>
       </tbody>

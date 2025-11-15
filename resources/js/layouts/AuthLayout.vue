@@ -34,8 +34,9 @@ const handleLogout = () => {
 
                 <DropdownButtonAdmin label='Pedidos' class="relative">
                     <Link :href="route('admin.pedidos.create')" class="block rounded px-4 py-2 hover:bg-gray-700">Adicionar Pedido</Link>
-                    <Link :href="route('admin.pedidos.index', 'Em Andamento')" class="block rounded px-4 py-2  hover:bg-gray-700">Pedidos em Andamento</Link>
-                    <Link :href="route('admin.pedidos.index', 'Finalizado')" class="block rounded px-4 py-2  hover:bg-gray-700">Pedidos Finalizados</Link>
+                    <Link :href="route('admin.pedidos.index', 'em-andamento')" class="block rounded px-4 py-2  hover:bg-gray-700">Pedidos em Andamento</Link>
+                    <Link :href="route('admin.pedidos.index', 'a-caminho')" class="block rounded px-4 py-2  hover:bg-gray-700">Pedidos a Caminho</Link>
+                    <Link :href="route('admin.pedidos.index', 'finalizado')" class="block rounded px-4 py-2  hover:bg-gray-700">Pedidos Finalizados</Link>
 
                 </DropdownButtonAdmin>
 

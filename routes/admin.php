@@ -54,7 +54,8 @@ use Inertia\Inertia;
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 
         //Rotas Pedidos
-        Route::get('/pedidos/{status}', [PedidoController::class, 'index'])->where('status', 'Em Andamento|Finalizado')->name('pedidos.index');
+        Route::put('/pedidos/avancarStatus/{id}', [PedidoController::class, 'avancarStatus'])
+         ->name('pedidos.avancar.status');
         Route::get('/pedidos/adicionarPedido', [PedidoController::class, 'create'])->name('pedidos.create');
         Route::post('/pedidos/adicionarPedido', [PedidoController::class, 'store'])->name('pedidos.store');
 
@@ -66,6 +67,9 @@ use Inertia\Inertia;
         Route::get('/pedidos/{pedido}/visualizar', [PedidoController::class, 'view'])->name('pedidos.view');
 
         Route::get('/pedidos/buscarProduto', [SearchController::class, 'buscarProduto'])->name('pedidos.buscarProduto');
+
+        Route::get('/pedidos/{status}', [PedidoController::class, 'index'])->where('status', 'em-andamento|a-caminho|finalizado')->name('pedidos.index');
+
 
 
     });

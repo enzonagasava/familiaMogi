@@ -13,6 +13,8 @@ const props = defineProps({
 })
 
 const pedido = reactive({
+  id: null,
+  cod_pedido: null,
   clienteSelecionado: null,
   endereco: null,
   plataformaSelecionada: null,
@@ -24,6 +26,8 @@ const pedido = reactive({
 
 onMounted(() => {
   if (props.pedidoEditavel) {
+    pedido.id = props.pedidoEditavel.id || null
+    pedido.cod_pedido = props.pedidoEditavel.cod_pedido || null
     pedido.clienteSelecionado = props.pedidoEditavel.cliente || null
     pedido.data = props.pedidoEditavel.data || new Date().toISOString().slice(0, 16)
     pedido.status = props.pedidoEditavel.status || 'Em Andamento'
@@ -52,9 +56,15 @@ watch(
 
 <template>
   <div class="p-6 bg-white shadow rounded-2xl space-y-6">
-    <h1 class="text-2xl font-bold">
-      {{ props.pedidoEditavel ? 'Editar Pedido' : 'Adicionar Pedido' }}
-    </h1>
+    <div class="flex justify-between items-baseline">
+      <h1 class="text-2xl font-bold">
+        {{ props.pedidoEditavel ? 'Editar Pedido' : 'Adicionar Pedido' }}
+      </h1>
+      <div v-if="props.pedidoEditavel">
+        <span class="font-semibold">#{{ props.pedidoEditavel.cod_pedido }}</span>
+      </div>
+    </div>
+
 
     <PedidoClienteForm
       v-model="pedido.clienteSelecionado"

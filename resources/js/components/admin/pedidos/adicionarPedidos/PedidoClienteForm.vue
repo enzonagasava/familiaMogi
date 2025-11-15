@@ -145,8 +145,9 @@ function selecionarCliente(c: any) {
           @change="$emit('update:status', $event.target.value)"
           class="w-full rounded border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
         >
-          <option>Em Andamento</option>
-          <option>Finalizado</option>
+          <option value="em-andamento" >Em Andamento</option>
+          <option value="a-caminho" >A Caminho</option>
+          <option value="finalizado">Finalizado</option>
         </select>
       </div>
     </div>
