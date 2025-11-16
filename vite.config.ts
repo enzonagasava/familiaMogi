@@ -5,8 +5,6 @@ import path from 'path';
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig(({ command, mode }) => {
-  // Carrega as variáveis do .env
-  const env = loadEnv(mode, process.cwd(), '');
 
   const isDev = command === 'serve';
 
