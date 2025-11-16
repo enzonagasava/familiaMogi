@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Link, router } from '@inertiajs/vue3'
 import { ButtonTable, Button } from '@/components/ui/button'
-import { Pencil, Eye, ArrowRight, ShoppingCart, Check  } from 'lucide-vue-next'
+import { Pencil, Eye, ShoppingCart, Check  } from 'lucide-vue-next'
 import { computed } from 'vue'
 import HeadingSmall from '@/components/ui/header/HeadingSmall.vue'
 import axios from 'axios'

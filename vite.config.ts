@@ -1,12 +1,10 @@
-import { defineConfig, loadEnv } from 'vite';
+import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
 import vue from '@vitejs/plugin-vue';
 import path from 'path';
 import tailwindcss from '@tailwindcss/vite';
 
-export default defineConfig(({ command, mode }) => {
-  // Carrega as variáveis do .env
-  const env = loadEnv(mode, process.cwd(), '');
+export default defineConfig(({ command }) => {
 
   const isDev = command === 'serve';
 
@@ -46,15 +44,8 @@ export default defineConfig(({ command, mode }) => {
           strictPort: true,
           cors: true,
           hmr: {
-            host: env.VITE_HMR_HOST,
-            protocol: 'ws',
+            host: 'localhost',
           },
-          origin: env.VITE_APP_URL,
-          allowedHosts: [
-            env.VITE_APP_URL,
-            'localhost',
-            '127.0.0.1',
-          ],
         }
       : undefined,
   };

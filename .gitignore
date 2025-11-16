@@ -1,7 +1,8 @@
 /.phpunit.cache
 /bootstrap/ssr
 /node_modules
-/public/build
+/public/build/
+/public/assets/
 /public/hot
 /public/storage
 /storage/*.key
@@ -23,3 +24,7 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+index.html
+.htaccess
+.user.ini
+.well-known/
