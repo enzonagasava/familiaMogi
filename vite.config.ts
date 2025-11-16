@@ -46,15 +46,8 @@ export default defineConfig(({ command, mode }) => {
           strictPort: true,
           cors: true,
           hmr: {
-            host: env.VITE_HMR_HOST,
-            protocol: 'ws',
+            host: 'localhost',
           },
-          origin: env.VITE_APP_URL,
-          allowedHosts: [
-            env.VITE_APP_URL,
-            'localhost',
-            '127.0.0.1',
-          ],
         }
       : undefined,
   };
