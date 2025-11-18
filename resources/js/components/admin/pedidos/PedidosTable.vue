@@ -5,20 +5,18 @@ import { Pencil, Eye, ShoppingCart, Check  } from 'lucide-vue-next'
 import { computed } from 'vue'
 import HeadingSmall from '@/components/ui/header/HeadingSmall.vue'
 import axios from 'axios'
+import type { Pedido } from '@/types'
 
-const props = defineProps({
-  pedidos: {
-    type: Array,
-    required: true
-  },
-  status: {
-    type: String,
-    required: true
-  }
-})
+const props = defineProps<{
+  pedidos: Pedido[]
+  statusFiltro: string
+}>()
 
 const pedidosFiltrados = computed(() => {
-  return props.pedidos.filter(p => p.status.toLowerCase() === props.status)
+  if (props.statusFiltro === 'todos') {
+    return props.pedidos
+  }
+  return props.pedidos.filter(p => p.status.toLowerCase() === props.statusFiltro)
 })
 
 const formatStatus = (status: string) => {
@@ -41,16 +39,41 @@ async function avancarStatus(pedidoId: number) {
 
 <template>
   <div class="mb-6 flex items-center justify-between">
-    <HeadingSmall
-      :title="props.status === 'em-andamento'
-        ? 'Pedidos em Andamento'
-        : props.status === 'a-caminho'
-          ? 'Pedidos a Caminho'
-          : 'Pedidos Finalizados'"
-    />
+    <HeadingSmall title="Gerenciar Pedidos" />
 
     <Link :href="route('admin.pedidos.create')">
       <Button> + Adicionar Novo Pedido </Button>
+    </Link>
+  </div>
+
+  <div class="mb-6 flex gap-3">
+    <Link :href="route('admin.pedidos.index')" :data="{ status: 'todos' }" preserve-state>
+      <Button 
+        :variant="props.statusFiltro === 'todos' ? 'default' : 'outline'"
+      >
+        Todos
+      </Button>
+    </Link>
+    <Link :href="route('admin.pedidos.index')" :data="{ status: 'em-andamento' }" preserve-state>
+      <Button 
+        :variant="props.statusFiltro === 'em-andamento' ? 'default' : 'outline'"
+      >
+        Em Andamento
+      </Button>
+    </Link>
+    <Link :href="route('admin.pedidos.index')" :data="{ status: 'a-caminho' }" preserve-state>
+      <Button 
+        :variant="props.statusFiltro === 'a-caminho' ? 'default' : 'outline'"
+      >
+        A Caminho
+      </Button>
+    </Link>
+    <Link :href="route('admin.pedidos.index')" :data="{ status: 'finalizado' }" preserve-state>
+      <Button 
+        :variant="props.statusFiltro === 'finalizado' ? 'default' : 'outline'"
+      >
+        Finalizados
+      </Button>
     </Link>
   </div>
 
@@ -125,7 +148,7 @@ async function avancarStatus(pedidoId: number) {
 
         <tr v-if="pedidosFiltrados.length === 0">
           <td colspan="8" class="py-6 text-center text-gray-500">
-            Nenhum pedido {{ props.status.replace('-', ' ') }} encontrado.
+            Nenhum pedido encontrado.
           </td>
         </tr>
       </tbody>

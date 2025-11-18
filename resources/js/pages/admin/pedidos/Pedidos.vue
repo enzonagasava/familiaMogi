@@ -2,16 +2,13 @@
 import AuthLayout from '@/layouts/AuthLayout.vue'
 import { Head } from '@inertiajs/vue3'
 import PedidosTable from '@/components/admin/pedidos/PedidosTable.vue'
+import type { Pedido } from '@/types'
 
-defineProps({
-  pedidos: {
-    type: Array,
-    default: () => []
-  },
-  status: {
-    type: String,
-    default: 'em-andamento'
-  }
+const props = withDefaults(defineProps<{
+  pedidos: Pedido[]
+  statusFiltro?: string
+}>(), {
+  statusFiltro: 'todos'
 })
 </script>
 
@@ -30,7 +27,7 @@ defineProps({
               </div>
 
           <div class="p-6">
-            <PedidosTable :pedidos="pedidos" :status="status" />
+            <PedidosTable :pedidos="props.pedidos" :status-filtro="props.statusFiltro" />
           </div>
         </div>
       </div>

@@ -15,9 +15,13 @@ use App\Models\Produto;
 
 class PedidoController extends Controller
 {
-    public function index(string $status)
+    public function index(Request $request)
     {
-        $statusValido = in_array($status, ['em-andamento', 'a-caminho', 'finalizado']) ? $status : 'em-andamento';
+        $statusFiltro = $request->input('status', 'todos');
+        
+        $statusValido = in_array($statusFiltro, ['todos', 'em-andamento', 'a-caminho', 'finalizado']) 
+            ? $statusFiltro 
+            : 'todos';
 
         $pedidos = GerenciarPedido::with([
             'cliente:id,nome',
@@ -33,14 +37,14 @@ class PedidoController extends Controller
                 'plataforma' => $pedido->plataforma?->nome ?? '-',
                 'produtos' => $pedido->CodPedidos->pluck('produto.nome')->filter()->values(),
                 'valor' => number_format($pedido->valor, 2, ',', '.'),
-                'status' => ucfirst($pedido->status),
+                'status' => $pedido->status,
                 'created_at_formatted' => optional($pedido->created_at)->format('d/m/Y H:i'),
             ];
         });
 
         return Inertia::render('admin/pedidos/Pedidos', [
             'pedidos' => $pedidos,
-            'status' => $statusValido,
+            'statusFiltro' => $statusValido,
         ]);
     }
 

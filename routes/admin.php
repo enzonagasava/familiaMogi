@@ -68,7 +68,7 @@ use Inertia\Inertia;
 
         Route::get('/pedidos/buscarProduto', [SearchController::class, 'buscarProduto'])->name('pedidos.buscarProduto');
 
-        Route::get('/pedidos/{status}', [PedidoController::class, 'index'])->where('status', 'em-andamento|a-caminho|finalizado')->name('pedidos.index');
+        Route::get('/pedidos', [PedidoController::class, 'index'])->name('pedidos.index');
 
 
 
