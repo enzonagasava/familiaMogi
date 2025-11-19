@@ -21,19 +21,6 @@ watch(localForm, (newVal) => {
   emit('update:form', newVal);
 }, { deep: true });
 
-function formatCardNumber() {
-  localForm.cardNumber = localForm.cardNumber
-    .replace(/\D/g, '')
-    .replace(/(.{4})/g, '$1 ')
-    .trim();
-}
-
-function formatExpiry() {
-  localForm.expiry = localForm.expiry
-    .replace(/\D/g, '')
-    .replace(/^(\d{2})(\d)/, '$1/$2')
-    .slice(0, 5);
-}
 
 function onSubmit() {
   emit('submit');

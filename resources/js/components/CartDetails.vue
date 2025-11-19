@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { usePage, Link } from '@inertiajs/vue3';
-import { Inertia } from '@inertiajs/inertia';
 import axios from 'axios';
 
 interface CartProps {

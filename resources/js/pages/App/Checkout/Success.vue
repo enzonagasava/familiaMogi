@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 defineProps({
   paymentId: String,
   status: String
