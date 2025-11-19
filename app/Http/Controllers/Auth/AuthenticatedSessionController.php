@@ -16,7 +16,7 @@ class AuthenticatedSessionController extends Controller
      */
     public function login(Request $request)
     {
-            if (auth()->check()) {
+        if (auth()->check()) {
         // Usuário já está autenticado, redireciona para dashboard
         return redirect('/');
     }

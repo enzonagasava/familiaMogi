@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { usePage } from '@inertiajs/vue3';
-import { Inertia } from '@inertiajs/inertia';
+import { usePage, Link } from '@inertiajs/vue3';
 import axios from 'axios';
 
 interface CartProps {
@@ -57,10 +56,6 @@ function incrementQuantity(item: any) {
     } else {
         alert(`Quantidade máxima disponível em estoque: ${item.estoque}`);
     }
-}
-
-function pagepay(){
-    Inertia.visit(route('payment.index'));
 }
 
 // Função para decrementar a quantidade (mínimo 1)
@@ -149,9 +144,9 @@ function decrementQuantity(item: any) {
                 </div>
             </div>
             <div class="mt-8 flex h-64 items-center justify-center rounded-lg bg-white p-6 text-center text-black">[Localização ou Mapa aqui]</div>
-            <button
-            @click="pagepay()" 
-            class="w-full rounded-md bg-green-600 px-6 py-2 font-semibold text-black transition duration-300 hover:bg-green-700 sm:w-auto">Próximo</button>
+            <Link :href="route('payment.index')" class="w-full rounded-md bg-green-600 px-6 py-2 font-semibold text-black transition duration-300 hover:bg-green-700 sm:w-auto">
+                Próximo
+            </Link>
         </div>
     </div>
 </template>

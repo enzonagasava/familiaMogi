@@ -17,6 +17,8 @@
         <link rel="icon" href="/favicon.svg" type="image/svg+xml">
         <link rel="apple-touch-icon" href="/apple-touch-icon.png">
         <script src="https://kit.fontawesome.com/85513a3479.js" crossorigin="anonymous"></script>
+        <script src="https://sdk.mercadopago.com/js/v2"></script>
+        <script src="https://www.mercadopago.com/v2/security.js" view="checkout"></script>
 
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
@@ -28,5 +30,6 @@
     <body class="font-sans antialiased" box-border>
         @inertia
         <div id="toast-container"></div>
+
     </body>
 </html>
