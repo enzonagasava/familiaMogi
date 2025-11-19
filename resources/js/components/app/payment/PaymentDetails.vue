@@ -15,25 +15,6 @@ const cartItems = ref(
   }))
 );
 
-interface FormData {
-  name: string;
-  email: string;
-  telefone: string;
-  paymentMethod: string;
-  cardNumber: string;
-  expiry: string;
-  cvv: string;
-}
-
-const form = reactive<FormData>({
-  name: '',
-  email: '',
-  telefone: '',
-  paymentMethod: '',
-  cardNumber: '',
-  expiry: '',
-  cvv: '',
-});
 
 const cartTotal = computed(() =>
   cartItems.value.reduce((sum, item) => sum + item.preco * item.quantidade, 0)
@@ -76,19 +57,15 @@ function fazerPedidoWhatsapp() {
   window.open(url, '_blank');
 }
 
-function handleSubmit() {
-  // Você pode passar essa função para o componente do formulário via props ou evento
-  alert('Pagamento processado com sucesso!');
-}
-
 </script>
 
 <template>
   <div class="container">
     <BuyerForm
       :form="form"
-      @submit="handleSubmit"
       @whatsapp="fazerPedidoWhatsapp"
+      :cartItems="cartItems"
+      :cartTotal="cartTotal"
     />
     <OrderSummary :cartItems="cartItems" :cartTotal="cartTotal" />
   </div>
