@@ -1,4 +1,3 @@
-// src/composables/useProduto.ts
 import { ref, onMounted, computed, toRaw } from 'vue'
 import { usePage } from '@inertiajs/vue3'
 import { Inertia } from '@inertiajs/inertia'

@@ -6,6 +6,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Admin\ProdutoController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\App\CheckoutController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/anuncio/{id}', [ProdutoController::class, 'anuncio'])->name('anuncio');
@@ -29,7 +30,34 @@ Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add')
 Route::delete('/carrinho/remover/{cartItemId}', [CartController::class, 'remover'])->name('carrinho.remover');
 
 Route::get('/pagepay', [PaymentController::class, 'index'])->name('payment.index');
+Route::get('/checkout/sucesso', function () {
+    return Inertia::render('App/Checkout/Success', [
+        'paymentId' => request('payment_id'),
+        'status' => request('status'),
+    ]);
+});
+
+Route::get('/checkout/falha', function () {
+    return Inertia::render('App/Checkout/Failure', [
+        'status' => request('status'),
+        'message' => request('message'),
+    ]);
+});
+
+Route::get('/checkout/pendente', function () {
+    return Inertia::render('App/Checkout/Pending', [
+        'paymentId' => request('payment_id'),
+        'status' => request('status'),
+    ]);
+});
+Route::get('/pagamento/keys', [CheckoutController::class, 'getKeys']);
+
+Route::get('/api/pedido/status/{id}', function ($id) {
+    return \App\Models\GerenciarPedido::findOrFail($id);
+});
+
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
 require __DIR__.'/admin.php';
+
