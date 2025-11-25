@@ -1,53 +1,81 @@
 <script setup lang="ts">
-import { Head, Link } from '@inertiajs/vue3';
-import { onMounted, ref, computed } from 'vue';
-import { usePage, useForm } from '@inertiajs/vue3';
+import { Head, Link, usePage, useForm } from '@inertiajs/vue3';
+import { onMounted, ref, computed, watch, onUnmounted, nextTick } from 'vue'; // nextTick não é estritamente necessário, mas boa prática
 import { useCartStore } from '@/stores/cart';
-import { watch } from 'vue';
 import { Inertia } from '@inertiajs/inertia';
+
+// --- INICIALIZAÇÃO DE STORES E ESTADO ---
 
 const page = usePage();
 const cartStore = useCartStore();
 
-// Inicializa a store com os dados do backend
-cartStore.setCart(page.props.cartItems || []);
-
-watch(
-  () => page.props.cartItems,
-  (newItems) => {
+// Watch e Inicialização do Carrinho
+watch(() => page.props.cartItems, (newItems) => {
     cartStore.setCart(newItems || []);
-  }
-);
+}, { immediate: true }); // Usando 'immediate: true' para inicializar na montagem
 
+// Refs e Estado
 const currentYear = ref(0);
 const isMenuOpen = ref(false);
+const dropdownOpen = ref(false);
+const dropdownRef = ref<HTMLElement | null>(null); // Ref para o 'click outside'
 
-onMounted(() => {
-    currentYear.value = new Date().getFullYear();
-});
+// Computed para estado de Login
+const userLogado = computed(() => !!page.props.auth?.user).value;
+const logoutForm = useForm({});
 
-// Função para alternar o estado do menu
-const toggleMenu = () => {
-    isMenuOpen.value = !isMenuOpen.value;
+// --- FUNÇÕES DE CONTROLE DE MENU/DROPDOWN ---
+
+const closeDropdown = () => {
+    dropdownOpen.value = false;
 };
 
-// Função para fechar o menu ao clicar em um link (opcional, mas boa prática)
 const closeMenu = () => {
     isMenuOpen.value = false;
 };
 
-const user = computed(() => !!page.props.auth?.user);
-const userLogado = user.value;
+const toggleDropdown = () => {
+    dropdownOpen.value = !dropdownOpen.value;
+};
 
-const logoutForm = useForm({});
+const toggleMenu = () => {
+    isMenuOpen.value = !isMenuOpen.value;
+    closeDropdown(); // Garante que o dropdown feche ao abrir o menu mobile
+};
 
 const logout = () => {
-  logoutForm.post('/logout', {
-    onFinish: () => {
-      Inertia.visit('/');
-    },
-  });
+    logoutForm.post('/logout', {
+        onFinish: () => Inertia.visit('/'),
+    });
 };
+
+// Funções combinadas para uso nos links do dropdown
+const closeMenuAndDropdown = () => {
+    closeMenu();
+    closeDropdown();
+};
+
+const logoutAndCloseMenu = () => {
+    logout();
+    closeDropdown();
+};
+
+// --- LÓGICA DE CLICK OUTSIDE (Não pode ser simplificada muito mais) ---
+
+const handleClickOutside = (event: MouseEvent) => {
+    if (dropdownOpen.value && dropdownRef.value && !dropdownRef.value.contains(event.target as Node)) {
+        closeDropdown();
+    }
+};
+
+onMounted(() => {
+    currentYear.value = new Date().getFullYear();
+    document.addEventListener('click', handleClickOutside);
+});
+
+onUnmounted(() => {
+    document.removeEventListener('click', handleClickOutside);
+});
 </script>
 
 <template>
@@ -80,26 +108,33 @@ const logout = () => {
                             <Link href="#" @click="closeMenu" class="rounded px-4 py-2 hover:bg-gray-100">Área do Produtor</Link>
                         </nav>
                         <div class="items-center flex">
-                            <div v-if="userLogado" class="relative group inline-block">
-                                <button class="flex items-center rounded bg-[#6aab9c] px-4 py-2 text-white transition hover:bg-[#77bdad] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#6aab9c]">
+                            <div v-if="userLogado" class="relative inline-block" ref="dropdownRef"  >
+                                <button @click="toggleDropdown"
+                                        class="flex items-center rounded bg-[#6aab9c] px-4 py-2 text-white transition hover:bg-[#77bdad] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#6aab9c] hover:cursor-pointer">
                                     <span>{{ page.props.auth.user.name || 'Usuário' }}</span>
-                                    <svg class="ml-2 h-4 w-4 fill-current transition-transform duration-200 group-hover:rotate-180" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                    <svg :class="{'rotate-180': dropdownOpen}"
+                                         class="ml-2 h-4 w-4 fill-current transition-transform duration-200"
+                                         xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                                         <path d="M5.516 7.548a.75.75 0 011.06 0L10 10.97l3.424-3.423a.75.75 0 111.06 1.06l-4 4a.75.75 0 01-1.06 0l-4-4a.75.75 0 010-1.06z" />
                                     </svg>
                                 </button>
-                                <div class="absolute right-0 w-36 origin-top-right rounded-md bg-white shadow-lg opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-opacity duration-200">
-                                    <Link :href="page.props.auth.user.cargo_id === 1 ? '/admin/dashboard' : '/cliente/dashboard'" @click="closeMenu"
+
+                                <div :class="{ 'opacity-100 visible': dropdownOpen, 'opacity-0 invisible': !dropdownOpen }"
+                                     class="absolute right-0 w-36 origin-top-right rounded-md bg-white shadow-lg transition-opacity duration-200">
+
+                                    <Link :href="page.props.auth.user.cargo_id === 1 ? '/admin/dashboard' : '/cliente/dashboard'" @click="closeMenuAndDropdown"
                                         class="block px-4 py-2 text-gray-800 hover:bg-gray-100 rounded-t-md">
                                         Dashboard
                                     </Link>
-                                    <button @click="logout" class="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100 rounded-b-md">
+                                    <button @click="logoutAndCloseMenu" class="text-left px-4 py-2 text-gray-800 hover:bg-gray-100 rounded-b-md">
                                         Logout
                                     </button>
                                 </div>
                             </div>
+
                             <Link v-else href="/login" @click="closeMenu" class="rounded bg-[#6aab9c] px-4 py-2 text-white transition hover:bg-[#77bdad]">
                                 Login
-                            </Link>                        
+                            </Link>
                             <Link href="/carrinho" @click="closeMenu" class="rounded bg-[#6aab9c] ml-2 px-4 py-2 text-white transition hover:bg-[#77bdad]">
                                 Carrinho ({{ cartStore.cartQuantity }})
                             </Link>
@@ -107,14 +142,14 @@ const logout = () => {
                     </div>
                 </div>
 
-                <button @click="toggleMenu" class="p-2 text-gray-700 hover:text-gray-900 focus:outline-none md:hidden">
-                    <svg v-if="!isMenuOpen" class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                    </svg>
-                    <svg v-else class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
+                <button @click="toggleMenu" class="md:hidden p-2 focus:outline-none hover:cursor-pointer">
+                    <div :class="['hamburger', { active: isMenuOpen }]">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
                 </button>
+
             </div>
         </div>
     </header>
@@ -184,3 +219,44 @@ const logout = () => {
         <img src="/images/whatsapp.png" alt="WhatsApp" class="h-16 w-16 rounded-full shadow-lg transition-shadow duration-300 hover:shadow-xl" />
     </a>
 </template>
+<style scoped>
+/* animação hambúrguer → X */
+.hamburger {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 28px;
+    height: 22px;
+}
+
+.hamburger span {
+    height: 3px;
+    width: 100%;
+    background: black;
+    border-radius: 2px;
+    transition: 0.3s ease;
+}
+
+.hamburger.active span:nth-child(1) {
+    transform: translateY(9.5px) rotate(45deg);
+}
+
+.hamburger.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger.active span:nth-child(3) {
+    transform: translateY(-9.5px) rotate(-45deg);
+}
+
+/* transição lateral mobile */
+.slide-enter-active,
+.slide-leave-active {
+    transition: transform 0.3s ease;
+}
+
+.slide-enter-from,
+.slide-leave-to {
+    transform: translateX(-100%);
+}
+</style>
