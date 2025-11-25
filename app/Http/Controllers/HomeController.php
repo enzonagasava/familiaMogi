@@ -32,7 +32,9 @@ class HomeController extends Controller
                 'imageUrl' => $produto->imagens->first()
                     ? asset('storage/' . $produto->imagens->first()->imagem_path)
                     : null,
-                'created_at' => $produto->created_at->format('d/m/Y H:i'),
+                   'created_at' => $produto->created_at
+                    ? $produto->created_at->format('d/m/Y H:i')
+                    : null,
             ];
         });
 

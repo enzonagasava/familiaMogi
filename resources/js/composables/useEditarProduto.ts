@@ -1,4 +1,3 @@
-// src/composables/useProduto.ts
 import { ref, onMounted, computed, toRaw } from 'vue'
 import { usePage } from '@inertiajs/vue3'
 import { Inertia } from '@inertiajs/inertia'
@@ -70,7 +69,6 @@ export function useProduto() {
       }),
     ];
   });
-  console.log(imagensParaRenderizar);
 
   function removerImagem(id: string) {
     const indexExistente = imagensExistentes.value.findIndex(img => img.id === id);

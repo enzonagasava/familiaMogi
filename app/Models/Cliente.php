@@ -1,0 +1,25 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use App\Models\BaseModel;
+
+class Cliente extends BaseModel
+{
+    protected $fillable = [
+        'nome',
+        'email',
+        'numero',
+        'endereco',
+        'cep',
+        'numero_endereco',
+        'municipio',
+        'estado',
+    ];
+
+    protected $table = 'clientes';
+
+    protected $appends = ['created_at_formatted'];
+
+}

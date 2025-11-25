@@ -29,10 +29,69 @@ export interface User {
     id: number;
     name: string;
     email: string;
+    numero: string;
     avatar?: string;
     email_verified_at: string | null;
     created_at: string;
     updated_at: string;
 }
+
+export interface ProdutoTamanhoPivot {
+  preco: number;
+}
+
+export interface ProdutoTamanho {
+  id: number;
+  nome: string;
+  pivot: ProdutoTamanhoPivot;
+}
+
+export interface ProdutoImagem {
+  id: number;
+  produto_id: number;
+  imagem_path: string;
+  ordem: number;
+  imagem_url: string;
+}
+
+export interface Produto {
+  id: number;
+  nome: string;
+  descricao: string;
+  estoque: number;
+  tamanhos: ProdutoTamanho[];
+  imagens: ProdutoImagem[];
+}
+
+export interface ProdutoSelecionado extends Produto {
+  quantidade: number;
+  valor_unitario: number;
+  valor: number;
+}
+
+export interface Cliente {
+  id?: number
+  nome: string
+  numero: string
+  email: string
+  cep: string
+  endereco: string
+  numero_endereco: string
+  municipio: string
+  estado: string
+}
+
+export interface Pedido {
+  id: number
+  cod_pedido: string
+  cliente: string
+  endereco: string
+  plataforma: string
+  produtos: string[]
+  valor: string
+  status: string
+  created_at_formatted: string
+}
+
 
 export type BreadcrumbItemType = BreadcrumbItem;
