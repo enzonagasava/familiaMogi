@@ -81,5 +81,17 @@ export interface Cliente {
   estado: string
 }
 
+export interface Pedido {
+  id: number
+  cod_pedido: string
+  cliente: string
+  endereco: string
+  plataforma: string
+  produtos: string[]
+  valor: string
+  status: string
+  created_at_formatted: string
+}
+
 
 export type BreadcrumbItemType = BreadcrumbItem;

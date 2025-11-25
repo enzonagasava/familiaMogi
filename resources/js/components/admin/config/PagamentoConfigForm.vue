@@ -25,8 +25,6 @@ const submit = () => {
     preserveScroll: true,
     onSuccess: () => {
       Object.assign(props.MetodoPagamento, form.data());
-
-      form.reset('public_key', 'access_key');
     }
   });
 };
