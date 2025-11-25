@@ -30,6 +30,7 @@ export interface User {
     name: string;
     email: string;
     numero: string;
+    cargo_id: number;
     avatar?: string;
     email_verified_at: string | null;
     created_at: string;
