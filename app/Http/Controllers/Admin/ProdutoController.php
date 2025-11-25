@@ -26,7 +26,10 @@ class ProdutoController extends Controller
                 'imageUrl' => $product->imagens->first()
                     ? asset('storage/' . $product->imagens->first()->imagem_path)
                     : null,
-                'created_at' => $product->created_at->format('d/m/Y H:i'),
+                 'created_at' => $product->created_at
+                    ? $product->created_at->format('d/m/Y H:i')
+                    : null,
+                
             ];
         });
         
