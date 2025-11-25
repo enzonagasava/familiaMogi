@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Head, Link, usePage, useForm } from '@inertiajs/vue3';
-import { onMounted, ref, computed, watch, onUnmounted, nextTick } from 'vue'; // nextTick não é estritamente necessário, mas boa prática
+import { onMounted, ref, computed, watch, onUnmounted } from 'vue';
 import { useCartStore } from '@/stores/cart';
 import { Inertia } from '@inertiajs/inertia';
 
@@ -126,7 +126,7 @@ onUnmounted(() => {
                                         class="block px-4 py-2 text-gray-800 hover:bg-gray-100 rounded-t-md">
                                         Dashboard
                                     </Link>
-                                    <button @click="logoutAndCloseMenu" class="text-left px-4 py-2 text-gray-800 hover:bg-gray-100 rounded-b-md">
+                                    <button @click="logoutAndCloseMenu" class="text-left w-full px-4 py-2 text-gray-800 hover:bg-gray-100 rounded-b-md">
                                         Logout
                                     </button>
                                 </div>
