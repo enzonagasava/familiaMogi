@@ -5,20 +5,22 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
+// Importamos o tipo base Response para resolver o TypeError
+use Illuminate\Http\Response;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Inertia\Inertia;
-use Inertia\Response;
+use Inertia\Response as InertiaResponse; // Alias para Inertia Response
 
 class RegisteredUserController extends Controller
 {
     /**
      * Show the registration page.
      */
-    public function create(): Response
+    public function create(): InertiaResponse
     {
         return Inertia::render('auth/Register');
     }
@@ -27,8 +29,9 @@ class RegisteredUserController extends Controller
      * Handle an incoming registration request.
      *
      * @throws \Illuminate\Validation\ValidationException
+     * * CORREÇÃO: Adicionamos |Response para cobrir o retorno de Inertia::location()...->withCookie()
      */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request): RedirectResponse | InertiaResponse | Response
     {
         $request->validate([
             'name' => 'required|string|max:255',
@@ -47,13 +50,15 @@ class RegisteredUserController extends Controller
 
         $credentials = $request->only('email', 'password');
 
+        // Autenticação com JWT
         $token = auth()->attempt($credentials);
 
         if (!$token) {
-            // Retorne erro Inertia válido (pode ser com redirect back com erros)
+            // back() retorna RedirectResponse, que está na lista de tipos
             return back()->withErrors(['email' => 'Credenciais inválidas']);
         }
 
+        // Login padrão do Laravel (opcional, mas mantido para consistência)
         Auth::login($user);
 
         $cookie = cookie(
@@ -76,6 +81,7 @@ class RegisteredUserController extends Controller
             $redirectUrl = route('home'); // fallback válido
         }
 
+        // Inertia::location()...->withCookie() retorna Illuminate\Http\Response
         return Inertia::location($redirectUrl)->withCookie($cookie);
     }
 }
