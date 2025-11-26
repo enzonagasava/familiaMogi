@@ -12,7 +12,7 @@ const user = computed(() => page.props.auth?.user || null);
 
 const userCargo = user.value.cargo_id;
 
-const props = defineProps<{
+defineProps<{
   dashboardData?: {
     valorVendido: Array<{ data: string; valor: number }>
     produtosVendidos: Array<{ nome: string; quantidade: number }>
