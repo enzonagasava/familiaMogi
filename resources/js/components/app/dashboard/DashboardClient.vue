@@ -1,9 +1,13 @@
 <script setup lang="ts">
-import { ref, reactive } from 'vue';
+import { ref, reactive,computed } from 'vue';
 import { usePage } from '@inertiajs/vue3';
 import { Inertia } from '@inertiajs/inertia';
 
 const page = usePage();
+
+const emailVerificado = computed(() => {
+    return !!page.props.user.email_verified_at;
+});
 
 const user = reactive({
   name: page.props.user.name || '',
@@ -107,6 +111,7 @@ function salvar() {
 
         <div>
             <label class="block font-medium mb-1" for="email">Email:</label>
+            <div class="flex items-center">
             <input
             id="email"
             type="email"
@@ -114,6 +119,19 @@ function salvar() {
             class="border rounded p-2 w-full"
             required
             />
+
+            <span v-if="emailVerificado" title="Email verificado" class="text-green-600">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                </svg>
+            </span>
+
+            <span v-else title="Email não verificado" class="text-red-600 ml-2">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-6 h-6">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5M14.25 9.75l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </span>
+            </div>
         </div>
 
         <div>
