@@ -13,7 +13,7 @@ class DashboardController extends Controller
     {
          $user = Auth::user(); 
 
-         $products = Produto::with('imagens')->get()->map(function ($product) {
+        $products = Produto::with('imagens')->get()->map(function ($product) {
             return [
                 'id' => $product->id,
                 'nome' => $product->nome,
@@ -23,10 +23,10 @@ class DashboardController extends Controller
                 'imageUrl' => $product->imagens->first()
                     ? asset('storage/' . $product->imagens->first()->imagem_path)
                     : null,
-                'created_at' => $product->created_at->format('d/m/Y H:i'),
+                'created_at' => optional($product->created_at)->format('d/m/Y H:i'),
             ];
         });
 
-        return Inertia::render('admin/Dashboard', ['user'=>$user, 'produto'=>$products]);
+        return Inertia::render('cliente/Dashboard', ['user'=>$user, 'produto'=>$products]);
     }
 }
