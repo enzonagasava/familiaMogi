@@ -27,6 +27,6 @@ class DashboardController extends Controller
             ];
         });
 
-        return Inertia::render('cliente/Dashboard', ['user'=>$user, 'produto'=>$products]);
+        return Inertia::render('admin/Dashboard', ['user'=>$user, 'produto'=>$products]);
     }
 }
