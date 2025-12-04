@@ -115,30 +115,36 @@ class DashboardController extends Controller
         : 'GROUP_CONCAT(produtos.nome SEPARATOR ", ")';
 
 
-        $historicoCompras = Pedido::join('produtos', 'pedidos.produto_id', '=', 'produtos.id')
-        ->join('gerenciar_pedidos', 'pedidos.cod_pedido', '=', 'gerenciar_pedidos.cod_pedido')
-        ->join('clientes', 'gerenciar_pedidos.cliente_id', '=', 'clientes.id')
-        ->selectRaw("
-            clientes.nome AS cliente,
-            $groupConcat AS produtos,
-            gerenciar_pedidos.valor AS valor_total,
-            gerenciar_pedidos.status AS status,
-            gerenciar_pedidos.created_at AS data,
-            gerenciar_pedidos.cod_pedido,
-            COUNT(pedidos.id) AS itens
-        ")
-        ->groupBy('gerenciar_pedidos.cod_pedido')
-        ->orderByDesc('gerenciar_pedidos.created_at')
-        ->paginate(10)
-        ->through(fn($item) => [
-            'cliente'  => $item->cliente,
-            'produtos' => $item->produtos,
-            'status'   => ucwords(str_replace('-', ' ', $item->status)),
-            'valor'    => (float) $item->valor_total,
-            'itens'    => (int) $item->itens,
-            'tempo'    => Carbon::parse($item->data)->diffForHumans(null, true),
-            'data'     => Carbon::parse($item->data)->format("d/m/Y H:i"),
-        ]);
+         $historicoCompras = Pedido::join('produtos', 'pedidos.produto_id', '=', 'produtos.id')
+            ->join('gerenciar_pedidos', 'pedidos.cod_pedido', '=', 'gerenciar_pedidos.cod_pedido')
+            ->join('clientes', 'gerenciar_pedidos.cliente_id', '=', 'clientes.id')
+            ->selectRaw('
+                clientes.nome AS cliente,
+                GROUP_CONCAT(produtos.nome SEPARATOR ", ") AS produtos,
+                gerenciar_pedidos.valor AS valor_total,
+                gerenciar_pedidos.status AS status,
+                gerenciar_pedidos.created_at AS data,
+                gerenciar_pedidos.cod_pedido,
+                COUNT(pedidos.id) AS itens
+            ')
+            ->groupBy(
+                'gerenciar_pedidos.cod_pedido',
+                'clientes.nome',
+                'gerenciar_pedidos.valor',
+                'gerenciar_pedidos.status',
+                'gerenciar_pedidos.created_at'
+            )
+            ->orderByDesc('gerenciar_pedidos.created_at')
+            ->paginate(10)
+            ->through(fn($item) => [
+                'cliente'  => $item->cliente,
+                'produtos' => $item->produtos,
+                'status'   => ucwords(str_replace('-', ' ', $item->status)),
+                'valor'    => (float) $item->valor_total,
+                'itens'    => (int) $item->itens,
+                'tempo'    => Carbon::parse($item->data)->diffForHumans(null, true),
+                'data'     => Carbon::parse($item->data)->format("d/m/Y H:i"),
+            ]);
 
 
         return Inertia::render('admin/Dashboard', [
