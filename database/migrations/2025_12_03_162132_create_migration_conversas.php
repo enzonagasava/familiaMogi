@@ -9,7 +9,7 @@ return new class extends Migration {
     {
         Schema::create('whatsapp_conversas', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('contato_id')->constrained()->onDelete('cascade');
+            $table->foreignId('contato_id')->constrained('whatsapp_contatos')->onDelete('cascade');
             $table->enum('status', ['aberto', 'fechado'])->default('aberto');
             $table->text('last_message')->nullable();
             $table->timestamp('last_message_at')->nullable();
