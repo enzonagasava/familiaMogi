@@ -1,5 +1,8 @@
   <script setup lang="ts">
-const props = defineProps<{
+const {
+    historico,
+    carregarPagina
+} = defineProps<{
     historico: {
         data: Array<any>;
         current_page: number;
@@ -9,6 +12,7 @@ const props = defineProps<{
     };
     carregarPagina: (url: string | null) => void;
 }>();
+
   </script>
 
   <template>
