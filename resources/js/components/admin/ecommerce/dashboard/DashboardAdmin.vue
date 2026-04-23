@@ -94,7 +94,7 @@ const handlePeriodoClientes = v => { periodoClientes.value = v; atualizarDashboa
 
 <template>
     <div class="space-y-6">
-        <h1 class="text-3xl font-bold text-gray-800">Dashboard Administrativo</h1>
+        <h1 class="text-3xl font-bold text-card-foreground">Dashboard Administrativo</h1>
 
         <!-- GRÁFICOS -->
         <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -127,6 +127,8 @@ const handlePeriodoClientes = v => { periodoClientes.value = v; atualizarDashboa
                 </div>
             </div>
         </div>
-            <HistoricoDePedidos :historico="historico" :carregar-pagina="carregarPagina"/>
+        <div class="w-full">
+            <HistoricoDePedidos class="block w-full" :historico="historico" :carregar-pagina="carregarPagina" />
+        </div>
     </div>
 </template>

@@ -184,8 +184,7 @@ const titleDashboard = String(page.props.empresaTipo?.nome ?? '');
     max-width: 100%;
 }
 
-/* Ajuste para tabelas ou grids largos */
-.main-content :deep(table),
+/* Ajuste para wrappers de tabelas/grids largos */
 .main-content :deep(.table-responsive) {
     width: 100%;
     overflow-x: auto;

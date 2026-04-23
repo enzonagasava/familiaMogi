@@ -2,10 +2,10 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "build": "vite build",
-        "watch": "vite",
-        "build:ssr": "vite build && vite build --ssr",
-        "dev": "vite",
+        "build": "vite --configLoader runner build",
+        "watch": "vite --configLoader runner",
+        "build:ssr": "vite --configLoader runner build && vite --configLoader runner build --ssr",
+        "dev": "vite --configLoader runner",
         "format": "prettier --write resources/",
         "format:check": "prettier --check resources/",
         "lint": "eslint . --fix"

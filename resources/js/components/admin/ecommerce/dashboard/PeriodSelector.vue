@@ -21,7 +21,7 @@ const periodos = [
 
 <template>
     <div class="mb-4">
-        <label v-if="label" class="mb-2 block text-sm font-medium text-gray-700">{{ label }}</label>
+        <label v-if="label" class="mb-2 block text-sm font-medium text-card-foreground">{{ label }}</label>
         <div class="flex gap-2">
             <Button
                 v-for="periodo in periodos"

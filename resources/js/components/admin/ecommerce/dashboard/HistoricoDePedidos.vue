@@ -17,26 +17,27 @@ const {
   </script>
 
   <template>
-            <div class=" shadow-lg rounded-xl p-6">
-              <h2 class="text-xl font-semibold text-gray-900 mb-4">Histórico das Últimas Compras</h2>
+            <div class="block w-full rounded-xl bg-card p-6 text-card-foreground shadow-lg">
+              <h2 class="mb-4 text-xl font-semibold text-card-foreground">Histórico das Últimas Compras</h2>
 
-              <table class="min-w-full divide-y divide-gray-200">
-                  <thead class="bg-gray-50">
-                      <tr>
-                          <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Cliente</th>
-                          <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Produtos</th>
-                          <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Valor</th>
-                          <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                          <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Data</th>
+              <div class="w-full overflow-x-auto">
+              <table class="w-full min-w-full table-fixed border-collapse divide-y divide-border">
+                  <thead class="w-full">
+                      <tr class="w-full bg-muted/30">
+                          <th class="w-1/5 px-4 py-3 text-left text-xs font-medium uppercase text-muted-foreground">Cliente</th>
+                          <th class="w-1/5 px-4 py-3 text-left text-xs font-medium uppercase text-muted-foreground">Produtos</th>
+                          <th class="w-1/5 px-4 py-3 text-left text-xs font-medium uppercase text-muted-foreground">Valor</th>
+                          <th class="w-1/5 px-4 py-3 text-left text-xs font-medium uppercase text-muted-foreground">Status</th>
+                          <th class="w-1/5 px-4 py-3 text-left text-xs font-medium uppercase text-muted-foreground">Data</th>
                       </tr>
                   </thead>
 
-                  <tbody v-if="historico && historico.data" class="divide-y divide-gray-200 ">
+                  <tbody v-if="historico && historico.data" class="divide-y divide-border">
                       <tr v-for="(item, index) in historico.data" :key="index">
 
                           <td class="px-4 py-3">
                               {{ item.cliente }}
-                              <div class="text-xs text-gray-500">
+                              <div class="text-xs text-muted-foreground">
                                   {{ item.itens }} itens • {{ item.tempo }}
                               </div>
                           </td>
@@ -71,6 +72,7 @@ const {
                       </tr>
                   </tbody>
               </table>
+              </div>
 
               <!-- PAGINAÇÃO -->
               <div class="flex justify-center items-center gap-4 mt-4">
@@ -78,19 +80,19 @@ const {
                   <Button
                       @click="carregarPagina(historico.prev_page_url)"
                       :disabled="!historico.prev_page_url"
-                      class="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+                      class="rounded bg-primary px-4 py-2 text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
                   >
                       Anterior
-                  </button>
+                  </Button>
 
-                  <span class="text-gray-600 text-sm">
+                  <span class="text-sm text-muted-foreground">
                       Página {{ historico.current_page }} de {{ historico.last_page }}
                   </span>
 
                   <Button
                       @click="carregarPagina(historico.next_page_url)"
                       :disabled="!historico.next_page_url"
-                      class="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+                      class="rounded bg-primary px-4 py-2 text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
                   >
                       Próxima
                   </Button>

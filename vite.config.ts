@@ -9,6 +9,7 @@ export default defineConfig(({ command }) => {
   const isDev = command === 'serve';
 
   return {
+    cacheDir: '.vite-cache',
     base: isDev ? '/' : '/build/', 
     plugins: [
       laravel({
@@ -28,7 +29,7 @@ export default defineConfig(({ command }) => {
     ],
     resolve: {
       alias: {
-        '@': path.resolve(__dirname, './resources/js'),
+        '@': path.resolve(process.cwd(), 'resources/js'),
       },
     },
     define: {
