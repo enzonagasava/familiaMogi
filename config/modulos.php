@@ -41,9 +41,7 @@ return [
     | com os nomes dos módulos disponíveis para aquele painel.
     */
     'painel_modulos' => [
-        'CRM Ecommerce' => ['chat', 'agenda', 'financeiro'],
-        'CRM Clínica' => ['chat', 'agenda', 'pacientes', 'financeiro'],
-        'CRM Imobiliário' => ['chat', 'agenda', 'imoveis', 'leads', 'financeiro'],
+        'CRM E-Grocery' => ['chat', 'agenda', 'financeiro'],
     ],
 
 ];

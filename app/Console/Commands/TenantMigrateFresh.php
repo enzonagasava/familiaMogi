@@ -2,8 +2,11 @@
 
 namespace App\Console\Commands;
 
+use App\Enums\TipoEmpresa;
+use App\Models\Tenant;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 
 class TenantMigrateFresh extends Command
 {
@@ -24,6 +27,32 @@ class TenantMigrateFresh extends Command
     public function handle(): int
     {
         $id = (string) ($this->argument('id') ?? $this->option('id'));
+        if ($id === '') {
+            $this->error('Informe o ID do tenant (argumento ou --id).');
+            return 1;
+        }
+
+        $tipoPainelId = DB::connection('nexa_admin')
+            ->table('tipo_painel')
+            ->where('nome', TipoEmpresa::ecommerce->value)
+            ->value('id');
+
+        if (!$tipoPainelId) {
+            $this->error('Tipo de painel do projeto não encontrado em nexa_admin.tipo_painel.');
+            $this->line('Esperado: '.TipoEmpresa::ecommerce->value);
+            return 1;
+        }
+
+        $tenant = Tenant::query()
+            ->where('id', $id)
+            ->where('tipo_painel_id', $tipoPainelId)
+            ->first();
+
+        if (!$tenant) {
+            $this->error("Tenant {$id} não pertence ao painel ".TipoEmpresa::ecommerce->value.'.');
+            return 1;
+        }
+
         $this->info("Preparing migrations fresh for tenant: {$id}");
 
         $template = config('database.connections.tenant_content') ?: config('database.connections.mysql');

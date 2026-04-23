@@ -4,9 +4,7 @@ namespace App\Enums;
 
 enum TipoEmpresa: string
 {
-    case ecommerce = 'CRM Ecommerce';
-    case clinica = 'CRM Clínica';
-    case corretor = 'CRM Imobiliário';
+    case ecommerce = 'CRM E-Grocery';
 
     /**
      * Retorna o label amigável para exibição.
@@ -14,9 +12,7 @@ enum TipoEmpresa: string
     public function label(): string
     {
         return match ($this) {
-            self::ecommerce => 'E-commerce',
-            self::clinica => 'Clínica Médica',
-            self::corretor => 'Corretor Imobiliário',
+            self::ecommerce => 'E-Grocery',
         };
     }
 
@@ -27,8 +23,6 @@ enum TipoEmpresa: string
     {
         return match ($this) {
             self::ecommerce => 'ecommerce',
-            self::clinica => 'clinica',
-            self::corretor => 'corretor',
         };
     }
 
@@ -39,8 +33,6 @@ enum TipoEmpresa: string
     {
         return match ($this) {
             self::ecommerce => 'admin.ecommerce.dashboard',
-            self::clinica => 'admin.clinica.dashboard',
-            self::corretor => 'admin.corretor.dashboard',
         };
     }
 
@@ -51,8 +43,6 @@ enum TipoEmpresa: string
     {
         return match ($this) {
             self::ecommerce => 'ecommerce',
-            self::clinica => 'clinica',
-            self::corretor => 'corretor',
         };
     }
     /**

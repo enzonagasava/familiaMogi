@@ -82,9 +82,7 @@ No seeder, cada **tipo de painel** (tipo de empresa) tem um conjunto de módulos
 
 | Tipo de painel    | Módulos disponíveis                    |
 |-------------------|----------------------------------------|
-| CRM Ecommerce     | chat, agenda, financeiro                |
-| CRM Clínica       | chat, agenda, pacientes, financeiro     |
-| CRM Imobiliário   | chat, agenda, imoveis, leads, financeiro|
+| CRM E-Grocery     | chat, agenda, financeiro               |
 
 A tabela `painel_modulo` (tenant_credentials) associa `painel_id` (tipo_painel) ao `modulo_id`.
 
@@ -98,7 +96,7 @@ O config contém três chaves:
 
 - **`modulos`**: array de módulos (`nome`, `display_name`, `descricao`).
 - **`acoes`**: array de ações padrão (`nome`, `display_suffix`) aplicadas a cada módulo (visualizar, criar, editar, excluir).
-- **`painel_modulos`**: array associativo `nome_do_tipo_painel => [nomes dos módulos]` (ex.: `'CRM Clínica' => ['chat', 'agenda', 'pacientes', 'financeiro']`).
+- **`painel_modulos`**: array associativo `nome_do_tipo_painel => [nomes dos módulos]` (ex.: `'CRM E-Grocery' => ['chat', 'agenda', 'financeiro']`).
 
 Ao **adicionar um novo módulo ou permissão**: edite `config/modulos.php` (inclua o módulo em `modulos` e, se aplicável, em `painel_modulos` para o(s) tipo(s) de painel). Em seguida, rode o sync ou o seeder para aplicar nos tenants.
 

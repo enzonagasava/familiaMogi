@@ -3,6 +3,8 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
+use App\Enums\TipoEmpresa;
 use App\Models\Tenant;
 use App\Jobs\ProcessTenantMigration;
 
@@ -24,8 +26,19 @@ class TenantMigrateAllQueue extends Command
     
     public function handle()
     {
+        $tipoPainelId = DB::connection('nexa_admin')
+            ->table('tipo_painel')
+            ->where('nome', TipoEmpresa::ecommerce->value)
+            ->value('id');
+
+        if (!$tipoPainelId) {
+            $this->error('Tipo de painel do projeto não encontrado em nexa_admin.tipo_painel.');
+            $this->line('Esperado: '.TipoEmpresa::ecommerce->value);
+            return 1;
+        }
+
         // Obter tenants baseado nas opções
-        $query = Tenant::query();
+        $query = Tenant::query()->where('tipo_painel_id', $tipoPainelId);
         
         if ($this->option('only')) {
             $ids = explode(',', $this->option('only'));
