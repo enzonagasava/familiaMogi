@@ -9,12 +9,7 @@ import { AlertCircle, MessageSquare, RefreshCw, Send, User } from 'lucide-vue-ne
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 
 const page = usePage()
-const chatRouteBase = computed(() => {
-  const m = (page.props as { modulo?: string }).modulo
-  if (m === 'clinica') return 'admin.clinica.chat'
-  if (m === 'corretor') return 'admin.corretor.chat'
-  return 'admin.ecommerce.chat'
-})
+const chatRouteBase = computed(() => 'admin.chat')
 
 interface Message {
     id: string;

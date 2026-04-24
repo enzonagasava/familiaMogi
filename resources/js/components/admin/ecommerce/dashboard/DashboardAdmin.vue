@@ -74,7 +74,7 @@ watch(() => props.periodoProdutos, v => periodoProdutos.value = v);
 watch(() => props.periodoClientes, v => periodoClientes.value = v);
 
 const atualizarDashboard = () => {
-    router.get(route("admin.ecommerce.dashboard"), {
+    router.get(route("admin.dashboard"), {
         periodoValor: periodoValor.value,
         periodoEntregas: periodoEntregas.value,
         periodoProdutos: periodoProdutos.value,

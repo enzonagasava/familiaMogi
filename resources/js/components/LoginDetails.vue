@@ -23,7 +23,7 @@ const submit = () => {
         onSuccess: (page) => {
             const role = page.props.role;
             if (role === 'admin') {
-                window.location.href = route('admin.ecommerce.dashboard');
+                window.location.href = route('admin.dashboard');
             } else if (role === 'cliente') {
                 window.location.href = route('cliente.dashboard');
             } else {

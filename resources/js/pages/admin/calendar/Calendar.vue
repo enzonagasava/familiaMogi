@@ -23,12 +23,7 @@ interface EventItem {
 const page = usePage()
 const pp = page.props as any
 
-const calendarRouteBase = computed(() => {
-  const m = (page.props as { modulo?: string }).modulo
-  if (m === 'clinica') return 'admin.clinica.calendar'
-  if (m === 'corretor') return 'admin.corretor.calendar'
-  return 'admin.ecommerce.calendar'
-})
+const calendarRouteBase = computed(() => 'admin.calendar')
 
 const today = new Date()
 const current = ref(new Date(today.getFullYear(), today.getMonth(), 1))

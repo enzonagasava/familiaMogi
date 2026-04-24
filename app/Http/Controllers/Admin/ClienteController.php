@@ -43,7 +43,7 @@ class ClienteController extends Controller
 
         Cliente::create($validated);
 
-        return Inertia::location(route('admin.ecommerce.clientes.index'));
+        return Inertia::location(route('admin.clientes.index'));
     }
 
     public function edit($id){
@@ -71,14 +71,14 @@ class ClienteController extends Controller
 
         $cliente->update($validated);
 
-        return Inertia::location(route('admin.ecommerce.clientes.index'));
+        return Inertia::location(route('admin.clientes.index'));
     }
 
     public function destroy($id){
         $cliente = Cliente::findOrFail($id);
         $cliente->delete();
 
-        return Inertia::location(route('admin.ecommerce.clientes.index'));
+        return Inertia::location(route('admin.clientes.index'));
     }
 
     public function buscar(Request $request)

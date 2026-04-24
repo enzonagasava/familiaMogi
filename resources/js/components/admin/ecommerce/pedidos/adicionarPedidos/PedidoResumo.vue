@@ -21,14 +21,14 @@ async function salvarPedido() {
 
         // se tiver um id, é edição (update), senão é criação (store)
         if (props.pedido.id) {
-            await axios.put(route('admin.ecommerce.pedidos.update', props.pedido.id), props.pedido);
+            await axios.put(route('admin.pedidos.update', props.pedido.id), props.pedido);
             alert('✅ Pedido atualizado com sucesso!');
         } else {
-            await axios.post(route('admin.ecommerce.pedidos.store'), props.pedido);
+            await axios.post(route('admin.pedidos.store'), props.pedido);
             alert('✅ Pedido criado com sucesso!');
         }
 
-        router.visit(route('admin.ecommerce.pedidos.index', { status: props.pedido.status }));
+        router.visit(route('admin.pedidos.index', { status: props.pedido.status }));
     } catch (e: any) {
         console.error(e);
         erro.value = e.response?.data?.message || 'Erro ao salvar o pedido.';

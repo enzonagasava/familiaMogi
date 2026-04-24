@@ -73,7 +73,7 @@ function handleSubmit() {
     imagensFiles.value.forEach((file) => {
         formData.append('imagens[]', file);
     });
-    router.post(route('admin.ecommerce.produtos.store'), formData, {
+    router.post(route('admin.produtos.store'), formData, {
         forceFormData: true,
         onSuccess: () => {
             produto.nome = '';

@@ -126,7 +126,7 @@ export function useProduto() {
             formData.append('imagensNovas[]', imagemFile.src as File, `imagem${index}.png`);
         });
 
-        Inertia.post(route('admin.ecommerce.produtos.update', products.id), formData, {
+        Inertia.post(route('admin.produtos.update', products.id), formData, {
             forceFormData: true,
             onSuccess: () => {
                 alert('Produto salvo com sucesso!');

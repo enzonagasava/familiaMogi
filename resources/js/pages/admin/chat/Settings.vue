@@ -10,12 +10,7 @@ import { ref, computed } from 'vue';
 import Select from '@/components/ui/select/Select.vue';
 
 const page = usePage()
-const chatRouteBase = computed(() => {
-  const m = (page.props as { modulo?: string }).modulo
-  if (m === 'clinica') return 'admin.clinica.chat'
-  if (m === 'corretor') return 'admin.corretor.chat'
-  return 'admin.ecommerce.chat'
-})
+const chatRouteBase = computed(() => 'admin.chat')
 
 interface ConfiguracaoIa {
     id: number;

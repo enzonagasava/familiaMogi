@@ -88,7 +88,7 @@ class ProdutoController extends Controller
             }
         }
 
-        return Inertia::location(route('admin.ecommerce.produtos.config'));
+        return Inertia::location(route('admin.produtos.config'));
     }
 
 
@@ -184,7 +184,7 @@ public function edit($id)
             }
         }
 
-        return Inertia::location(route('admin.ecommerce.produtos.config'));
+        return Inertia::location(route('admin.produtos.config'));
     }
 
     public function destroy($id)
@@ -192,7 +192,7 @@ public function edit($id)
         $produto = Produto::findOrFail($id);
         $produto->delete();
 
-        return redirect()->route('admin.ecommerce.produtos.config');
+        return redirect()->route('admin.produtos.config');
     }
 
     public function anuncio($id)

@@ -25,7 +25,7 @@ async function buscarProdutos() {
 
     try {
         console.log('acessando rota');
-        const { data } = await axios.get<Produto[]>(route('admin.ecommerce.pedidos.buscarProduto'), {
+        const { data } = await axios.get<Produto[]>(route('admin.pedidos.buscarProduto'), {
             params: { search: termo },
             signal: controller.signal,
         });

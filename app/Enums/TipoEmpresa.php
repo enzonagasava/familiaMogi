@@ -32,7 +32,7 @@ enum TipoEmpresa: string
     public function dashboardRoute(): string
     {
         return match ($this) {
-            self::ecommerce => 'admin.ecommerce.dashboard',
+            self::ecommerce => 'admin.dashboard',
         };
     }
 

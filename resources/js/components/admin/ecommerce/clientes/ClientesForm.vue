@@ -51,14 +51,14 @@ function handleSubmit() {
 
     if (props.isEditing && cliente.id) {
         // Atualizar
-        router.post(route('admin.ecommerce.atualizar.clientes', cliente.id), formData, {
+        router.post(route('admin.atualizar.clientes', cliente.id), formData, {
             forceFormData: true,
             onSuccess: () => alert('Cliente atualizado com sucesso!'),
             onError: (errors) => console.error(errors),
         });
     } else {
         // Criar
-        router.post(route('admin.ecommerce.clientes.store'), formData, {
+        router.post(route('admin.clientes.store'), formData, {
             forceFormData: true,
             onSuccess: () => {
                 alert('Cliente salvo com sucesso!');

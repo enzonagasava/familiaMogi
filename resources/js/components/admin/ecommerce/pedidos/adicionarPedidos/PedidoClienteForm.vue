@@ -43,7 +43,7 @@ async function buscarClientes() {
     controller = new AbortController();
 
     try {
-        const { data } = await axios.get(route('admin.ecommerce.clientes.buscar'), {
+        const { data } = await axios.get(route('admin.clientes.buscar'), {
             params: { search: termo },
             signal: controller.signal,
         });

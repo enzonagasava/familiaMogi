@@ -8,7 +8,7 @@ const products = ref(Array.isArray(page.props.products) ? page.props.products : 
 
 const deleteProduct = (productId: number) => {
     if (confirm(`Tem certeza de que deseja excluir o produto ID: ${productId}?`)) {
-        router.delete(route('admin.ecommerce.produtos.destroy', productId), {
+        router.delete(route('admin.produtos.destroy', productId), {
             onSuccess: () => {
                 products.value = products.value.filter((p: { id: number }) => p.id !== productId);
             },
@@ -30,7 +30,7 @@ const deleteProduct = (productId: number) => {
                         <div class="mb-6 flex items-center justify-between">
                             <h1 class="text-2xl font-bold text-gray-800">Gerenciar Produtos</h1>
                             <Link
-                                :href="route('admin.ecommerce.produtos.create')"
+                                :href="route('admin.produtos.create')"
                                 class="focus:ring-opacity-50 rounded-md bg-green-600 px-4 py-2 text-white transition duration-150 ease-in-out hover:bg-green-700 focus:ring-2 focus:ring-green-500 focus:outline-none"
                             >
                                 + Adicionar Novo Produto
@@ -73,7 +73,7 @@ const deleteProduct = (productId: number) => {
                                         </td>
                                         <td class="px-6 py-4 text-right text-sm font-medium whitespace-nowrap">
                                             <Link
-                                                :href="route('admin.ecommerce.produtos.edit', product.id)"
+                                                :href="route('admin.produtos.edit', product.id)"
                                                 class="mr-4 text-indigo-600 transition duration-150 ease-in-out hover:text-indigo-900"
                                             >
                                                 Editar

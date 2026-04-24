@@ -13,8 +13,6 @@ return [
     'modulos' => [
         ['nome' => 'chat', 'display_name' => 'Chat', 'descricao' => 'Módulo de chat'],
         ['nome' => 'agenda', 'display_name' => 'Agenda', 'descricao' => 'Agenda e calendário'],
-        ['nome' => 'imoveis', 'display_name' => 'Imóveis', 'descricao' => 'Gestão de imóveis'],
-        ['nome' => 'pacientes', 'display_name' => 'Pacientes', 'descricao' => 'Cadastro de pacientes'],
         ['nome' => 'financeiro', 'display_name' => 'Financeiro', 'descricao' => 'Módulo financeiro'],
         ['nome' => 'leads', 'display_name' => 'Leads', 'descricao' => 'Gestão de leads'],
     ],
@@ -41,7 +39,7 @@ return [
     | com os nomes dos módulos disponíveis para aquele painel.
     */
     'painel_modulos' => [
-        'CRM E-Grocery' => ['chat', 'agenda', 'financeiro'],
+        'CRM E-Grocery' => ['chat', 'agenda', 'financeiro', 'leads'],
     ],
 
 ];

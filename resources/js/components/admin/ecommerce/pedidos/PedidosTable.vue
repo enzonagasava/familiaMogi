@@ -26,7 +26,7 @@ const formatStatus = (status: string) => {
 
 async function avancarStatus(pedidoId: number) {
     try {
-        await axios.put(route('admin.ecommerce.pedidos.avancar.status', pedidoId));
+        await axios.put(route('admin.pedidos.avancar.status', pedidoId));
         alert('✅ Pedido atualizado com sucesso!');
         router.reload();
     } catch (e) {
@@ -40,22 +40,22 @@ async function avancarStatus(pedidoId: number) {
     <div class="mb-6 flex items-center justify-between">
         <HeadingSmall title="Gerenciar Pedidos" />
 
-        <Link :href="route('admin.ecommerce.pedidos.create')">
+        <Link :href="route('admin.pedidos.create')">
             <Button> + Adicionar Novo Pedido </Button>
         </Link>
     </div>
 
     <div class="mb-6 flex gap-3">
-        <Link :href="route('admin.ecommerce.pedidos.index')" :data="{ status: 'todos' }" preserve-state>
+        <Link :href="route('admin.pedidos.index')" :data="{ status: 'todos' }" preserve-state>
             <Button :variant="props.statusFiltro === 'todos' ? 'default' : 'outline'"> Todos </Button>
         </Link>
-        <Link :href="route('admin.ecommerce.pedidos.index')" :data="{ status: 'em-andamento' }" preserve-state>
+        <Link :href="route('admin.pedidos.index')" :data="{ status: 'em-andamento' }" preserve-state>
             <Button :variant="props.statusFiltro === 'em-andamento' ? 'default' : 'outline'"> Em Andamento </Button>
         </Link>
-        <Link :href="route('admin.ecommerce.pedidos.index')" :data="{ status: 'a-caminho' }" preserve-state>
+        <Link :href="route('admin.pedidos.index')" :data="{ status: 'a-caminho' }" preserve-state>
             <Button :variant="props.statusFiltro === 'a-caminho' ? 'default' : 'outline'"> A Caminho </Button>
         </Link>
-        <Link :href="route('admin.ecommerce.pedidos.index')" :data="{ status: 'finalizado' }" preserve-state>
+        <Link :href="route('admin.pedidos.index')" :data="{ status: 'finalizado' }" preserve-state>
             <Button :variant="props.statusFiltro === 'finalizado' ? 'default' : 'outline'"> Finalizados </Button>
         </Link>
     </div>
@@ -98,10 +98,10 @@ async function avancarStatus(pedidoId: number) {
                     </td>
                     <td class="text-center">{{ pedido.created_at_formatted }}</td>
                     <td class="flex justify-end gap-3 px-6 py-4 text-right text-sm font-medium">
-                        <Link :href="route('admin.ecommerce.pedidos.edit', pedido.id)">
+                        <Link :href="route('admin.pedidos.edit', pedido.id)">
                             <ButtonTable :icon="Pencil" label="Editar" variant="ghost" class="text-indigo-600 hover:text-indigo-900" />
                         </Link>
-                        <Link :href="route('admin.ecommerce.pedidos.view', pedido.id)">
+                        <Link :href="route('admin.pedidos.view', pedido.id)">
                             <ButtonTable :icon="Eye" label="Ver" variant="ghost" class="text-gray-700 hover:text-gray-900" />
                         </Link>
                         <ButtonTable

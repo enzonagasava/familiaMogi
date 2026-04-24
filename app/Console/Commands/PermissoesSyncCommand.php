@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Enums\TipoEmpresa;
 use App\Models\Cliente;
 use App\Services\PermissaoSyncService;
 use Illuminate\Console\Command;
@@ -10,9 +11,9 @@ use Illuminate\Support\Facades\Schema;
 
 class PermissoesSyncCommand extends Command
 {
-    protected $signature = 'permissoes:sync {--tenant= : ID do tenant (opcional; se omitido, processa todos)}';
+    protected $signature = 'permissoes:sync {--tenant= : ID do tenant E-Grocery (opcional; se omitido, processa todos os E-Grocery)}';
 
-    protected $description = 'Sincroniza módulos e permissões com config/modulos.php para um ou todos os tenants';
+    protected $description = 'Sincroniza módulos e permissões com config/modulos.php apenas para tenants E-Grocery';
 
     public function handle(): int
     {
@@ -24,17 +25,26 @@ class PermissoesSyncCommand extends Command
                 $this->error('O valor de --tenant deve ser um ID válido.');
                 return 1;
             }
+
+            if (!$this->isEcommerceTenant($tenantId)) {
+                $this->warn("Tenant {$tenantId} não é do painel E-Grocery (CRM E-Grocery). Nada a sincronizar.");
+                return 1;
+            }
+
             return $this->syncTenant($tenantId) ? 0 : 1;
         }
 
-        $tenants = Cliente::on('nexa_admin')->get(['id', 'nome', 'subdominio']);
+        $tenants = Cliente::on('nexa_admin')
+            ->join('tipo_painel', 'tipo_painel.id', '=', 'clientes.tipo_painel_id')
+            ->where('tipo_painel.nome', TipoEmpresa::ecommerce->value)
+            ->get(['clientes.id', 'clientes.nome', 'clientes.subdominio']);
 
         if ($tenants->isEmpty()) {
-            $this->warn('Nenhum tenant encontrado no banco nexa_admin.');
+            $this->warn('Nenhum tenant E-Grocery encontrado no banco nexa_admin.');
             return 0;
         }
 
-        $this->info('Sincronizando permissões para ' . $tenants->count() . ' tenant(s)...');
+        $this->info('Sincronizando permissões para ' . $tenants->count() . ' tenant(s) E-Grocery...');
 
         $failed = 0;
         foreach ($tenants as $tenant) {
@@ -50,6 +60,15 @@ class PermissoesSyncCommand extends Command
 
         $this->info('Todos os tenants foram sincronizados.');
         return 0;
+    }
+
+    protected function isEcommerceTenant(int $tenantId): bool
+    {
+        return Cliente::on('nexa_admin')
+            ->join('tipo_painel', 'tipo_painel.id', '=', 'clientes.tipo_painel_id')
+            ->where('clientes.id', $tenantId)
+            ->where('tipo_painel.nome', TipoEmpresa::ecommerce->value)
+            ->exists();
     }
 
     protected function syncTenant(int $tenantId): bool

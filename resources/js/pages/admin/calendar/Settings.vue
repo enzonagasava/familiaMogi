@@ -8,12 +8,7 @@ import Select from '@/components/ui/select/Select.vue';
 const page = usePage()
 const pp = page.props as any
 
-const calendarRouteBase = computed(() => {
-  const m = (page.props as { modulo?: string }).modulo
-  if (m === 'clinica') return 'admin.clinica.calendar'
-  if (m === 'corretor') return 'admin.corretor.calendar'
-  return 'admin.ecommerce.calendar'
-})
+const calendarRouteBase = computed(() => 'admin.calendar')
 
 // use explicit any/typed refs so TS/volar won't complain about page.props shape
 const settings = ref<any>(pp.settings || {})

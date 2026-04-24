@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import NexaLoadingOverlay from '@/components/NexaLoadingOverlay.vue';
-import { router, usePage } from '@inertiajs/vue3';
+import { usePage } from '@inertiajs/vue3';
 import MobileBottomNav from '@/components/ui/MobileBottomNav.vue'
 import { ref, watch, nextTick, onBeforeUnmount } from 'vue';
 import SidebarNav from '@/components/layouts/SidebarNav.vue'
@@ -51,14 +51,6 @@ onBeforeUnmount(() => {
     document.body.classList.remove('overflow-hidden');
 });
 
-const handleLogout = () => {
-    router.flushAll();
-};
-
-const userTipo = String((page.props.auth && page.props.auth.user && page.props.auth.user.empresa_id) ?? '');
-
-const modulo = String(page.props.modulo ?? '');
-console.log(modulo)
 const titleDashboard = String(page.props.empresaTipo?.nome ?? '');
 </script>
 
@@ -71,16 +63,21 @@ const titleDashboard = String(page.props.empresaTipo?.nome ?? '');
         </header>
 
         <transition name="slide">
-            <div v-if="isMenuOpen">
-                <div class="fixed inset-0 bg-black/50 z-30 lg:hidden" @click="closeMenu" aria-hidden="true"></div>
-                <aside id="mobile-sidebar" ref="sidebarRef" class="fixed inset-y-0 left-0 z-40 w-64 space-y-4  p-4 text-inverse lg:hidden" role="dialog" aria-modal="true">
-                    <SidebarNav :modulo="modulo" @close="closeMenu" />
+            <div v-if="isMenuOpen" class="lg:hidden">
+                <aside
+                    id="mobile-sidebar"
+                    ref="sidebarRef"
+                    class="mobile-sidebar-fullscreen fixed inset-x-0 top-0 z-40 overflow-y-auto p-4 text-inverse"
+                    role="dialog"
+                    aria-modal="true"
+                >
+                    <SidebarNav @close="closeMenu" />
                 </aside>
             </div>
         </transition>
 
         <!-- Mobile bottom navigation -->
-        <MobileBottomNav class="lg:hidden" :modulo="modulo" @openSidebar="toggleMenu" />
+        <MobileBottomNav class="lg:hidden" :menu-open="isMenuOpen" @openSidebar="toggleMenu" />
 
         <aside 
             class="sidebar hidden lg:block" 
@@ -88,7 +85,7 @@ const titleDashboard = String(page.props.empresaTipo?.nome ?? '');
         >
             <div class="p-4">
                 <h2 class="mb-6 font-bold">{{ titleDashboard }}</h2>
-                <SidebarNav :modulo="modulo" @close="closeMenu" />
+                <SidebarNav @close="closeMenu" />
             </div>
         </aside>
 
@@ -100,7 +97,7 @@ const titleDashboard = String(page.props.empresaTipo?.nome ?? '');
             </div>
 
             <!-- Conteúdo -->
-            <div class="flex flex-col flex-1 min-h-0 p-6">
+            <div class="auth-layout-body flex flex-col flex-1 min-h-0 p-6">
                 <h1 class="mb-4 font-semibold">{{ title }}</h1>
                 <slot />
             </div>
@@ -146,7 +143,7 @@ const titleDashboard = String(page.props.empresaTipo?.nome ?? '');
 
 .slide-enter-from,
 .slide-leave-to {
-    transform: translateX(-100%);
+    transform: translateY(100%);
 }
 
 .app-layout {
@@ -204,6 +201,11 @@ const titleDashboard = String(page.props.empresaTipo?.nome ?? '');
     .main-content {
         height: auto;
         min-height: 100vh;
+    }
+
+    .mobile-sidebar-fullscreen {
+        bottom: calc(var(--nexa-mobile-bottom-nav-height) + env(safe-area-inset-bottom, 0px));
+        background-color: var(--sidebar-background);
     }
 }
 </style>

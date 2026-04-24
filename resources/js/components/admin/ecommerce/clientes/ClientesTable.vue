@@ -21,7 +21,7 @@ function verCliente(cliente: any) {
 <template>
     <div class="mb-6 flex items-center justify-between">
         <HeadingSmall title="Gerenciar Clientes" />
-        <Link :href="route('admin.ecommerce.adicionar.clientes')">
+        <Link :href="route('admin.adicionar.clientes')">
             <Button> + Adicionar Novo Cliente </Button>
         </Link>
     </div>
@@ -60,7 +60,7 @@ function verCliente(cliente: any) {
                         {{ cliente.created_at_formatted }}
                     </td>
                     <td class="flex justify-end gap-3 px-6 py-4 text-right text-sm font-medium whitespace-nowrap">
-                        <Link :href="route('admin.ecommerce.editar.clientes', cliente.id)">
+                        <Link :href="route('admin.editar.clientes', cliente.id)">
                             <ButtonTable :icon="Pencil" label="Editar" variant="ghost" class="text-indigo-600 hover:text-indigo-900" />
                         </Link>
                         <ButtonTable :icon="Eye" label="Ver" variant="ghost" class="text-red-600 hover:text-red-900" @click="verCliente(cliente)" />
