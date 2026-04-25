@@ -71,6 +71,9 @@
     --text-danger: hsl(354 70% 54%);
     --text-warning: hsl(38 95% 50%);
     --hover-primary: #512388;
+
+    /* Espaço da barra inferior fixa (MobileBottomNav, lg:hidden) */
+    --nexa-mobile-bottom-nav-height: 4.5rem;
     
     /* List Row hover states */
     --list-row-hover: hsl(270 20% 97%);
@@ -242,6 +245,18 @@
 .dark ::-moz-selection {
     background-color: var(--primary);
     color: var(--primary-foreground);
+}
+
+/* ========================================
+   Form Labels (global)
+   Padrão para labels de input em telas admin
+   ======================================== */
+.nexa-form-label {
+    color: var(--text-primary);
+}
+
+.dark .nexa-form-label {
+    color: #ffffff;
 }
 
 /* 

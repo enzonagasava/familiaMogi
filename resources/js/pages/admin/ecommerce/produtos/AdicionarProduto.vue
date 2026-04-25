@@ -100,7 +100,7 @@ function handleSubmit() {
 
                     <form @submit.prevent="handleSubmit" class="flex flex-col gap-6">
                         <div>
-                            <label for="nome" class="mb-2 block font-semibold text-gray-700">Nome do Produto</label>
+                            <label for="nome" class="nexa-form-label mb-2 block font-semibold">Nome do Produto</label>
                             <input
                                 id="nome"
                                 v-model="produto.nome"
@@ -112,7 +112,7 @@ function handleSubmit() {
                         </div>
 
                         <div>
-                            <label for="descricao" class="mb-2 block font-semibold text-gray-700">Descrição do Produto</label>
+                            <label for="descricao" class="nexa-form-label mb-2 block font-semibold">Descrição do Produto</label>
                             <textarea
                                 id="descricao"
                                 v-model="produto.descricao"
@@ -124,7 +124,7 @@ function handleSubmit() {
                         </div>
 
                         <div>
-                            <label class="mb-2 block font-semibold text-gray-700">Tamanhos e Preços</label>
+                            <label class="nexa-form-label mb-2 block font-semibold">Tamanhos e Preços</label>
                             <div v-for="(tamanho, index) in produto.tamanhos" :key="index" class="mb-3 flex items-center gap-4">
                                 <input
                                     v-model="tamanho.nome"
@@ -159,7 +159,7 @@ function handleSubmit() {
                         </div>
 
                         <div>
-                            <label for="estoque" class="mb-2 block font-semibold text-gray-700">Quantidade em Estoque</label>
+                            <label for="estoque" class="nexa-form-label mb-2 block font-semibold">Quantidade em Estoque</label>
                             <input
                                 id="estoque"
                                 v-model.number="produto.estoque"
@@ -172,7 +172,7 @@ function handleSubmit() {
                         </div>
 
                         <div>
-                            <label class="mb-2 block font-semibold text-gray-700">Imagem do Produto</label>
+                            <label class="nexa-form-label mb-2 block font-semibold">Imagem do Produto</label>
                             <input
                                 ref="fileInput"
                                 type="file"

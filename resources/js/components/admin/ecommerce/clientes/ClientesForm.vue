@@ -81,7 +81,7 @@ function handleSubmit() {
                     <!-- Linha 1 -->
                     <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
                         <div>
-                            <label for="nome" class="mb-2 block font-semibold text-gray-700">Nome do Cliente</label>
+                            <label for="nome" class="nexa-form-label mb-2 block font-semibold">Nome do Cliente</label>
                             <input
                                 id="nome"
                                 v-model="cliente.nome"
@@ -93,7 +93,7 @@ function handleSubmit() {
                         </div>
 
                         <div>
-                            <label for="numero" class="mb-2 block font-semibold text-gray-700">Número</label>
+                            <label for="numero" class="nexa-form-label mb-2 block font-semibold">Número</label>
                             <input
                                 id="numero"
                                 v-model="cliente.numero"
@@ -106,7 +106,7 @@ function handleSubmit() {
                         </div>
 
                         <div>
-                            <label for="email" class="mb-2 block font-semibold text-gray-700">E-mail</label>
+                            <label for="email" class="nexa-form-label mb-2 block font-semibold">E-mail</label>
                             <input
                                 id="email"
                                 v-model="cliente.email"
@@ -121,7 +121,7 @@ function handleSubmit() {
                     <!-- Linha 2 -->
                     <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
                         <div>
-                            <label for="cep" class="mb-2 block font-semibold text-gray-700">CEP</label>
+                            <label for="cep" class="nexa-form-label mb-2 block font-semibold">CEP</label>
                             <input
                                 id="cep"
                                 v-model="cliente.cep"
@@ -134,7 +134,7 @@ function handleSubmit() {
                         </div>
 
                         <div class="md:col-span-2">
-                            <label for="endereco" class="mb-2 block font-semibold text-gray-700">Endereço</label>
+                            <label for="endereco" class="nexa-form-label mb-2 block font-semibold">Endereço</label>
                             <input
                                 id="endereco"
                                 v-model="cliente.endereco"
@@ -149,7 +149,7 @@ function handleSubmit() {
                     <!-- Linha 3 -->
                     <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
                         <div>
-                            <label for="numero_endereco" class="mb-2 block font-semibold text-gray-700">Número do Endereço</label>
+                            <label for="numero_endereco" class="nexa-form-label mb-2 block font-semibold">Número do Endereço</label>
                             <input
                                 id="numero_endereco"
                                 v-model="cliente.numero_endereco"
@@ -162,7 +162,7 @@ function handleSubmit() {
                         </div>
 
                         <div>
-                            <label for="municipio" class="mb-2 block font-semibold text-gray-700">Município</label>
+                            <label for="municipio" class="nexa-form-label mb-2 block font-semibold">Município</label>
                             <input
                                 id="municipio"
                                 v-model="cliente.municipio"
@@ -174,7 +174,7 @@ function handleSubmit() {
                         </div>
 
                         <div>
-                            <label for="estado" class="mb-2 block font-semibold text-gray-700">UF</label>
+                            <label for="estado" class="nexa-form-label mb-2 block font-semibold">UF</label>
                             <input
                                 id="estado"
                                 v-model="cliente.estado"
