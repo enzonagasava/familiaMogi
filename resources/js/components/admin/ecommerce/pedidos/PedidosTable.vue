@@ -60,28 +60,28 @@ async function avancarStatus(pedidoId: number) {
         </Link>
     </div>
 
-    <div class="overflow-x-auto">
-        <table class="min-w-full rounded-xl  shadow">
-            <thead class="bg-gray-50">
+    <div class="overflow-x-auto rounded-xl border border-border bg-card">
+        <table class="min-w-full bg-card text-card-foreground shadow-sm">
+            <thead class="border-b border-border bg-card">
                 <tr>
-                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Cliente</th>
-                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Código Pedido</th>
-                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Valor</th>
-                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Endereço</th>
-                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Plataforma</th>
-                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Status</th>
-                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Data</th>
-                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Ações</th>
+                    <th class="px-6 py-3 text-center text-xs font-semibold tracking-wider text-muted-foreground uppercase">Cliente</th>
+                    <th class="px-6 py-3 text-center text-xs font-semibold tracking-wider text-muted-foreground uppercase">Código Pedido</th>
+                    <th class="px-6 py-3 text-center text-xs font-semibold tracking-wider text-muted-foreground uppercase">Valor</th>
+                    <th class="px-6 py-3 text-center text-xs font-semibold tracking-wider text-muted-foreground uppercase">Endereço</th>
+                    <th class="px-6 py-3 text-center text-xs font-semibold tracking-wider text-muted-foreground uppercase">Plataforma</th>
+                    <th class="px-6 py-3 text-center text-xs font-semibold tracking-wider text-muted-foreground uppercase">Status</th>
+                    <th class="px-6 py-3 text-center text-xs font-semibold tracking-wider text-muted-foreground uppercase">Data</th>
+                    <th class="px-6 py-3 text-center text-xs font-semibold tracking-wider text-muted-foreground uppercase">Ações</th>
                 </tr>
             </thead>
 
-            <tbody class="divide-y divide-gray-200">
-                <tr v-for="pedido in pedidosFiltrados" :key="pedido.id" class="transition-colors hover:bg-gray-50">
-                    <td class="text-center">{{ pedido.cliente }}</td>
-                    <td class="text-center">{{ pedido.cod_pedido }}</td>
-                    <td class="text-center">{{ pedido.valor }}</td>
-                    <td class="text-center">{{ pedido.endereco }}</td>
-                    <td class="text-center">{{ pedido.plataforma }}</td>
+            <tbody class="divide-y divide-border bg-card">
+                <tr v-for="pedido in pedidosFiltrados" :key="pedido.id" class="transition-colors hover:bg-accent/40">
+                    <td class="text-center text-foreground">{{ pedido.cliente }}</td>
+                    <td class="text-center text-foreground">{{ pedido.cod_pedido }}</td>
+                    <td class="text-center text-foreground">{{ pedido.valor }}</td>
+                    <td class="text-center text-foreground">{{ pedido.endereco }}</td>
+                    <td class="text-center text-foreground">{{ pedido.plataforma }}</td>
                     <td class="text-center capitalize">
                         <span
                             :class="[
@@ -96,7 +96,7 @@ async function avancarStatus(pedidoId: number) {
                             {{ formatStatus(pedido.status) }}
                         </span>
                     </td>
-                    <td class="text-center">{{ pedido.created_at_formatted }}</td>
+                    <td class="text-center text-foreground">{{ pedido.created_at_formatted }}</td>
                     <td class="flex justify-end gap-3 px-6 py-4 text-right text-sm font-medium">
                         <Link :href="route('admin.pedidos.edit', pedido.id)">
                             <ButtonTable :icon="Pencil" label="Editar" variant="ghost" class="text-indigo-600 hover:text-indigo-900" />
@@ -116,7 +116,7 @@ async function avancarStatus(pedidoId: number) {
                 </tr>
 
                 <tr v-if="pedidosFiltrados.length === 0">
-                    <td colspan="8" class="py-6 text-center text-gray-500">Nenhum pedido encontrado.</td>
+                    <td colspan="8" class="py-6 text-center text-muted-foreground">Nenhum pedido encontrado.</td>
                 </tr>
             </tbody>
         </table>

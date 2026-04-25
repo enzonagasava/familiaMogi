@@ -21,19 +21,19 @@ const {
               <h2 class="mb-4 text-xl font-semibold text-card-foreground">Histórico das Últimas Compras</h2>
 
               <div class="w-full overflow-x-auto">
-              <table class="w-full min-w-full table-fixed border-collapse divide-y divide-border">
-                  <thead class="w-full">
-                      <tr class="w-full bg-muted/30">
-                          <th class="w-1/5 px-4 py-3 text-left text-xs font-medium uppercase text-muted-foreground">Cliente</th>
-                          <th class="w-1/5 px-4 py-3 text-left text-xs font-medium uppercase text-muted-foreground">Produtos</th>
-                          <th class="w-1/5 px-4 py-3 text-left text-xs font-medium uppercase text-muted-foreground">Valor</th>
-                          <th class="w-1/5 px-4 py-3 text-left text-xs font-medium uppercase text-muted-foreground">Status</th>
-                          <th class="w-1/5 px-4 py-3 text-left text-xs font-medium uppercase text-muted-foreground">Data</th>
+              <table class="w-full min-w-full table-fixed border-collapse border border-border bg-card text-card-foreground divide-y divide-border">
+                  <thead class="w-full border-b border-border bg-card">
+                      <tr class="w-full">
+                          <th class="w-1/5 px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">Cliente</th>
+                          <th class="w-1/5 px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">Produtos</th>
+                          <th class="w-1/5 px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">Valor</th>
+                          <th class="w-1/5 px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">Status</th>
+                          <th class="w-1/5 px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">Data</th>
                       </tr>
                   </thead>
 
-                  <tbody v-if="historico && historico.data" class="divide-y divide-border">
-                      <tr v-for="(item, index) in historico.data" :key="index">
+                  <tbody v-if="historico && historico.data" class="divide-y divide-border bg-card">
+                      <tr v-for="(item, index) in historico.data" :key="index" class="transition-colors hover:bg-accent/40">
 
                           <td class="px-4 py-3">
                               {{ item.cliente }}

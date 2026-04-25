@@ -26,37 +26,37 @@ function verCliente(cliente: any) {
         </Link>
     </div>
 
-    <div class="overflow-x-auto">
-        <table class="min-w-full ">
-            <thead class="bg-gray-50">
+    <div class="overflow-x-auto rounded-xl border border-border bg-card">
+        <table class="min-w-full bg-card text-card-foreground">
+            <thead class="border-b border-border bg-card">
                 <tr>
-                    <th scope="col" class="px-6 py-3 text-center text-xs font-medium tracking-wider text-gray-500 uppercase">Id</th>
-                    <th scope="col" class="px-6 py-3 text-center text-xs font-medium tracking-wider text-gray-500 uppercase">Nome</th>
-                    <th scope="col" class="px-6 py-3 text-center text-xs font-medium tracking-wider text-gray-500 uppercase">Número</th>
-                    <th scope="col" class="px-6 py-3 text-center text-xs font-medium tracking-wider text-gray-500 uppercase">E-mail</th>
-                    <th scope="col" class="px-6 py-3 text-center text-xs font-medium tracking-wider text-gray-500 uppercase">Endereço</th>
-                    <th scope="col" class="px-6 py-3 text-center text-xs font-medium tracking-wider text-gray-500 uppercase">Data de criação</th>
-                    <th scope="col" class="px-6 py-3 text-center text-xs font-medium tracking-wider text-gray-500 uppercase">Ações</th>
+                    <th scope="col" class="px-6 py-3 text-center text-xs font-semibold tracking-wider text-muted-foreground uppercase">Id</th>
+                    <th scope="col" class="px-6 py-3 text-center text-xs font-semibold tracking-wider text-muted-foreground uppercase">Nome</th>
+                    <th scope="col" class="px-6 py-3 text-center text-xs font-semibold tracking-wider text-muted-foreground uppercase">Número</th>
+                    <th scope="col" class="px-6 py-3 text-center text-xs font-semibold tracking-wider text-muted-foreground uppercase">E-mail</th>
+                    <th scope="col" class="px-6 py-3 text-center text-xs font-semibold tracking-wider text-muted-foreground uppercase">Endereço</th>
+                    <th scope="col" class="px-6 py-3 text-center text-xs font-semibold tracking-wider text-muted-foreground uppercase">Data de criação</th>
+                    <th scope="col" class="px-6 py-3 text-center text-xs font-semibold tracking-wider text-muted-foreground uppercase">Ações</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-gray-200">
-                <tr v-for="cliente in clientes" :key="cliente.id" class="hover:bg-gray-50">
-                    <td class="text-center">
+            <tbody class="divide-y divide-border bg-card">
+                <tr v-for="cliente in clientes" :key="cliente.id" class="transition-colors hover:bg-accent/40">
+                    <td class="text-center text-foreground">
                         {{ cliente.id }}
                     </td>
-                    <td class="text-center">
+                    <td class="text-center text-foreground">
                         {{ cliente.nome }}
                     </td>
-                    <td class="text-center">
+                    <td class="text-center text-foreground">
                         {{ cliente.numero }}
                     </td>
-                    <td class="text-center">
+                    <td class="text-center text-foreground">
                         {{ cliente.email }}
                     </td>
-                    <td class="text-center">
+                    <td class="text-center text-foreground">
                         {{ cliente.endereco_completo }}
                     </td>
-                    <td class="text-center">
+                    <td class="text-center text-foreground">
                         {{ cliente.created_at_formatted }}
                     </td>
                     <td class="flex justify-end gap-3 px-6 py-4 text-right text-sm font-medium whitespace-nowrap">
@@ -67,7 +67,7 @@ function verCliente(cliente: any) {
                     </td>
                 </tr>
                 <tr v-if="clientes.length === 0">
-                    <td colspan="3" class="py-6 text-center text-gray-500">Nenhum cliente encontrado.</td>
+                    <td colspan="7" class="py-6 text-center text-muted-foreground">Nenhum cliente encontrado.</td>
                 </tr>
             </tbody>
         </table>

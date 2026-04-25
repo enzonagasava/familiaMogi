@@ -40,17 +40,17 @@ watch(valorTotal, (novoValor) => {
             <Button @click="showModal = true"> Adicionar Produto </Button>
         </div>
 
-        <table class="w-full border text-left">
-            <thead>
-                <tr class="">
-                    <th class="p-2">Produto</th>
-                    <th class="p-2">Quantidade</th>
-                    <th class="p-2">Valor</th>
-                    <th class="p-2">Ações</th>
+        <table class="w-full border border-border bg-card text-left text-foreground">
+            <thead class="border-b border-border bg-card">
+                <tr>
+                    <th class="p-2 text-xs font-semibold tracking-wider text-muted-foreground uppercase">Produto</th>
+                    <th class="p-2 text-xs font-semibold tracking-wider text-muted-foreground uppercase">Quantidade</th>
+                    <th class="p-2 text-xs font-semibold tracking-wider text-muted-foreground uppercase">Valor</th>
+                    <th class="p-2 text-xs font-semibold tracking-wider text-muted-foreground uppercase">Ações</th>
                 </tr>
             </thead>
-            <tbody>
-                <tr v-for="(p, i) in props.modelValue" :key="i">
+            <tbody class="divide-y divide-border bg-card">
+                <tr v-for="(p, i) in props.modelValue" :key="i" class="transition-colors hover:bg-accent/40">
                     <td class="p-2">{{ p.nome }}</td>
                     <td class="p-2">{{ p.quantidade }}</td>
                     <td class="p-2">R$ {{ p.valor }}</td>

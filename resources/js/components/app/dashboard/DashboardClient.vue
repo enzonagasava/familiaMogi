@@ -200,21 +200,21 @@ function salvar() {
 
             <div v-if="activeTab === 'historico'">
                 <h2 class="mb-4 text-xl font-semibold">Histórico de Compras</h2>
-                <table class="w-full border-collapse border border-gray-300">
-                    <thead>
-                        <tr class="">
-                            <th class="border border-gray-300 p-2 text-left">ID</th>
-                            <th class="border border-gray-300 p-2 text-left">Produto</th>
-                            <th class="border border-gray-300 p-2 text-left">Data</th>
-                            <th class="border border-gray-300 p-2 text-left">Valor (R$)</th>
+                <table class="w-full border-collapse border border-border bg-card text-foreground">
+                    <thead class="border-b border-border bg-card">
+                        <tr>
+                            <th class="p-2 text-left text-xs font-semibold tracking-wider text-muted-foreground uppercase">ID</th>
+                            <th class="p-2 text-left text-xs font-semibold tracking-wider text-muted-foreground uppercase">Produto</th>
+                            <th class="p-2 text-left text-xs font-semibold tracking-wider text-muted-foreground uppercase">Data</th>
+                            <th class="p-2 text-left text-xs font-semibold tracking-wider text-muted-foreground uppercase">Valor (R$)</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td class="border border-gray-300 p-2"></td>
-                            <td class="border border-gray-300 p-2"></td>
-                            <td class="border border-gray-300 p-2"></td>
-                            <td class="border border-gray-300 p-2"></td>
+                    <tbody class="divide-y divide-border bg-card">
+                        <tr class="transition-colors hover:bg-accent/40">
+                            <td class="p-2"></td>
+                            <td class="p-2"></td>
+                            <td class="p-2"></td>
+                            <td class="p-2"></td>
                         </tr>
                     </tbody>
                 </table>
