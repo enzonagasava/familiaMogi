@@ -33,6 +33,11 @@ class Produto extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function listings(): HasMany
+    {
+        return $this->hasMany(Listing::class, 'produto_id');
+    }
+
     public function tamanhos()
     {
         return $this->belongsToMany(Tamanho::class, 'produto_tamanho')

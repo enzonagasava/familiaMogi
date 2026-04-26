@@ -73,6 +73,12 @@ const deleteProduct = (productId: number) => {
                                         </td>
                                         <td class="px-6 py-4 text-right text-sm font-medium whitespace-nowrap">
                                             <Link
+                                                :href="route('admin.anuncios.create', { produto_id: product.id })"
+                                                class="mr-4 text-green-600 transition duration-150 ease-in-out hover:text-green-900"
+                                            >
+                                                Anunciar
+                                            </Link>
+                                            <Link
                                                 :href="route('admin.produtos.edit', product.id)"
                                                 class="mr-4 text-indigo-600 transition duration-150 ease-in-out hover:text-indigo-900"
                                             >

@@ -6,8 +6,7 @@ use App\Http\Controllers\Admin\ChatController;
 use App\Http\Controllers\Admin\ChatSettingsController;
 use App\Http\Controllers\Admin\ClienteController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
-use App\Http\Controllers\Admin\Corretor\KanbanController;
-use App\Http\Controllers\Admin\Corretor\LeadsController;
+use App\Http\Controllers\Admin\Ecommerce\AnuncioController;
 use App\Http\Controllers\Admin\Ecommerce\DashboardController as EcommerceDashboardController;
 use App\Http\Controllers\Admin\GoogleCalendarAuthController;
 use App\Http\Controllers\Admin\PedidoController;
@@ -41,9 +40,12 @@ Route::middleware(['jwt.cookie', 'auth', 'tipo:ecommerce'])
             return Inertia::render('admin/ecommerce/MenuIndex');
         })->name('menu.index');
 
-        Route::get('anuncio/config', function () {
-            return Inertia::render('admin/ecommerce/AnuncioConfig');
-        })->name('anuncio.config');
+        Route::get('anuncio/config', [AnuncioController::class, 'index'])->name('anuncio.config');
+        Route::get('anuncios/create', [AnuncioController::class, 'create'])->name('anuncios.create');
+        Route::post('anuncios', [AnuncioController::class, 'store'])->name('anuncios.store');
+        Route::get('anuncios/{listing}/edit', [AnuncioController::class, 'edit'])->name('anuncios.edit');
+        Route::put('anuncios/{listing}', [AnuncioController::class, 'update'])->name('anuncios.update');
+        Route::delete('anuncios/{listing}', [AnuncioController::class, 'destroy'])->name('anuncios.destroy');
 
         Route::get('paginas/config', function () {
             return Inertia::render('admin/ecommerce/paginasConfig/PaginasConfig');
@@ -102,28 +104,6 @@ Route::middleware(['jwt.cookie', 'auth', 'tipo:ecommerce'])
             Route::post('chat/settings/respostas-rapidas', [ChatSettingsController::class, 'storeRespostaRapida'])->name('chat.settings.respostas.store');
             Route::put('chat/settings/respostas-rapidas/{respostaRapida}', [ChatSettingsController::class, 'updateRespostaRapida'])->name('chat.settings.respostas.update');
             Route::delete('chat/settings/respostas-rapidas/{respostaRapida}', [ChatSettingsController::class, 'destroyRespostaRapida'])->name('chat.settings.respostas.destroy');
-        });
-
-        Route::middleware(['permissao:leads.visualizar'])->group(function () {
-            Route::get('kanban', [KanbanController::class, 'index'])->name('kanban.index');
-            Route::put('kanban/{id}/status', [KanbanController::class, 'update'])->name('kanban.update-status');
-            Route::post('kanban/bulk-status', [KanbanController::class, 'bulkUpdate'])->name('kanban.bulk-status');
-            Route::get('kanban/quadros/{id}/dados', [KanbanController::class, 'getQuadroInfo'])->name('kanban.quadro.dados');
-            Route::get('kanban/quadros/{quadroId}/colunas', [KanbanController::class, 'getColunas'])->name('kanban.colunas.index');
-            Route::post('kanban/colunas', [KanbanController::class, 'storeColuna'])->name('kanban.colunas.store');
-            Route::put('kanban/colunas/{id}', [KanbanController::class, 'updateColuna'])->name('kanban.colunas.update');
-            Route::delete('kanban/colunas/{id}', [KanbanController::class, 'destroyColuna'])->name('kanban.colunas.destroy');
-            Route::post('kanban/colunas/reordenar', [KanbanController::class, 'reordenarColunas'])->name('kanban.colunas.reordenar');
-            Route::post('kanban/colunas/ordem', [KanbanController::class, 'storeOrdemColunas'])->name('kanban.colunas.reordenar.ordem');
-
-            Route::get('leads', [LeadsController::class, 'index'])->name('leads.index');
-            Route::get('leads/create', [LeadsController::class, 'create'])->name('leads.create');
-            Route::post('leads', [LeadsController::class, 'store'])->name('leads.store');
-            Route::put('leads/{id}', [LeadsController::class, 'update'])->name('leads.update');
-            Route::get('leads/{id}/edit', [LeadsController::class, 'edit'])->name('leads.edit');
-            Route::get('leads/{id}/show', [LeadsController::class, 'show'])->name('leads.show');
-            Route::delete('leads/{id}', [LeadsController::class, 'destroy'])->name('leads.destroy');
-            Route::post('leads/{id}/converter', [LeadsController::class, 'converterLeadParaContato'])->name('leads.converter');
         });
 
         Route::get('config/geral', [ProfileController::class, 'edit'])->name('config.geral');

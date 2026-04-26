@@ -4,7 +4,6 @@ import { ref } from 'vue';
 
 defineProps<{
     brandName?: string;
-    showCorretorSubtitle?: boolean;
 }>();
 
 const isMenuOpen = ref(false);
@@ -14,7 +13,6 @@ const navItems = [
     { label: 'Funcionalidades', href: '#funcionalidades' },
     { label: 'Automação IA', href: '#automacao-ia' },
     { label: 'Planos', href: '#planos' },
-    { label: 'Módulo Corretor', href: '/corretor' },
     { label: 'Contato', href: '#contato' },
 ];
 
@@ -39,13 +37,6 @@ const closeMenu = () => {
                 style="color: var(--landing-foreground);"
             >
                 {{ brandName ?? 'NexaSystem' }}
-                <span
-                    v-if="showCorretorSubtitle"
-                    class="text-sm font-normal opacity-80"
-                    style="color: var(--landing-muted);"
-                >
-                    — Módulo Corretor
-                </span>
             </Link>
 
             <!-- Desktop nav -->

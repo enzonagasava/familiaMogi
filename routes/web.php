@@ -3,7 +3,6 @@
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\CartController; 
-use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Admin\ProdutoController;
 use App\Http\Controllers\PaymentController;
 use App\Models\Tenant;
@@ -33,10 +32,6 @@ Route::get('/', function () {
     Log::info("✅ Rota / - Tenant configurado: ID={$tenant->id}, renderizando Home");
     return app(App\Http\Controllers\HomeController::class)->index();
 })->name('home');
-
-Route::get('/corretor', function () {
-    return Inertia::render('LandingCorretor');
-})->name('landing.corretor');
 
 // Rota de health check para debug
 Route::get('/health', function () {

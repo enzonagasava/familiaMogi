@@ -14,6 +14,7 @@ class Listing extends Model
 
     protected $fillable = [
         'imovel_id',
+        'produto_id',
         'anuncio_ativo',
         'anuncio_status',
         'anuncio_tipos',
@@ -27,5 +28,10 @@ class Listing extends Model
     public function imovel()
     {
         return $this->belongsTo(Imovel::class);
+    }
+
+    public function produto()
+    {
+        return $this->belongsTo(Produto::class);
     }
 }
