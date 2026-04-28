@@ -118,6 +118,14 @@ return [
             'replace_placeholders' => true,
         ],
 
+        'familia_mogi_integration' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/familia-mogi-integration.log'),
+            'level' => env('LOG_LEVEL', 'info'),
+            'days' => env('LOG_DAILY_DAYS', 14),
+            'replace_placeholders' => true,
+        ],
+
         'null' => [
             'driver' => 'monolog',
             'handler' => NullHandler::class,

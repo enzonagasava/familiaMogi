@@ -38,22 +38,26 @@ return new class extends Migration
         });
 
         // ⭐ CORREÇÃO PARA POSTGRESQL - Índices de texto completo
-        DB::statement("
-            CREATE INDEX idx_cliente_search_gin ON clientes 
-            USING gin(to_tsvector('portuguese', nome || ' ' || email))
-        ");
+        if (DB::connection('tenant_content')->getDriverName() === 'pgsql') {
+            DB::statement("
+                CREATE INDEX idx_cliente_search_gin ON clientes
+                USING gin(to_tsvector('portuguese', nome || ' ' || email))
+            ");
 
-        DB::statement("
-            CREATE INDEX idx_nome_gin ON clientes 
-            USING gin(to_tsvector('portuguese', nome))
-        ");
+            DB::statement("
+                CREATE INDEX idx_nome_gin ON clientes
+                USING gin(to_tsvector('portuguese', nome))
+            ");
+        }
     }
 
     public function down(): void
     {
         // Remove índices GIN primeiro
-        DB::statement('DROP INDEX IF EXISTS idx_cliente_search_gin');
-        DB::statement('DROP INDEX IF EXISTS idx_nome_gin');
+        if (DB::connection('tenant_content')->getDriverName() === 'pgsql') {
+            DB::statement('DROP INDEX IF EXISTS idx_cliente_search_gin');
+            DB::statement('DROP INDEX IF EXISTS idx_nome_gin');
+        }
         
         Schema::dropIfExists('clientes');
     }

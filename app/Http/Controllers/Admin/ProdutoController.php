@@ -10,6 +10,8 @@ use App\Models\Tamanho;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Log;
 use App\Helpers\NumberHelper;
+use App\Services\Integrations\EGroceryContractSerializer;
+use App\Services\Integrations\FamiliaMogiWebhookPublisher;
 
 
 class ProdutoController extends Controller
@@ -42,7 +44,11 @@ class ProdutoController extends Controller
         return Inertia::render('admin/ecommerce/produtos/AdicionarProduto');
     }
 
- public function store(Request $request)
+ public function store(
+    Request $request,
+    FamiliaMogiWebhookPublisher $publisher,
+    EGroceryContractSerializer $serializer
+)
     {
         // 1. Validação do request.
         $validated = $request->validate([
@@ -78,15 +84,21 @@ class ProdutoController extends Controller
             $ordem = 1;
             foreach ($request->file('imagens') as $imagem) {
                 $path = $imagem->store('produtos', 'public');
-                ProdutoImagem::create([
+                $createdImage = ProdutoImagem::create([
                     'produto_id' => $produto->id,
                     'user_id' => auth()->id(),
                     'imagem_path' => $path,
                     'ordem' => $ordem,
                 ]);
+                $this->publishImageEvent('image.updated', $createdImage->fresh(), $publisher, $serializer);
                 $ordem++;
             }
         }
+
+        $produto->load('imagens', 'tamanhos');
+        $this->publishProductEvent('product.updated', $produto, $publisher, $serializer);
+        $this->publishProductEvent('price.updated', $produto, $publisher, $serializer);
+        $this->publishProductEvent('stock.updated', $produto, $publisher, $serializer);
 
         return Inertia::location(route('admin.produtos.config'));
     }
@@ -123,9 +135,17 @@ public function edit($id)
 }
 
 
-    public function update(Request $request, $id)
+    public function update(
+        Request $request,
+        $id,
+        FamiliaMogiWebhookPublisher $publisher,
+        EGroceryContractSerializer $serializer
+    )
     {
         $produto = Produto::findOrFail($id);
+        $produto->load('imagens', 'tamanhos');
+        $previousStock = (int) $produto->estoque;
+        $previousPrice = $serializer->resolveProductPrice($produto);
 
         $produto->update($request->all());
         
@@ -160,9 +180,17 @@ public function edit($id)
             }
         }
 
+        $removedImages = ProdutoImagem::where('produto_id', $produto->id)
+            ->whereNotIn('id', $idsParaManter)
+            ->get();
+
         ProdutoImagem::where('produto_id', $produto->id)
             ->whereNotIn('id', $idsParaManter)
             ->delete();
+
+        foreach ($removedImages as $removedImage) {
+            $this->publishImageEvent('image.deleted', $removedImage, $publisher, $serializer);
+        }
 
         // Descobre a maior ordem atual
         $maxOrdem = ProdutoImagem::where('produto_id', $produto->id)->max('ordem');
@@ -181,15 +209,43 @@ public function edit($id)
                     'imagem_path' => $path,
                     'ordem' => $ordemAtual,
                 ]);
+
+                $latestImage = ProdutoImagem::query()
+                    ->where('produto_id', $produto->id)
+                    ->where('imagem_path', $path)
+                    ->latest('id')
+                    ->first();
+
+                if ($latestImage) {
+                    $this->publishImageEvent('image.updated', $latestImage, $publisher, $serializer);
+                }
             }
+        }
+
+        $produto->load('imagens', 'tamanhos');
+        $this->publishProductEvent('product.updated', $produto, $publisher, $serializer);
+
+        $currentPrice = $serializer->resolveProductPrice($produto);
+        if ($currentPrice !== $previousPrice) {
+            $this->publishProductEvent('price.updated', $produto, $publisher, $serializer);
+        }
+
+        if ((int) $produto->estoque !== $previousStock) {
+            $this->publishProductEvent('stock.updated', $produto, $publisher, $serializer);
         }
 
         return Inertia::location(route('admin.produtos.config'));
     }
 
-    public function destroy($id)
+    public function destroy($id, FamiliaMogiWebhookPublisher $publisher, EGroceryContractSerializer $serializer)
     {
-        $produto = Produto::findOrFail($id);
+        $produto = Produto::with('imagens', 'tamanhos')->findOrFail($id);
+
+        foreach ($produto->imagens as $image) {
+            $this->publishImageEvent('image.deleted', $image, $publisher, $serializer);
+        }
+
+        $this->publishProductEvent('product.updated', $produto, $publisher, $serializer, ['status' => 'inactive']);
         $produto->delete();
 
         return redirect()->route('admin.produtos.config');
@@ -246,6 +302,51 @@ public function edit($id)
         return Inertia::render('Produtos', [
             'produtoSwiper' => $produtos,
         ]);
+    }
+
+    private function publishProductEvent(
+        string $eventType,
+        Produto $produto,
+        FamiliaMogiWebhookPublisher $publisher,
+        EGroceryContractSerializer $serializer,
+        array $overrides = []
+    ): void {
+        try {
+            $data = array_merge($serializer->productPayload($produto), $overrides);
+            $publisher->publish($eventType, [
+                'type' => 'product',
+                'id' => (string) $produto->id,
+                'version' => (int) $produto->updated_at?->timestamp,
+            ], $data);
+        } catch (\Throwable $exception) {
+            Log::channel('familia_mogi_integration')->warning('Failed to queue product event', [
+                'event_type' => $eventType,
+                'produto_id' => $produto->id,
+                'error' => $exception->getMessage(),
+            ]);
+        }
+    }
+
+    private function publishImageEvent(
+        string $eventType,
+        ProdutoImagem $image,
+        FamiliaMogiWebhookPublisher $publisher,
+        EGroceryContractSerializer $serializer
+    ): void {
+        try {
+            $data = $serializer->imagePayload($image);
+            $publisher->publish($eventType, [
+                'type' => 'image',
+                'id' => $data['id'],
+                'version' => (int) $image->updated_at?->timestamp,
+            ], $data);
+        } catch (\Throwable $exception) {
+            Log::channel('familia_mogi_integration')->warning('Failed to queue image event', [
+                'event_type' => $eventType,
+                'image_id' => $image->id,
+                'error' => $exception->getMessage(),
+            ]);
+        }
     }
     
 }

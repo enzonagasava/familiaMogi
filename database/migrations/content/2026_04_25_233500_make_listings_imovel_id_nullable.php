@@ -12,6 +12,10 @@ return new class extends Migration
             return;
         }
 
+        if (DB::connection('tenant_content')->getDriverName() !== 'pgsql') {
+            return;
+        }
+
         // Necessário para tenants legados onde imovel_id ainda está NOT NULL.
         DB::statement('ALTER TABLE listings ALTER COLUMN imovel_id DROP NOT NULL');
     }

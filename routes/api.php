@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\App\CheckoutController;
 use App\Http\Controllers\Admin\ChatController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\V1\Integrations\EGroceryCatalogController;
+use App\Http\Controllers\Api\V1\Integrations\EGroceryOrdersController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\SubdomainProvisionController;
@@ -40,3 +42,13 @@ Route::post('create-user', [RegisteredUserController::class, 'apiCreateUser'])->
 
 Route::post('provision-subdomain', [SubdomainProvisionController::class, 'create'])->middleware('api.token')->name('api.provisionSubdomain');
 Route::get('get-create-user', [RegisteredUserController::class, 'apiGetCreateUser'])->name('api.getCreateUser');
+
+Route::prefix('v1')
+    ->middleware('api.token')
+    ->group(function () {
+        Route::get('/anuncios', [EGroceryCatalogController::class, 'anuncios']);
+        Route::get('/produtos', [EGroceryCatalogController::class, 'produtos']);
+        Route::get('/produtos/{sku}', [EGroceryCatalogController::class, 'produtoBySku']);
+        Route::get('/imagens/{image_id}', [EGroceryCatalogController::class, 'imagemById']);
+        Route::post('/pedidos', [EGroceryOrdersController::class, 'store']);
+    });

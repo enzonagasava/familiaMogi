@@ -7,7 +7,10 @@ use App\Http\Requests\Admin\Ecommerce\StoreAnuncioRequest;
 use App\Http\Requests\Admin\Ecommerce\UpdateAnuncioRequest;
 use App\Models\Listing;
 use App\Models\Produto;
+use App\Services\Integrations\EGroceryContractSerializer;
+use App\Services\Integrations\FamiliaMogiWebhookPublisher;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Log;
 
 class AnuncioController extends Controller
 {
@@ -63,16 +66,22 @@ class AnuncioController extends Controller
         ]);
     }
 
-    public function store(StoreAnuncioRequest $request)
+    public function store(
+        StoreAnuncioRequest $request,
+        FamiliaMogiWebhookPublisher $publisher,
+        EGroceryContractSerializer $serializer
+    )
     {
         $validated = $request->validated();
 
-        Listing::create([
+        $listing = Listing::create([
             'produto_id' => $validated['produto_id'],
             'anuncio_ativo' => $validated['anuncio_ativo'] ?? true,
             'anuncio_status' => $validated['anuncio_status'] ?? null,
             'anuncio_tipos' => $validated['anuncio_tipos'],
         ]);
+
+        $this->publishListingEvent('ad.created', $listing->fresh(['produto.imagens', 'produto.tamanhos']), $publisher, $serializer);
 
         return redirect()->route('admin.anuncio.config')->with('success', 'Anúncio criado com sucesso.');
     }
@@ -98,7 +107,12 @@ class AnuncioController extends Controller
         ]);
     }
 
-    public function update(UpdateAnuncioRequest $request, Listing $listing)
+    public function update(
+        UpdateAnuncioRequest $request,
+        Listing $listing,
+        FamiliaMogiWebhookPublisher $publisher,
+        EGroceryContractSerializer $serializer
+    )
     {
         if (!$listing->produto_id) {
             abort(404);
@@ -113,18 +127,63 @@ class AnuncioController extends Controller
             'anuncio_tipos' => $validated['anuncio_tipos'],
         ]);
 
+        $this->publishListingEvent('ad.updated', $listing->fresh(['produto.imagens', 'produto.tamanhos']), $publisher, $serializer);
+
         return redirect()->route('admin.anuncio.config')->with('success', 'Anúncio atualizado com sucesso.');
     }
 
-    public function destroy(Listing $listing)
+    public function destroy(
+        Listing $listing,
+        FamiliaMogiWebhookPublisher $publisher,
+        EGroceryContractSerializer $serializer
+    )
     {
         if (!$listing->produto_id) {
             abort(404);
         }
 
+        $listing->loadMissing('produto.imagens', 'produto.tamanhos');
+        $payload = $serializer->listingPayload($listing);
         $listing->delete();
+        $payload['status'] = 'deleted';
+
+        try {
+            $publisher->publish('ad.deleted', [
+                'type' => 'ad',
+                'id' => (string) $payload['id'],
+                'version' => now()->timestamp,
+            ], $payload);
+        } catch (\Throwable $exception) {
+            Log::channel('familia_mogi_integration')->warning('Failed to queue ad.deleted event', [
+                'listing_id' => $listing->id,
+                'error' => $exception->getMessage(),
+            ]);
+        }
 
         return redirect()->route('admin.anuncio.config')->with('success', 'Anúncio removido com sucesso.');
+    }
+
+    private function publishListingEvent(
+        string $eventType,
+        Listing $listing,
+        FamiliaMogiWebhookPublisher $publisher,
+        EGroceryContractSerializer $serializer
+    ): void {
+        try {
+            $data = $serializer->listingPayload($listing);
+
+            $publisher->publish($eventType, [
+                'type' => 'ad',
+                'id' => (string) $data['id'],
+                'version' => (int) $listing->updated_at?->timestamp,
+            ], $data);
+        } catch (\Throwable $exception) {
+            Log::channel('familia_mogi_integration')->warning('Failed to queue ad event', [
+                'event_type' => $eventType,
+                'listing_id' => $listing->id,
+                'error' => $exception->getMessage(),
+            ]);
+        }
     }
 
     private function produtoOptions()

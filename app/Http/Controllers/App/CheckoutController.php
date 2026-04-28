@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use MercadoPago\Client\Payment\PaymentClient;
 use App\Services\MercadoPagoService;
+use App\Services\Integrations\EGroceryContractSerializer;
+use App\Services\Integrations\FamiliaMogiWebhookPublisher;
 
 
 
@@ -111,7 +113,11 @@ class CheckoutController extends Controller
         }
     }
 
-   public function webhook(Request $request)
+   public function webhook(
+        Request $request,
+        FamiliaMogiWebhookPublisher $publisher,
+        EGroceryContractSerializer $serializer
+    )
     {
         try {
             Log::info("Webhook recebido", $request->all());
@@ -180,6 +186,7 @@ class CheckoutController extends Controller
             // 4️⃣ Criar Pedido(s) + Subtrair Estoque
             // =================================
 
+            $updatedProducts = [];
             if (!empty($payment->additional_info->items)) {
 
                 foreach ($payment->additional_info->items as $item) {
@@ -205,6 +212,7 @@ class CheckoutController extends Controller
                             // Subtrai estoque
                             $produto->estoque -= $item->quantity;
                             $produto->save();
+                            $updatedProducts[] = $produto->fresh(['imagens', 'tamanhos']);
                         }
                     }
 
@@ -221,6 +229,32 @@ class CheckoutController extends Controller
                 'cod_pedido' => $codigoPedido,
                 'cliente' => $cliente->email,
             ]);
+
+            $gerenciar = $gerenciar->fresh(['cliente', 'CodPedidos.produto']);
+            $entity = [
+                'type' => 'order',
+                'id' => (string) $gerenciar->cod_pedido,
+                'version' => (int) $gerenciar->updated_at?->timestamp,
+            ];
+
+            try {
+                $orderData = $serializer->orderPayload($gerenciar);
+                $publisher->publish('order.created', $entity, $orderData);
+                $publisher->publish('order.paid', $entity, $orderData);
+
+                foreach ($updatedProducts as $product) {
+                    $publisher->publish('stock.updated', [
+                        'type' => 'product',
+                        'id' => (string) $product->id,
+                        'version' => (int) $product->updated_at?->timestamp,
+                    ], $serializer->productPayload($product));
+                }
+            } catch (\Throwable $exception) {
+                Log::channel('familia_mogi_integration')->warning('Failed to queue checkout webhook integration events', [
+                    'cod_pedido' => $codigoPedido,
+                    'error' => $exception->getMessage(),
+                ]);
+            }
 
             return response()->json(['status' => 'Pedido criado'], 200);
 
