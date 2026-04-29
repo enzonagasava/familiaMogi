@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Storage;
 
 class ProdutoImagem extends Model
 {
@@ -28,7 +29,11 @@ class ProdutoImagem extends Model
             return null;
         }
 
-        return asset('storage/' . $this->imagem_path);
+        try {
+            return Storage::disk(config('filesystems.product_images_disk', 'public'))->url($this->imagem_path);
+        } catch (\Throwable) {
+            return null;
+        }
     }
 
     /**

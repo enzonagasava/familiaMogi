@@ -17,6 +17,17 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Product Image Disk
+    |--------------------------------------------------------------------------
+    |
+    | Disk used by product image uploads. Defaults to FILESYSTEM_DISK and
+    | falls back to "public" to preserve local development behavior.
+    |
+    */
+    'product_images_disk' => env('PRODUCT_IMAGES_DISK', env('FILESYSTEM_DISK', 'public')),
+
+    /*
+    |--------------------------------------------------------------------------
     | Filesystem Disks
     |--------------------------------------------------------------------------
     |

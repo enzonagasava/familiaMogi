@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Log;
 use App\Helpers\NumberHelper;
 use App\Services\Integrations\EGroceryContractSerializer;
 use App\Services\Integrations\FamiliaMogiWebhookPublisher;
+use Illuminate\Support\Facades\Storage;
 
 
 class ProdutoController extends Controller
@@ -26,7 +27,7 @@ class ProdutoController extends Controller
                 'estoque' => $product->estoque,
                 'tamanhos' => $product->tamanhos,
                 'imageUrl' => $product->imagens->first()
-                    ? asset('storage/' . $product->imagens->first()->imagem_path)
+                    ? $this->imageUrl($product->imagens->first()->imagem_path)
                     : null,
                  'created_at' => $product->created_at
                     ? $product->created_at->format('d/m/Y H:i')
@@ -83,7 +84,7 @@ class ProdutoController extends Controller
         if ($request->hasFile('imagens')) {
             $ordem = 1;
             foreach ($request->file('imagens') as $imagem) {
-                $path = $imagem->store('produtos', 'public');
+                $path = $imagem->store('produtos', $this->productImageDisk());
                 $createdImage = ProdutoImagem::create([
                     'produto_id' => $produto->id,
                     'user_id' => auth()->id(),
@@ -113,7 +114,7 @@ public function edit($id)
     $imagensComId = array_map(function ($imagem) {
         return [
             'id' => $imagem['id'],
-            'url' => asset('storage/' . $imagem['imagem_path']),
+            'url' => $this->imageUrl($imagem['imagem_path']),
         ];
     }, $productArray['imagens']);
 
@@ -200,7 +201,7 @@ public function edit($id)
         $ordemAtual = $maxOrdem;
         if ($request->hasFile('imagensNovas')) {
             foreach ($request->file('imagensNovas') as $imagem) {
-                $path = $imagem->store('produtos', 'public');
+                $path = $imagem->store('produtos', $this->productImageDisk());
                 $ordemAtual++;
 
                 ProdutoImagem::create([
@@ -263,7 +264,7 @@ public function edit($id)
                     'nome' => $p->nome,
                     'tamanhos' => $p->tamanhos, // passe os tamanhos para o front
                     'imageUrl' => $p->imagens->first()
-                        ? asset('storage/' . $p->imagens->first()->imagem_path)
+                        ? $this->imageUrl($p->imagens->first()->imagem_path)
                         : null,
                 ];
             });
@@ -293,7 +294,7 @@ public function edit($id)
                 'estoque' => $produto->estoque,
                 'tamanhos' => $tamanhosData,
                 'imageUrl' => $produto->imagens->first()
-                    ? asset('storage/' . $produto->imagens->first()->imagem_path)
+                    ? $this->imageUrl($produto->imagens->first()->imagem_path)
                     : null,
                 'created_at' => $produto->created_at->format('d/m/Y H:i'),
             ];
@@ -348,5 +349,22 @@ public function edit($id)
             ]);
         }
     }
-    
+
+    private function productImageDisk(): string
+    {
+        return config('filesystems.product_images_disk', 'public');
+    }
+
+    private function imageUrl(?string $path): ?string
+    {
+        if (!$path) {
+            return null;
+        }
+
+        try {
+            return Storage::disk($this->productImageDisk())->url($path);
+        } catch (\Throwable) {
+            return null;
+        }
+    }
 }

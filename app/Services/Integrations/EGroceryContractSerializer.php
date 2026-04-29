@@ -71,7 +71,7 @@ class EGroceryContractSerializer
     public function imagePayload(ProdutoImagem $image): array
     {
         $path = (string) $image->imagem_path;
-        $disk = Storage::disk('public');
+        $disk = Storage::disk(config('filesystems.product_images_disk', 'public'));
 
         $mimeType = null;
         $width = null;
@@ -101,7 +101,7 @@ class EGroceryContractSerializer
         return [
             'id' => $this->imageExternalId($image),
             'storage_key' => $path !== '' ? $path : null,
-            'url' => $path !== '' ? asset('storage/'.$path) : null,
+            'url' => $path !== '' ? $disk->url($path) : null,
             'mime_type' => $mimeType,
             'width' => $width,
             'height' => $height,
