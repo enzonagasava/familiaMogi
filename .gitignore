@@ -30,3 +30,5 @@ index.html
 #.htaccess
 .user.ini
 .well-known/
+
+.vite-cache

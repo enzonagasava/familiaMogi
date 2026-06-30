@@ -81,7 +81,11 @@ class AnuncioController extends Controller
             'anuncio_tipos' => $validated['anuncio_tipos'],
         ]);
 
-        $this->publishListingEvent('ad.created', $listing->fresh(['produto.imagens', 'produto.tamanhos']), $publisher, $serializer);
+        $anuncioTipo = $validated['anuncio_tipos'];
+
+        if(in_array('Site_anuncio', $anuncioTipo)){
+            $this->publishListingEvent('ad.created', $listing->fresh(['produto.imagens', 'produto.tamanhos']), $publisher, $serializer);            
+        };
 
         return redirect()->route('admin.anuncio.config')->with('success', 'Anúncio criado com sucesso.');
     }

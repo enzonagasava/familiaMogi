@@ -7,7 +7,6 @@ services:
     working_dir: /var/www/html
     volumes:
       - ./:/var/www/html
-      # Volume compartilhado para logs (no Swarm, o stack nexasystem monta este volume em /var/log/nexasystem-cliente para o Log Viewer)
       - cliente_e-grocery_logs:/var/www/html/storage/logs
     depends_on:
       - db
@@ -17,14 +16,9 @@ services:
     ports:
       - "8030:80"
       - "5176:5176"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
     command: bash -c "chown -R www-data:www-data storage bootstrap/cache && apache2-foreground && npm run dev"
     networks:
-      default: {}
-      shared-network:
-        aliases:
-          - e-grocery-api
+      - shared-network
 
   db:
     image: postgres:16-alpine
@@ -34,13 +28,14 @@ services:
     restart: "no"
     environment:
       POSTGRES_PASSWORD: rootpassword123
+    networks:
+      - shared-network
     volumes:
       - dbdata:/var/lib/postgresql
       - ./docker/postgres/init:/docker-entrypoint-initdb.d
 
 volumes:
   dbdata:
-  # Para Docker Swarm: criar com 'docker volume create cliente_logs' e usar external: true em ambos os stacks (Cliente e nexasystem)
   cliente_e-grocery_logs:
       external: true
 
