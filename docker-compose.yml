@@ -34,9 +34,34 @@ services:
       - dbdata:/var/lib/postgresql
       - ./docker/postgres/init:/docker-entrypoint-initdb.d
 
+  redis:
+      image: redis:8.8-alpine
+      container_name: nexaSystem_E-grocery-redis
+      restart: unless-stopped
+      command: >
+        redis-server
+        --appendonly yes
+        --appendfsync everysec
+        --maxmemory 256mb
+        --maxmemory-policy noeviction
+      volumes:
+        - nexasystem_egrocery_redisdata:/data
+      ports:
+        - "6378:6379"
+      healthcheck:
+        test: ["CMD-SHELL", "redis-cli --no-auth-warning -a \"${REDIS_PASSWORD:-}\" ping | grep -q PONG"]
+        interval: 10s
+        timeout: 5s
+        retries: 5
+      networks:
+        - default
+        - shared-network
+
 volumes:
   dbdata:
   cliente_e-grocery_logs:
+      external: true
+  nexasystem_egrocery_redisdata:
       external: true
 
 networks:

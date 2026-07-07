@@ -15,7 +15,6 @@ use App\Services\Integrations\EGroceryContractSerializer;
 use App\Services\Integrations\FamiliaMogiWebhookPublisher;
 use Illuminate\Support\Facades\Log;
 
-
 class PedidoController extends Controller
 {
     public function index(Request $request)
@@ -67,6 +66,8 @@ class PedidoController extends Controller
       EGroceryContractSerializer $serializer
   )
   {
+
+
       $data = $request->validated();
 
       $codigoPedido = 'PED-' . strtoupper(Str::random(8));
@@ -138,6 +139,8 @@ class PedidoController extends Controller
       EGroceryContractSerializer $serializer
   )
   {
+
+
       $pedido = GerenciarPedido::findOrFail($id);
       $previousStatus = (string) $pedido->status;
 

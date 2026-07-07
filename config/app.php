@@ -124,6 +124,7 @@ return [
     ],
 
     'providers' => [        
+        Illuminate\Redis\RedisServiceProvider::class,
         Illuminate\Auth\AuthServiceProvider::class,
         Illuminate\Cookie\CookieServiceProvider::class,
         Illuminate\Database\DatabaseServiceProvider::class,
@@ -140,7 +141,6 @@ return [
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
         Illuminate\Foundation\Providers\ConsoleSupportServiceProvider::class,
-
         Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
         Illuminate\Broadcasting\BroadcastServiceProvider::class, 
         App\Providers\AppServiceProvider::class,
@@ -155,6 +155,7 @@ return [
         'Log' => Illuminate\Support\Facades\Log::class,
         'Session' => Illuminate\Support\Facades\Session::class,
         'File' => Illuminate\Support\Facades\File::class,
+        'Redis' => Illuminate\Support\Facades\Redis::class, 
     ],
 
 ];

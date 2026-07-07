@@ -36,7 +36,7 @@ return [
 
         'database' => [
             'driver' => 'database',
-            'connection' => 'tenant_credentials',
+            'connection' => env('DB_QUEUE_CONNECTION', 'nexa_admin'),
             'table' => env('DB_QUEUE_TABLE', 'jobs'),
             'queue' => env('DB_QUEUE', 'default'),
             'retry_after' => (int) env('DB_QUEUE_RETRY_AFTER', 90),

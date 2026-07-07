@@ -14,7 +14,7 @@ const isOpen = usePage().props.sidebarOpen;
 
 <template>
     <!-- Loading Overlay Global -->
-    <NexaLoadingOverlay />
+    <!-- <NexaLoadingOverlay /> -->
 
     <div v-if="variant === 'header'" class="flex min-h-screen w-full flex-col">
         <slot />

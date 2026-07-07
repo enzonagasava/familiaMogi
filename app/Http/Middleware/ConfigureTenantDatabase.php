@@ -15,11 +15,11 @@ class ConfigureTenantDatabase
         $host = $request->getHost();
         $mainSubdomain = env('MAIN_SUBDOMAIN', 'localhost');
         
-        Log::info("🌐 ConfigureTenantDatabase - Host: {$host}, Main: {$mainSubdomain}");
+        // Log::info("🌐 ConfigureTenantDatabase - Host: {$host}, Main: {$mainSubdomain}");
         
         // Se for o domínio principal, não configura tenant
         if ($host === $mainSubdomain) {
-            Log::info("✅ ConfigureTenantDatabase - Domínio principal, pulando configuração de tenant");
+            // Log::info("✅ ConfigureTenantDatabase - Domínio principal, pulando configuração de tenant");
             return $next($request);
         }
 
@@ -28,7 +28,7 @@ class ConfigureTenantDatabase
         $tenant = $tenantFinder->findForRequest($request);
 
         if ($tenant) {
-            Log::info("✅ ConfigureTenantDatabase - Tenant encontrado: ID={$tenant->id}");
+            // Log::info("✅ ConfigureTenantDatabase - Tenant encontrado: ID={$tenant->id}");
             
             // O makeCurrent() já chama o SwitchMultiDatabaseTask configurado
             // que configura os bancos de dados automaticamente
@@ -53,7 +53,7 @@ class ConfigureTenantDatabase
         $credentialsDb = 'tenant_' . $tenant->id . '_credentials';
         $contentDb = 'tenant_' . $tenant->id . '_content';
         
-        Log::info("🔧 ConfigureTenantDatabase - Configurando bancos: {$credentialsDb}, {$contentDb}");
+        // Log::info("🔧 ConfigureTenantDatabase - Configurando bancos: {$credentialsDb}, {$contentDb}");
         
         // PURGE crítico - força nova conexão
         DB::purge('tenant_credentials');
@@ -66,14 +66,14 @@ class ConfigureTenantDatabase
         // Testa conexão
         try {
             DB::connection('tenant_credentials')->getPdo();
-            Log::info("✅ ConfigureTenantDatabase - Conexão tenant_credentials OK");
+            // Log::info("✅ ConfigureTenantDatabase - Conexão tenant_credentials OK");
         } catch (\Exception $e) {
             Log::error("❌ ConfigureTenantDatabase - Erro conexão credentials: " . $e->getMessage());
         }
         
         try {
             DB::connection('tenant_content')->getPdo();
-            Log::info("✅ ConfigureTenantDatabase - Conexão tenant_content OK");
+            // Log::info("✅ ConfigureTenantDatabase - Conexão tenant_content OK");
         } catch (\Exception $e) {
             Log::error("❌ ConfigureTenantDatabase - Erro conexão content: " . $e->getMessage());
         }
@@ -99,12 +99,12 @@ class ConfigureTenantDatabase
                 return;
             }
             
-            Log::info("✅ ConfigureTenantDatabase - Sessão configurada com database: {$dbName}");
+            // Log::info("✅ ConfigureTenantDatabase - Sessão configurada com database: {$dbName}");
             
             // Força recriação do session handler
             $this->rebuildSessionHandler();
         } else {
-            Log::info("✅ ConfigureTenantDatabase - Sessão usando driver: {$sessionDriver}");
+            // Log::info("✅ ConfigureTenantDatabase - Sessão usando driver: {$sessionDriver}");
         }
     }
     
@@ -118,7 +118,7 @@ class ConfigureTenantDatabase
             // Recria
             app()->make('session');
             
-            Log::info("✅ ConfigureTenantDatabase - Session handler recriado");
+            // Log::info("✅ ConfigureTenantDatabase - Session handler recriado");
             
         } catch (\Exception $e) {
             Log::error("❌ ConfigureTenantDatabase - Erro ao recriar session handler: " . $e->getMessage());

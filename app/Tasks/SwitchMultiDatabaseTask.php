@@ -12,7 +12,7 @@ class SwitchMultiDatabaseTask extends SwitchTenantDatabaseTask
 {
     public function makeCurrent($tenant): void
     {
-        Log::info("🔄 SwitchMultiDatabaseTask - Iniciando troca para tenant: ID={$tenant->id}");
+        // Log::info("🔄 SwitchMultiDatabaseTask - Iniciando troca para tenant: ID={$tenant->id}");
         
         $contentConnection = config('multitenancy.tenant_database_connection_name');
         $contentDb = 'tenant_' . $tenant->id . '_content';
@@ -20,18 +20,18 @@ class SwitchMultiDatabaseTask extends SwitchTenantDatabaseTask
         
         // Define o banco de dados para tenant_content (padrão)
         $this->setTenantConnectionDatabase('tenant_content', $contentDb);
-        Log::info("✅ SwitchMultiDatabaseTask - Configurado {$contentConnection}: {$contentDb}");
+        // Log::info("✅ SwitchMultiDatabaseTask - Configurado {$contentConnection}: {$contentDb}");
         
         // Define o banco de dados para tenant_credentials
         $this->setTenantConnectionDatabase('tenant_credentials', $credentialsDb);
-        Log::info("✅ SwitchMultiDatabaseTask - Configurado tenant_credentials: {$credentialsDb}");
+        // Log::info("✅ SwitchMultiDatabaseTask - Configurado tenant_credentials: {$credentialsDb}");
         
         // Purge para forçar reconexão
         DB::purge($contentConnection);
         DB::purge('tenant_credentials');
 
         
-        Log::info("🔄 SwitchMultiDatabaseTask - Conexões purgadas e prontas para reconexão");
+        // Log::info("🔄 SwitchMultiDatabaseTask - Conexões purgadas e prontas para reconexão");
     }
 
     private function setTenantConnectionDatabase(string $connectionName, string $databaseName): void

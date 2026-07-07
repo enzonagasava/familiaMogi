@@ -40,48 +40,49 @@ return [
         //     'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
         // ],
 
-    //Conecte com o banco do principal do nexa
-    'nexa_admin' => [
-        'driver' => 'pgsql',
-        'host' => env('DB_PG_HOST', 'localhost'),
-        'port' => env('DB_PG_PORT', '5432'),
-        'database' => env('DB_PG_DATABASE', env('DB_DATABASE', 'nexaSystem')),
-        'username' => env('DB_PG_USERNAME', env('DB_USERNAME', 'postgres')),
-        'password' => env('DB_PG_PASSWORD', env('DB_PASSWORD', '')),
-        'charset' => 'utf8',
-        'prefix' => '',
-        'prefix_indexes' => true,
-        'search_path' => 'public',
-        'sslmode' => 'prefer',                      
-    ],
+        //Conecte com o banco do principal do nexa
+        'nexa_admin' => [
+            'driver' => 'pgsql',
+            'host' => env('DB_PG_HOST', 'localhost'),
+            'port' => env('DB_PG_PORT', '5432'),
+            'database' => env('DB_PG_DATABASE', env('DB_DATABASE', 'nexaSystem')),
+            'username' => env('DB_PG_USERNAME', env('DB_USERNAME', 'postgres')),
+            'password' => env('DB_PG_PASSWORD', env('DB_PASSWORD', '')),
+            'charset' => 'utf8',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'search_path' => 'public',
+            'sslmode' => 'prefer',                      
+        ],
 
-    'tenant_credentials' => [
-        'driver' => 'pgsql',
-        'host' => env('DB2_PG_HOST', 'localhost'),
-        'port' => env('DB2_PG_PORT', '5432'),
-        'database' => null,
-        'username' => env('DB2_PG_USERNAME', env('DB_USERNAME', 'postgres')),
-        'password' => env('DB2_PG_PASSWORD', env('DB_PASSWORD', '')),
-        'charset' => 'utf8',
-        'prefix' => '',
-        'prefix_indexes' => true,
-        'search_path' => 'public',
-        'sslmode' => 'prefer',
-    ],
+        'tenant_credentials' => [
+            'driver' => 'pgsql',
+            'host' => env('DB2_PG_HOST', 'localhost'),
+            'port' => env('DB2_PG_PORT', '5432'),
+            'database' => null,
+            'username' => env('DB2_PG_USERNAME', env('DB_USERNAME', 'postgres')),
+            'password' => env('DB2_PG_PASSWORD', env('DB_PASSWORD', '')),
+            'charset' => 'utf8',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'search_path' => 'public',
+            'sslmode' => 'prefer',
+        ],
 
-    'tenant_content' => [
-        'driver' => 'pgsql',
-        'host' => env('DB2_PG_HOST', 'localhost'),
-        'port' => env('DB2_PG_PORT', '5432'),
-        'database' => null, // definido dinamicamente
-        'username' => env('DB2_PG_USERNAME', env('DB_USERNAME', 'postgres')),
-        'password' => env('DB2_PG_PASSWORD', env('DB_PASSWORD', '')),
-        'charset' => 'utf8',
-        'prefix' => '',
-        'prefix_indexes' => true,
-        'search_path' => 'public',
-        'sslmode' => 'prefer',
-    ],
+        'tenant_content' => [
+            'driver' => 'pgsql',
+            'host' => env('DB2_PG_HOST', 'localhost'),
+            'port' => env('DB2_PG_PORT', '5432'),
+            'database' => null, // definido dinamicamente
+            'username' => env('DB2_PG_USERNAME', env('DB_USERNAME', 'postgres')),
+            'password' => env('DB2_PG_PASSWORD', env('DB_PASSWORD', '')),
+            'charset' => 'utf8',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'search_path' => 'public',
+            'sslmode' => 'prefer',
+        ],
+
 
         // 'credentials' => $isTesting ? [
         //     'driver' => 'sqlite',
@@ -213,7 +214,7 @@ return [
 
     'redis' => [
 
-        'client' => env('REDIS_CLIENT', 'phpredis'),
+        'client' => env('REDIS_CLIENT', 'predis'),
 
         'options' => [
             'cluster' => env('REDIS_CLUSTER', 'redis'),
@@ -223,16 +224,16 @@ return [
 
         'default' => [
             'url' => env('REDIS_URL'),
-            'host' => env('REDIS_HOST', '127.0.0.1'),
+            'host' => env('REDIS_HOST', 'nexaSystem_E-grocery-redis'),
             'username' => env('REDIS_USERNAME'),
-            'password' => env('REDIS_PASSWORD'),
+            'password' => env('REDIS_PASSWORD', null),
             'port' => env('REDIS_PORT', '6379'),
             'database' => env('REDIS_DB', '0'),
         ],
 
         'cache' => [
             'url' => env('REDIS_URL'),
-            'host' => env('REDIS_HOST', '127.0.0.1'),
+            'host' => env('REDIS_HOST', 'nexaSystem_E-grocery-redis'),
             'username' => env('REDIS_USERNAME'),
             'password' => env('REDIS_PASSWORD'),
             'port' => env('REDIS_PORT', '6379'),
@@ -242,3 +243,4 @@ return [
     ],
 
 ];
+

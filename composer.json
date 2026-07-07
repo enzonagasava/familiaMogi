@@ -13,6 +13,7 @@
         "dedoc/scramble": "^0.13.14",
         "google/apiclient": "^2.18",
         "guzzlehttp/guzzle": "^7.8",
+        "illuminate/redis": "*",
         "illuminate/support": "*",
         "inertiajs/inertia-laravel": "^2.0",
         "laravel/framework": "^12.0",
@@ -20,6 +21,7 @@
         "laravel/tinker": "^2.10.1",
         "league/flysystem-aws-s3-v3": "^3.0",
         "mercadopago/dx-php": "3.7.1",
+        "predis/predis": "^3.5",
         "pusher/pusher-php-server": "^7.2",
         "spatie/laravel-multitenancy": "^4.0",
         "spatie/laravel-package-tools": "^1.92",
@@ -30,7 +32,6 @@
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.15",
         "fakerphp/faker": "^1.23",
-        "laravel-lang/lang": "^12.17",
         "laravel/pail": "^1.2.2",
         "laravel/pint": "^1.18",
         "laravel/sail": "^1.41",

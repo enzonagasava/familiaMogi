@@ -14,8 +14,8 @@ class TenantFinder extends BaseTenantFinder
         $host = $request->getHost();
         $mainDomain = env('MAIN_SUBDOMAIN', 'localhost');
         
-        Log::info("🔍 TenantFinder - Host recebido: {$host}");
-        Log::info("🔍 TenantFinder - Main domain: {$mainDomain}");
+        // Log::info("🔍 TenantFinder - Host recebido: {$host}");
+        // Log::info("🔍 TenantFinder - Main domain: {$mainDomain}");
         
         // Se for o domínio principal, não busca tenant
         if ($host === $mainDomain) {
@@ -26,7 +26,7 @@ class TenantFinder extends BaseTenantFinder
         // Trata localhost para desenvolvimento
         if (in_array($host, ['localhost', '127.0.0.1'])) {
             $tenant = Tenant::first();
-            Log::info("🏠 TenantFinder - Localhost detectado, usando primeiro tenant: " . ($tenant ? $tenant->id : 'nenhum'));
+            // Log::info("🏠 TenantFinder - Localhost detectado, usando primeiro tenant: " . ($tenant ? $tenant->id : 'nenhum'));
             return $tenant;
         }
         
@@ -38,13 +38,13 @@ class TenantFinder extends BaseTenantFinder
             return null;
         }
         
-        Log::info("🔍 TenantFinder - Subdomínio extraído: {$subdomain}");
+        // Log::info("🔍 TenantFinder - Subdomínio extraído: {$subdomain}");
         
         // Busca tenant pelo subdomínio
         $tenant = Tenant::where('subdominio', $subdomain)->first();
 
         if ($tenant) {
-            Log::info("✅ TenantFinder - Tenant encontrado: ID={$tenant->id}, Nome={$tenant->nome}");
+            // Log::info("✅ TenantFinder - Tenant encontrado: ID={$tenant->id}, Nome={$tenant->nome}");
         } else {
             Log::error("❌ TenantFinder - Nenhum tenant encontrado para subdomínio: {$subdomain}");
         }

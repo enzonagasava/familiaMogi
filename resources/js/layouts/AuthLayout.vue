@@ -57,7 +57,7 @@ const titleDashboard = String(page.props.empresaTipo?.nome ?? '');
 <template>
     <div class="flex min-h-screen app-layout">
         <!-- Global Nexa loading overlay (can be hidden per-page) -->
-        <NexaLoadingOverlay v-if="!props.hideGlobalLoading" />
+        <!-- <NexaLoadingOverlay v-if="!props.hideGlobalLoading" /> COMENTADO POR ENQUANTO, VOLTAR DEPOIS DO TERMINO DA TASK--> 
         <header class="fixed inset-x-0 top-0 z-50 flex items-center justify-between  px-4 py-4 text-inverse lg:hidden" style="background-color: var(--sidebar-background);">
             <h2 class="font-bold">{{ titleDashboard }}</h2>
         </header>

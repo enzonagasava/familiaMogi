@@ -11,6 +11,8 @@ use App\Services\Integrations\EGroceryContractSerializer;
 use App\Services\Integrations\FamiliaMogiWebhookPublisher;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Log;
+use Predis\Client as PredisClient;
+
 
 class AnuncioController extends Controller
 {
@@ -118,6 +120,7 @@ class AnuncioController extends Controller
         EGroceryContractSerializer $serializer
     )
     {
+
         if (!$listing->produto_id) {
             abort(404);
         }

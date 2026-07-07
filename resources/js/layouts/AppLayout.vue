@@ -110,7 +110,7 @@ onUnmounted(() => {
         <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
     </Head>
     <!-- Global Nexa loading overlay -->
-    <NexaLoadingOverlay />
+    <!-- <NexaLoadingOverlay /> -->
     <header class="fixed top-0 right-0 left-0 z-50  shadow-md">
         <div class="flex h-[70px] w-screen justify-center px-4 sm:px-6 lg:px-8">
             <div class="flex w-full max-w-[1366px] items-center justify-between">
