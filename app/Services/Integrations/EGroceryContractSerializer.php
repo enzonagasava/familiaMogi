@@ -17,7 +17,7 @@ class EGroceryContractSerializer
         $product = $listing->produto;
 
         return [
-            'id' => 'ad_'.$listing->id,
+            'id' => $listing->id,
             'title' => $product?->nome ?? 'Anuncio #'.$listing->id,
             'description' => $product?->descricao,
             'status' => $this->listingStatus($listing),
