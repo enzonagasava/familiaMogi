@@ -47,8 +47,8 @@ class ProdutoController extends Controller
 
  public function store(
     Request $request,
-    FamiliaMogiWebhookPublisher $publisher,
-    EGroceryContractSerializer $serializer
+    // FamiliaMogiWebhookPublisher $publisher,
+    // EGroceryContractSerializer $serializer
 )
     {
         // 1. Validação do request.
@@ -97,9 +97,8 @@ class ProdutoController extends Controller
         }
 
         $produto->load('imagens', 'tamanhos');
-        $this->publishProductEvent('product.updated', $produto, $publisher, $serializer);
-        $this->publishProductEvent('price.updated', $produto, $publisher, $serializer);
-        $this->publishProductEvent('stock.updated', $produto, $publisher, $serializer);
+        // $this->publishProductEvent('price.updated', $produto, $publisher, $serializer);
+        // $this->publishProductEvent('stock.updated', $produto, $publisher, $serializer);
 
         return Inertia::location(route('admin.produtos.config'));
     }
@@ -139,14 +138,14 @@ public function edit($id)
     public function update(
         Request $request,
         $id,
-        FamiliaMogiWebhookPublisher $publisher,
-        EGroceryContractSerializer $serializer
+        // FamiliaMogiWebhookPublisher $publisher,
+        // EGroceryContractSerializer $serializer
     )
     {
         $produto = Produto::findOrFail($id);
         $produto->load('imagens', 'tamanhos');
         $previousStock = (int) $produto->estoque;
-        $previousPrice = $serializer->resolveProductPrice($produto);
+        // $previousPrice = $serializer->resolveProductPrice($produto);
 
         $produto->update($request->all());
         
@@ -223,17 +222,17 @@ public function edit($id)
             }
         }
 
-        $produto->load('imagens', 'tamanhos');
-        $this->publishProductEvent('product.updated', $produto, $publisher, $serializer);
+        // $produto->load('imagens', 'tamanhos');
+        // $this->publishProductEvent('product.updated', $produto, $publisher, $serializer);
 
-        $currentPrice = $serializer->resolveProductPrice($produto);
-        if ($currentPrice !== $previousPrice) {
-            $this->publishProductEvent('price.updated', $produto, $publisher, $serializer);
-        }
+        // $currentPrice = $serializer->resolveProductPrice($produto);
+        // if ($currentPrice !== $previousPrice) {
+        //     $this->publishProductEvent('price.updated', $produto, $publisher, $serializer);
+        // }
 
-        if ((int) $produto->estoque !== $previousStock) {
-            $this->publishProductEvent('stock.updated', $produto, $publisher, $serializer);
-        }
+        // if ((int) $produto->estoque !== $previousStock) {
+        //     $this->publishProductEvent('stock.updated', $produto, $publisher, $serializer);
+        // }
 
         return Inertia::location(route('admin.produtos.config'));
     }

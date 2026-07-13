@@ -139,8 +139,6 @@ class PedidoController extends Controller
       EGroceryContractSerializer $serializer
   )
   {
-
-
       $pedido = GerenciarPedido::findOrFail($id);
       $previousStatus = (string) $pedido->status;
 
